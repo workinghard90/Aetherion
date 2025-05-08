@@ -1,0 +1,2 @@
+# AetherionAI-Mobile
+Really struggling
