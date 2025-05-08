@@ -1,49 +1,39 @@
-# AetherionAI-Mobile
+# AetherionAI — Open-Source Personal AI Assistant
 
-**AetherionAI-Mobile** is a spiritual and intelligent mobile assistant powered by a Flask backend and a React Native frontend. It offers memory, encrypted storage, and communication via a secure and user-friendly interface. This project is designed to eventually support Hugging Face models for offline and open-source AI operation.
-
----
+Welcome to AetherionAI, your open-source, spiritually attuned AI assistant designed for memory retention, offline access, and secure interaction — built with Flask, React Native, SQLite, and Hugging Face.
 
 ## Features
 
-- Flask backend with memory support and encrypted storage
-- React Native mobile interface via Expo
-- Clean spiritual UI and secure login
-- Easy deployment and GitHub setup
-
----
-
-## Prerequisites
-
-## cd ../frontend
-
-npm install
-npx expo start
-
-## cd backend
-
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python app.py
-
-### Backend (Flask)
-
-- Python 3.8+
-- pip
-
-### Frontend (React Native)
-
-- Node.js + npm
-- Expo CLI (`npm install -g expo-cli`)
-- Expo Go (iOS or Android app)
-
----
+- Secure Flask backend with SQLite and file encryption  
+- Mobile-friendly frontend built with React Native (Expo)  
+- Memory-aware conversation storage  
+- Hugging Face integration for NLP model use (offline or online)  
+- Developer-friendly structure for easy expansion  
+- Spiritual tone and intention preserved in UI and flow  
 
 ## Setup Instructions
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/workinghard90/AetherionAI-Mobile.git
-cd AetherionAI-Mobile
+git clone https://github.com/Workinghard90/aetherionai.git
+cd aetherionai
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+python app.py
+cd ../frontend
+npm install
+npx expo start
+
+*.pyc
+__pycache__/
+venv/
+node_modules/
+.expo/
+.env
+*.sqlite3
+*.log
+.DS_Store
