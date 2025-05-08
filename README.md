@@ -1,70 +1,35 @@
-cd path/to/AetherionAI-Mobile
-git init
-git remote add origin https://github.com/YOUR_USERNAME/AetherionAI-Mobile.git
-git add .
-git commit -m "Initial commit of AetherionAI-Mobile project"
-git branch -M main
-git push -u origin main
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import axios from 'axios';
+# AetherionAI-Mobile
 
-export default function App() {
-  const [message, setMessage] = useState('');
-  const [response, setResponse] = useState('');
+**AetherionAI-Mobile** is a spiritual and intelligent mobile assistant powered by a Flask backend and a React Native frontend. It offers memory, encrypted storage, and communication via a secure and user-friendly interface. This project is designed to eventually support Hugging Face models for offline and open-source AI operation.
 
-  const sendMessage = async () => {
-    const res = await axios.post('http://localhost:5000/chat', { message });
-    setResponse(res.data.response);
-  };
+---
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>AetherionAI</Text>
-      <TextInput style={styles.input} onChangeText={setMessage} value={message} placeholder="Say something..." />
-      <Button title="Send" onPress={sendMessage} />
-      <Text style={styles.response}>{response}</Text>
-    </View>
-  );
-}
-flask
-flask-cors
-openai
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import sqlite3
+## Features
 
-app = Flask(__name__)
-CORS(app)
+- Flask backend with memory support and encrypted storage
+- React Native mobile interface via Expo
+- Clean spiritual UI and secure login
+- Easy deployment and GitHub setup
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    user_input = request.json.get('message')
-    # Placeholder AI logic
-    response = f"Echo: {user_input}"
-    return jsonify({'response': response})
+---
 
-@app.route('/memory', methods=['GET'])
-def get_memory():
-    # Dummy memory logic
-    return jsonify({'memory': ['You spoke with the assistant.']})
+## Prerequisites
 
-if __name__ == '__main__':
-    app.run(debug=True)
+### Backend (Flask)
+- Python 3.8+
+- pip
 
-const styles = StyleSheet.create({
-  container: { padding: 20, marginTop: 50 },
-  heading: { fontSize: 24, fontWeight: 'bold' },
-  input: { borderWidth: 1, padding: 10, marginVertical: 10 },
-  response: { marginTop: 20, fontSize: 18 },
-});
+### Frontend (React Native)
+- Node.js + npm
+- Expo CLI (`npm install -g expo-cli`)
+- Expo Go (iOS or Android app)
 
-  "name": "aetherionai-mobile",
-  "version": "1.0.0",
-  "main": "App.js",
-  "dependencies": {
-    "axios": "^0.27.2",
-    "react": "18.2.0",
-    "react-native": "0.71.8"
-  }
-}
+---
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/workinghard90/AetherionAI-Mobile.git
+cd AetherionAI-Mobile
