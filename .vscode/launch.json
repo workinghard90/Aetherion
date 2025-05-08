@@ -23,13 +23,19 @@
 }
 
 cd frontend
+
 npm install
+
 npx expo start
 
 cd backend
+
 python -m venv venv
+
 source venv/bin/activate       # Windows: venv\Scripts\activate
+
 pip install -r requirements.txt
+
 python app.py
 
 const API_BASE_URL = 'http://192.168.1.5:5000';
