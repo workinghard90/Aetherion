@@ -22,6 +22,9 @@
     ]
 }
 
+<<<<<<< HEAD
+ *.pyc
+=======
 # AetherionAI — Open-Source Personal AI Assistant
 
 Welcome to AetherionAI, your open-source, spiritually attuned AI assistant designed for memory retention, offline access, and secure interaction — built with Flask, React Native, SQLite, and Hugging Face.
@@ -53,6 +56,7 @@ npm install
 npx expo start
 
 *.pyc
+>>>>>>> 08f706e228ce6bf8b0eaa29e7dc3c2b8a582cfe8
 __pycache__/
 venv/
 node_modules/
