@@ -21,3 +21,13 @@
         }
     ]
 }
+
+*.pyc
+__pycache__/
+venv/
+node_modules/
+.expo/
+.env
+*.sqlite3
+*.log
+.DS_Store
