@@ -1,33 +1,36 @@
 # AetherionAI — Open-Source Personal AI Assistant
 
-Welcome to AetherionAI, your open-source, spiritually attuned AI assistant designed for memory retention, offline access, and secure interaction — built with Flask, React Native, SQLite, and Hugging Face.
+Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. Designed for memory retention, secure offline interaction, and thoughtful, intuitive use — powered by Flask, React Native (Expo), SQLite, and Hugging Face.
+
+---
 
 ## Features
 
-- Secure Flask backend with SQLite and file encryption  
-- Mobile-friendly frontend built with React Native (Expo)  
-- Memory-aware conversation storage  
-- Hugging Face integration for NLP model use (offline or online)  
-- Developer-friendly structure for easy expansion  
-- Spiritual tone and intention preserved in UI and flow  
+- Secure **Flask backend** with SQLite + encrypted file storage  
+- **React Native** frontend supporting web & mobile (via Expo)  
+- Hugging Face transformer model integration (online/offline modes)  
+- Memory-aware conversation history  
+- **Netlify-compatible** static frontend deployment  
+- Spiritual tone and welcoming user experience  
+- Clean, extensible code structure for contributors
 
-## Setup Instructions
+---
 
-### 1. Clone the Repository
+## Quickstart Instructions
+
+### 1. Clone This Repository
 
 ```bash
 git clone https://github.com/Workinghard90/aetherionai.git
 cd aetherionai
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate     # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
 python app.py
 cd ../frontend
 npm install
-npx expo start
-
+npm run web
 *.pyc
 __pycache__/
 venv/
