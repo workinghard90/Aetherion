@@ -23,20 +23,16 @@ Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. 
 ```bash
 git clone https://github.com/Workinghard90/aetherionai.git
 cd aetherionai
+
 cd backend
 python -m venv venv
-source venv/bin/activate     # On Windows: venv\Scripts\activate
+source venv/bin/activate      # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
+
 cd ../frontend
 npm install
+npx expo start
 npm run web
-*.pyc
-__pycache__/
-venv/
-node_modules/
-.expo/
-.env
-*.sqlite3
-*.log
-.DS_Store
+
+const API_URL = 'https://aetherionai.onrender.com'; // Your Render backend URL
