@@ -148,19 +148,23 @@ sentence-transformers==2.7.0
 cryptography==42.0.7
 python-dotenv==1.0.1
 Procfile
-web: gunicorn app:app
-.render.yaml (optional for full automation)
-services:
-	•	type: web
-name: aetherionai-backend
-env: python
-buildCommand: “pip install -r requirements.txt”
-startCommand: “gunicorn app:app”
-rootDir: backend
+
 Commands
 git clone https://github.com/Workinghard90/aetherionai.git
 cd aetherionai
 cd backend
+web: gunicorn app:app
+.render.yaml (optional for full automation)
+services:
+
+type: web
+name: aetherionai-backend
+env: python
+
+buildCommand: “pip install -r requirements.txt”
+
+startCommand: “gunicorn app:app”
+rootDir: backend
 pip install -r requirements.txt
 python app.py (for local test)
 const API_URL = 'https://aetherionai.onrender.com'; // Your Render backend URL
