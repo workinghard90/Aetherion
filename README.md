@@ -25,11 +25,15 @@ git clone https://github.com/Workinghard90/aetherionai.git
 cd aetherionai
 
 cd backend
-python -m venv venv
-source venv/bin/activate      # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python app.py
-gunicorn -r requirements.txt
+Flask==2.3.3
+gunicorn==21.2.0
+flask-cors==4.0.0
+requests==2.31.0
+transformers==4.40.1
+torch==2.3.0
+sentence-transformers==2.7.0
+cryptography==42.0.7
+python-dotenv==1.0.1
 
 cd ../frontend
 npm install
