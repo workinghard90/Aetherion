@@ -1,39 +1,66 @@
-# AetherionAI — Open-Source Personal AI Assistant
+// frontend/services/api.js
 
-Welcome to AetherionAI, your open-source, spiritually attuned AI assistant designed for memory retention, offline access, and secure interaction — built with Flask, React Native, SQLite, and Hugging Face.
+import axios from 'axios';
 
-## Features
+const API_URL = 'https://aetherionai.onrender.com'; // Make sure this URL is active and correct
 
-- Secure Flask backend with SQLite and file encryption  
-- Mobile-friendly frontend built with React Native (Expo)  
-- Memory-aware conversation storage  
-- Hugging Face integration for NLP model use (offline or online)  
-- Developer-friendly structure for easy expansion  
-- Spiritual tone and intention preserved in UI and flow  
+export const getUniverse = async () => {
+  const response = await axios.get(`${API_URL}/universe`);
+  return response.data;
+};
 
-## Setup Instructions
+export const createEntity = async (entity) => {
+  const response = await axios.post(`${API_URL}/universe/create`, entity);
+  return response.data;
+};
 
-### 1. Clone the Repository
+export const updateEntity = async (entity) => {
+  const response = await axios.post(`${API_URL}/universe/update`, entity);
+  return response.data;
+};
 
-```bash
-git clone https://github.com/Workinghard90/aetherionai.git
-cd aetherionai
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+export const deleteEntity = async (id) => {
+  const response = await axios.post(`${API_URL}/universe/delete`, { id });
+  return response.data;
+};
 
-python app.py
-cd ../frontend
-npm install
-npx expo start
+export const triggerEvent = async (event) => {
+  const response = await axios.post(`${API_URL}/universe/event`, event);
+  return response.data;
+};
+// frontend/screens/HomeScreen.js
 
-*.pyc
-__pycache__/
-venv/
-node_modules/
-.expo/
-.env
-*.sqlite3
-*.log
-.DS_Store
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
+import { getUniverse } from '../services/api';
+
+export default function HomeScreen({ navigation }) {
+  const [entities, setEntities] = useState([]);
+
+  useEffect(() => {
+    getUniverse()
+      .then(setEntities)
+      .catch((err) => {
+        console.error('API failed:', err);
+      });
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('Entity', { entity: item })}>
+      <View>
+        <Text>{item.name} ({item.type})</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Button title="Create Entity" onPress={() => navigation.navigate('CreateEntity')} />
+      <FlatList
+        data={entities}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+}
