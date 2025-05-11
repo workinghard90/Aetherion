@@ -153,7 +153,6 @@ Commands
 git clone https://github.com/Workinghard90/aetherionai.git
 cd aetherionai
 cd backend
-CORS(app, resources={r"/*": {"origins": "https://your-netlify-site.netlify.app"}})
 web: gunicorn app:app
 .render.yaml (optional for full automation)
 services:
