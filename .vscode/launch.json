@@ -27,6 +27,8 @@ import axios from 'axios';
 
 const API_URL = 'https://aetherionai.onrender.com'; // Make sure this URL is active and correct
 
+const API_BASE_URL = 'http://192.168.1.5:5000';
+
 export const getUniverse = async () => {
   const response = await axios.get(`${API_URL}/universe`);
   return response.data;
@@ -101,5 +103,3 @@ source venv/bin/activate       # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 python app.py
-
-const API_BASE_URL = 'http://192.168.1.5:5000';
