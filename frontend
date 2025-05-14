@@ -18,6 +18,19 @@ Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. 
 
 ## Quickstart Instructions
 
+AetherionAI-Mobile/
+├── frontend/
+│   ├── App.js
+│   ├── package.json
+│   └── ...
+├── backend/
+│   ├── app.py
+│   ├── requirements.txt
+│   └── ...
+├── .netlify/
+│   └── config.toml
+└── ...
+
 {
   "name": "aetherionai-frontend",
   "version": "1.0.0",
