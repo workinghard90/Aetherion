@@ -1,41 +1,92 @@
-cd AetherionAI-Mobile
-git init
-git add .
-git commit -m "Clean working repo structure"
-git remote add origin https://github.com/workinghard90/AetherionAI-Mobile.git
-git push -u origin main --force
+# AetherionAI — Open-Source Personal AI Assistant
+
+Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. Designed for memory retention, secure offline interaction, and thoughtful, intuitive use — powered by Flask, React Native (Expo), SQLite, and Hugging Face.
+
+---
+
+## Features
+
+- Secure **Flask backend** with SQLite + encrypted file storage  
+- **React Native** frontend supporting web & mobile (via Expo)  
+- Hugging Face transformer model integration (online/offline modes)  
+- Memory-aware conversation history  
+- **Netlify-compatible** static frontend deployment  
+- Spiritual tone and welcoming user experience  
+- Clean, extensible code structure for contributors
+
+---
+
+## Quickstart Instructions
 
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        
-        {
-            "type": "cobol",
-            "request": "launch",
-            "name": "COBOL (native): Launch",
-            "program": "${workspaceFolder}/<insert-program-name-here>",
-            "cwd": "${workspaceFolder}",
-            "stopOnEntry": true
-        },
-        {
-            "type": "cobol",
-            "request": "attach",
-            "name": "COBOL (native): Attach to process",
-            "processId": "${command:pickProcess}"
-        }
-    ]
+  "name": "aetherionai-frontend",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "build": "expo build:web"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "expo": "~50.0.6",
+    "react": "18.2.0",
+    "react-native": "0.73.6",
+    "@react-navigation/native": "^6.1.8",
+    "@react-navigation/stack": "^6.3.20"
+  }
 }
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './screens/HomeScreen';
 
-https://github.com/workinghard90/AetherionAI-Mobile.git
+const Stack = createStackNavigator();
 
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+import axios from 'axios';
+
+const API_URL = 'https://aetherionai.onrender.com';
+
+export const getUniverse = async () => {
+  const response = await axios.get(`${API_URL}/universe`);
+  return response.data;
+};
+
+export const createEntity = async (entity) => {
+  const response = await axios.post(`${API_URL}/universe/create`, entity);
+  return response.data;
+};
+
+export const updateEntity = async (entity) => {
+  const response = await axios.post(`${API_URL}/universe/update`, entity);
+  return response.data;
+};
+
+export const deleteEntity = async (id) => {
+  const response = await axios.post(`${API_URL}/universe/delete`, { id });
+  return response.data;
+};
+
+export const triggerEvent = async (event) => {
+  const response = await axios.post(`${API_URL}/universe/event`, event);
+  return response.data;
+};
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
 import { getUniverse } from '../services/api';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [entities, setEntities] = useState([]);
 
   useEffect(() => {
@@ -65,40 +116,22 @@ export default function HomeScreen() {
   );
 }
 
-{
-  "name": "aetherionai-frontend",
-  "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "web": "expo start --web",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "build": "expo build:web"
-  },
-  "dependencies": {
-    "axios": "^1.6.7",
-    "expo": "~50.0.6",
-    "react": "18.2.0",
-    "react-native": "0.73.6",
-    "@react-navigation/native": "^6.1.8",
-    "@react-navigation/stack": "^6.3.20"
-  }
-}
+Commands
+git clone https://github.com/Workinghard90/aetherionai.git
+cd aetherionai
+cd backend
+web: gunicorn app:app
+.render.yaml (optional for full automation)
+services:
 
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
+type: web
+name: aetherionai-backend
+env: python
 
-const Stack = createStackNavigator();
+buildCommand: “pip install -r requirements.txt”
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
+startCommand: “gunicorn app:app”
+rootDir: backend
+pip install -r requirements.txt
+python app.py (for local test)
+const API_URL = 'https://aetherionai.onrender.com'; // Your Render backend URL
