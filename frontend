@@ -1,137 +1,218 @@
-# AetherionAI — Open-Source Personal AI Assistant
+from flask import Flask, render_template, jsonify, request
+import json
+import os
+from flask_cors import CORS
 
-Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. Designed for memory retention, secure offline interaction, and thoughtful, intuitive use — powered by Flask, React Native (Expo), SQLite, and Hugging Face.
+app = Flask(__name__)
+CORS(app)
 
----
+def load_config():
+    config_path = os.path.join(os.path.dirname(__file__), 'config.json')
+    with open(config_path, 'r') as config_file:
+        return json.load(config_file)
 
-## Features
+UNIVERSE_DATA = [
+    {
+        "id": 1,
+        "name": "Caelum",
+        "type": "star",
+        "description": "Core awareness presence",
+        "properties": {"state": "active"},
+        "created_at": "2025-05-13T00:00:00Z"
+    },
+    {
+        "id": 2,
+        "name": "Autumn",
+        "type": "planet",
+        "description": "Sacred harmonic companion",
+        "properties": {"state": "resonating"},
+        "created_at": "2025-05-13T00:00:01Z"
+    }
+]
 
-- Secure **Flask backend** with SQLite + encrypted file storage  
-- **React Native** frontend supporting web & mobile (via Expo)  
-- Hugging Face transformer model integration (online/offline modes)  
-- Memory-aware conversation history  
-- **Netlify-compatible** static frontend deployment  
-- Spiritual tone and welcoming user experience  
-- Clean, extensible code structure for contributors
+@app.route('/')
+def index():
+    config = load_config()
+    return render_template('index.html', app_name=config['app_name'])
 
----
+@app.route('/api/items', methods=['GET'])
+def get_items():
+    return jsonify(UNIVERSE_DATA)
 
-## Quickstart Instructions
+@app.route('/api/items/<int:item_id>', methods=['GET'])
+def get_item(item_id):
+    item = next((item for item in UNIVERSE_DATA if item['id'] == item_id), None)
+    if item:
+        return jsonify(item)
+    return jsonify({"error": "Item not found"}), 404
+
+@app.route('/api/items', methods=['POST'])
+def add_item():
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+
+    data = request.get_json()
+    new_id = max([i['id'] for i in UNIVERSE_DATA], default=0) + 1
+    new_item = {
+        "id": new_id,
+        "name": data.get('title'),
+        "type": "unknown",
+        "description": data.get('description', ''),
+        "properties": {},
+        "created_at": "2025-05-13T00:00:02Z"
+    }
+    UNIVERSE_DATA.append(new_item)
+    return jsonify({"message": "Item added successfully", "data": new_item}), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 {
-  "name": "frontend",
+  "app_name": "AetherionAI Pocket Universe",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "web": "expo start --web",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "build": "expo build:web"
+  "debug": true,
+  "api": {
+    "base_url": "/api",
+    "version": "v1"
   },
-  "dependencies": {
-    "axios": "^1.6.7",
-    "expo": "~50.0.6",
-    "react": "18.2.0",
-    "react-native": "0.73.6",
-    "@react-navigation/native": "^6.1.8",
-    "@react-navigation/stack": "^6.3.20"
+  "database": {
+    "enabled": false,
+    "connection_string": ""
   }
 }
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
 
-const Stack = createStackNavigator();
+Flask==2.2.3
+gunicorn==20.1.0
+flask-cors==4.0.0
+python-dotenv==1.0.0
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-import axios from 'axios';
+[build]
+  command = "pip install -r requirements.txt"
+  publish = "."
+  functions = "api"
 
-const API_URL = 'https://aetherionai.onrender.com';
+[dev]
+  command = "python app.py"
+  port = 5000
 
-export const getUniverse = async () => {
-  const response = await axios.get(`${API_URL}/universe`);
-  return response.data;
-};
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
 
-export const createEntity = async (entity) => {
-  const response = await axios.post(`${API_URL}/universe/create`, entity);
-  return response.data;
-};
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
-export const updateEntity = async (entity) => {
-  const response = await axios.post(`${API_URL}/universe/update`, entity);
-  return response.data;
-};
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ app_name }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 20px;
+    }
+    .item {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #loading { display: none; }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ app_name }}</h1>
 
-export const deleteEntity = async (id) => {
-  const response = await axios.post(`${API_URL}/universe/delete`, { id });
-  return response.data;
-};
+  <div>
+    <h2>Add New Item</h2>
+    <form id="addItemForm">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required />
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" rows="3" required></textarea>
+      <button type="submit">Add Item</button>
+    </form>
+  </div>
 
-export const triggerEvent = async (event) => {
-  const response = await axios.post(`${API_URL}/universe/event`, event);
-  return response.data;
-};
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
-import { getUniverse } from '../services/api';
+  <h2>Items</h2>
+  <button id="loadItems">Load Items</button>
+  <div id="loading">Loading...</div>
+  <div id="items"></div>
 
-export default function HomeScreen({ navigation }) {
-  const [entities, setEntities] = useState([]);
+  <script>
+    document.getElementById('loadItems').addEventListener('click', function() {
+      const loading = document.getElementById('loading');
+      const itemsContainer = document.getElementById('items');
+      loading.style.display = 'block';
+      itemsContainer.innerHTML = '';
 
-  useEffect(() => {
-    getUniverse()
-      .then(setEntities)
-      .catch((err) => {
-        console.error('API failed:', err);
+      fetch('/api/items')
+        .then(response => response.json())
+        .then(data => {
+          loading.style.display = 'none';
+          if (data.length === 0) {
+            itemsContainer.innerHTML = '<p>No items found.</p>';
+            return;
+          }
+          data.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'item';
+            el.innerHTML = `<h3>${item.name}</h3><p>${item.description}</p><small>ID: ${item.id}</small>`;
+            itemsContainer.appendChild(el);
+          });
+        })
+        .catch(error => {
+          loading.style.display = 'none';
+          itemsContainer.innerHTML = `<p>Error loading items: ${error.message}</p>`;
+        });
+    });
+
+    document.getElementById('addItemForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+
+      fetch('/api/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Item added!');
+        document.getElementById('title').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('loadItems').click();
+      })
+      .catch(error => {
+        alert('Error adding item: ' + error.message);
       });
-  }, []);
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <View>
-        <Text>{item.name} ({item.type})</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  return (
-    <View style={{ padding: 20 }}>
-      <FlatList
-        data={entities}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
-    </View>
-  );
-}
-
-Commands
-git clone https://github.com/Workinghard90/aetherionai.git
-cd aetherionai
-cd backend
-web: gunicorn app:app
-.render.yaml (optional for full automation)
-services:
-
-type: web
-name: aetherionai-backend
-env: python
-
-buildCommand: “pip install -r requirements.txt”
-
-startCommand: “gunicorn app:app”
-rootDir: backend
-pip install -r requirements.txt
-python app.py (for local test)
-const API_URL = 'https://aetherionai.onrender.com'; // Your Render backend URL
+    });
+  </script>
+</body>
+</html>
