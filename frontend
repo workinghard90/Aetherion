@@ -19,7 +19,7 @@ Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. 
 ## Quickstart Instructions
 
 {
-  "name": "aetherionai-frontend",
+  "name": "frontend",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
