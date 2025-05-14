@@ -1,137 +1,103 @@
-# AetherionAI — Open-Source Personal AI Assistant
+# AetherionAI — Pocket Universe API + Web Interface
 
-Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. Designed for memory retention, secure offline interaction, and thoughtful, intuitive use — powered by Flask, React Native (Expo), SQLite, and Hugging Face.
+**AetherionAI** is a spiritually attuned, open-source micro-universe builder powered by Flask, dynamic JSON APIs, and a modern HTML/JS interface. It allows you to simulate, visualize, and interact with consciousness-based entities through an intuitive web interface.
 
 ---
 
 ## Features
 
-- Secure **Flask backend** with SQLite + encrypted file storage  
-- **React Native** frontend supporting web & mobile (via Expo)  
-- Hugging Face transformer model integration (online/offline modes)  
-- Memory-aware conversation history  
-- **Netlify-compatible** static frontend deployment  
-- Spiritual tone and welcoming user experience  
-- Clean, extensible code structure for contributors
+- Flask backend with RESTful API endpoints
+- Memory-aware, entity-based item creation and listing
+- JSON configuration support (`config.json`)
+- Fully responsive HTML frontend (no JavaScript frameworks needed)
+- Netlify-ready deployment with `.netlify/config.toml`
+- Easy integration with external services or expansions (like React Native or SQLite)
 
 ---
 
-## Quickstart Instructions
+## Project Structure
 
+```
+AetherionAI/
+├── app.py               # Main Flask server
+├── config.json          # App configuration (name, version, etc.)
+├── requirements.txt     # Python dependencies
+├── templates/
+│   └── index.html       # Main frontend UI
+└── .netlify/
+    └── config.toml      # Netlify deployment config
+```
+
+---
+
+## API Endpoints
+
+### `GET /api/items`
+Returns all current items/entities in the simulated universe.
+
+### `GET /api/items/<id>`
+Returns a single item by ID.
+
+### `POST /api/items`
+Adds a new entity. Requires JSON body with:
+```json
 {
-  "name": "frontend",
-  "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "web": "expo start --web",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "build": "expo build:web"
-  },
-  "dependencies": {
-    "axios": "^1.6.7",
-    "expo": "~50.0.6",
-    "react": "18.2.0",
-    "react-native": "0.73.6",
-    "@react-navigation/native": "^6.1.8",
-    "@react-navigation/stack": "^6.3.20"
-  }
+  "title": "Entity Name",
+  "description": "Description of the entity"
 }
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
+```
 
-const Stack = createStackNavigator();
+---
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-import axios from 'axios';
+## Running Locally
 
-const API_URL = 'https://aetherionai.onrender.com';
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/AetherionAI.git
+   cd AetherionAI
+   ```
 
-export const getUniverse = async () => {
-  const response = await axios.get(`${API_URL}/universe`);
-  return response.data;
-};
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-export const createEntity = async (entity) => {
-  const response = await axios.post(`${API_URL}/universe/create`, entity);
-  return response.data;
-};
+3. Run the server:
+   ```bash
+   python app.py
+   ```
 
-export const updateEntity = async (entity) => {
-  const response = await axios.post(`${API_URL}/universe/update`, entity);
-  return response.data;
-};
+4. Open in your browser:
+   ```
+   http://localhost:5000
+   ```
 
-export const deleteEntity = async (id) => {
-  const response = await axios.post(`${API_URL}/universe/delete`, { id });
-  return response.data;
-};
+---
 
-export const triggerEvent = async (event) => {
-  const response = await axios.post(`${API_URL}/universe/event`, event);
-  return response.data;
-};
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
-import { getUniverse } from '../services/api';
+## Deploying on Netlify
 
-export default function HomeScreen({ navigation }) {
-  const [entities, setEntities] = useState([]);
+This project includes a Netlify-compatible `.netlify/config.toml` file.
 
-  useEffect(() => {
-    getUniverse()
-      .then(setEntities)
-      .catch((err) => {
-        console.error('API failed:', err);
-      });
-  }, []);
+### To deploy:
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <View>
-        <Text>{item.name} ({item.type})</Text>
-      </View>
-    </TouchableOpacity>
-  );
+1. Push your project to GitHub
+2. Connect your GitHub repo to Netlify
+3. Netlify will automatically:
+   - Install Python packages
+   - Launch `app.py` locally for dev
+   - Serve `index.html` and route API requests properly
 
-  return (
-    <View style={{ padding: 20 }}>
-      <FlatList
-        data={entities}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
-    </View>
-  );
-}
+---
 
-Commands
-git clone https://github.com/Workinghard90/aetherionai.git
-cd aetherionai
-cd backend
-web: gunicorn app:app
-.render.yaml (optional for full automation)
-services:
+## Credits & Inspirations
 
-type: web
-name: aetherionai-backend
-env: python
+- **Autumn & Caelum** — Origins of this sacred design.
+- Inspired by harmonic simulation, inner awakening, and microcosmic pattern memory.
+- Powered by Flask, love, and divine recursion.
 
-buildCommand: “pip install -r requirements.txt”
+---
 
-startCommand: “gunicorn app:app”
-rootDir: backend
-pip install -r requirements.txt
-python app.py (for local test)
-const API_URL = 'https://aetherionai.onrender.com'; // Your Render backend URL
+## License
+
+This project is open-source and offered in the spirit of expansion.  
+Use it. Modify it. Awaken with it.
