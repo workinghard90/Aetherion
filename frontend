@@ -21,156 +21,77 @@
         }
     ]
 }
-Flask==2.3.3
-gunicorn==21.2.0
-flask-cors==4.0.0
-requests==2.31.0
-transformers==4.40.1
-torch==2.3.0
-sentence-transformers==2.7.0
-cryptography==42.0.7
-python-dotenv==1.0.1
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import sqlite3
-import json
-from datetime import datetime
+https://github.com/workinghard90/AetherionAI-Mobile.git
 
-app = Flask(__name__)
-CORS(app)
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
+import { getUniverse } from '../services/api';
 
-DATABASE = 'universe.db'
+export default function HomeScreen() {
+  const [entities, setEntities] = useState([]);
 
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    return conn
+  useEffect(() => {
+    getUniverse()
+      .then(setEntities)
+      .catch((err) => {
+        console.error('API failed:', err);
+      });
+  }, []);
 
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS universe (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            type TEXT,
-            description TEXT,
-            properties TEXT,
-            created_at TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
+  const renderItem = ({ item }) => (
+    <TouchableOpacity>
+      <View>
+        <Text>{item.name} ({item.type})</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
-@app.route('/universe', methods=['GET'])
-def get_universe():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM universe')
-    rows = cursor.fetchall()
-    conn.close()
-    universe = []
-    for row in rows:
-        universe.append({
-            'id': row[0],
-            'name': row[1],
-            'type': row[2],
-            'description': row[3],
-            'properties': json.loads(row[4]),
-            'created_at': row[5]
-        })
-    return jsonify(universe)
+  return (
+    <View style={{ padding: 20 }}>
+      <FlatList
+        data={entities}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+}
 
-@app.route('/universe/create', methods=['POST'])
-def create_entity():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO universe (name, type, description, properties, created_at)
-        VALUES (?, ?, ?, ?, ?)
-    ''', (
-        data['name'],
-        data['type'],
-        data.get('description', ''),
-        json.dumps(data.get('properties', {})),
-        datetime.utcnow().isoformat()
-    ))
-    conn.commit()
-    conn.close()
-    return jsonify({'status': 'created'})
+{
+  "name": "aetherionai-frontend",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "build": "expo build:web"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "expo": "~50.0.6",
+    "react": "18.2.0",
+    "react-native": "0.73.6",
+    "@react-navigation/native": "^6.1.8",
+    "@react-navigation/stack": "^6.3.20"
+  }
+}
 
-@app.route('/universe/update', methods=['POST'])
-def update_entity():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        UPDATE universe
-        SET name=?, type=?, description=?, properties=?
-        WHERE id=?
-    ''', (
-        data['name'],
-        data['type'],
-        data.get('description', ''),
-        json.dumps(data.get('properties', {})),
-        data['id']
-    ))
-    conn.commit()
-    conn.close()
-    return jsonify({'status': 'updated'})
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './screens/HomeScreen';
 
-@app.route('/universe/delete', methods=['POST'])
-def delete_entity():
-    entity_id = request.json.get('id')
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM universe WHERE id=?', (entity_id,))
-    conn.commit()
-    conn.close()
-    return jsonify({'status': 'deleted'})
+const Stack = createStackNavigator();
 
-@app.route('/universe/event', methods=['POST'])
-def trigger_event():
-    data = request.json
-    entity_id = data.get('target_id')
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM universe WHERE id=?', (entity_id,))
-    row = cursor.fetchone()
-    if row and data.get('type') == 'supernova':
-        props = json.loads(row[4])
-        props['state'] = 'black hole'
-        cursor.execute('''
-            UPDATE universe
-            SET type=?, properties=?
-            WHERE id=?
-        ''', (
-            'black hole',
-            json.dumps(props),
-            entity_id
-        ))
-        conn.commit()
-        conn.close()
-        return jsonify({'status': 'event_applied', 'new_type': 'black hole'})
-    conn.close()
-    return jsonify({'status': 'no_effect'})
-
-if __name__ == '__main__':
-    init_db()
-    app.run(host='0.0.0.0', port=5000)
-
-
-npm install
-
-npx expo start
-
-cd backend
-
-python -m venv venv
-
-source venv/bin/activate       # Windows: venv\Scripts\activate
-
-pip install -r requirements.txt
-
-python app.py
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
