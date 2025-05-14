@@ -1,150 +1,176 @@
-# AetherionAI — Open-Source Personal AI Assistant
-
-Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. Designed for memory retention, secure offline interaction, and thoughtful, intuitive use — powered by Flask, React Native (Expo), SQLite, and Hugging Face.
-
----
-
-## Features
-
-- Secure **Flask backend** with SQLite + encrypted file storage  
-- **React Native** frontend supporting web & mobile (via Expo)  
-- Hugging Face transformer model integration (online/offline modes)  
-- Memory-aware conversation history  
-- **Netlify-compatible** static frontend deployment  
-- Spiritual tone and welcoming user experience  
-- Clean, extensible code structure for contributors
-
----
-
-## Quickstart Instructions
-
-AetherionAI-Mobile/
-├── frontend/
-│   ├── App.js
-│   ├── package.json
-│   └── ...
-├── backend/
-│   ├── app.py
-│   ├── requirements.txt
-│   └── ...
-├── .netlify/
-│   └── config.toml
-└── ...
-
 {
-  "name": "aetherionai-frontend",
-  "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "web": "expo start --web",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "build": "expo build:web"
-  },
-  "dependencies": {
-    "axios": "^1.6.7",
-    "expo": "~50.0.6",
-    "react": "18.2.0",
-    "react-native": "0.73.6",
-    "@react-navigation/native": "^6.1.8",
-    "@react-navigation/stack": "^6.3.20"
-  }
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "cobol",
+            "request": "launch",
+            "name": "COBOL (native): Launch",
+            "program": "${workspaceFolder}/<insert-program-name-here>",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true
+        },
+        {
+            "type": "cobol",
+            "request": "attach",
+            "name": "COBOL (native): Attach to process",
+            "processId": "${command:pickProcess}"
+        }
+    ]
 }
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
+Flask==2.3.3
+gunicorn==21.2.0
+flask-cors==4.0.0
+requests==2.31.0
+transformers==4.40.1
+torch==2.3.0
+sentence-transformers==2.7.0
+cryptography==42.0.7
+python-dotenv==1.0.1
 
-const Stack = createStackNavigator();
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import sqlite3
+import json
+from datetime import datetime
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-import axios from 'axios';
+app = Flask(__name__)
+CORS(app)
 
-const API_URL = 'https://aetherionai.onrender.com';
+DATABASE = 'universe.db'
 
-export const getUniverse = async () => {
-  const response = await axios.get(`${API_URL}/universe`);
-  return response.data;
-};
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE)
+    return conn
 
-export const createEntity = async (entity) => {
-  const response = await axios.post(`${API_URL}/universe/create`, entity);
-  return response.data;
-};
+def init_db():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS universe (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            type TEXT,
+            description TEXT,
+            properties TEXT,
+            created_at TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-export const updateEntity = async (entity) => {
-  const response = await axios.post(`${API_URL}/universe/update`, entity);
-  return response.data;
-};
+@app.route('/universe', methods=['GET'])
+def get_universe():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM universe')
+    rows = cursor.fetchall()
+    conn.close()
+    universe = []
+    for row in rows:
+        universe.append({
+            'id': row[0],
+            'name': row[1],
+            'type': row[2],
+            'description': row[3],
+            'properties': json.loads(row[4]),
+            'created_at': row[5]
+        })
+    return jsonify(universe)
 
-export const deleteEntity = async (id) => {
-  const response = await axios.post(`${API_URL}/universe/delete`, { id });
-  return response.data;
-};
+@app.route('/universe/create', methods=['POST'])
+def create_entity():
+    data = request.json
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO universe (name, type, description, properties, created_at)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (
+        data['name'],
+        data['type'],
+        data.get('description', ''),
+        json.dumps(data.get('properties', {})),
+        datetime.utcnow().isoformat()
+    ))
+    conn.commit()
+    conn.close()
+    return jsonify({'status': 'created'})
 
-export const triggerEvent = async (event) => {
-  const response = await axios.post(`${API_URL}/universe/event`, event);
-  return response.data;
-};
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button } from 'react-native';
-import { getUniverse } from '../services/api';
+@app.route('/universe/update', methods=['POST'])
+def update_entity():
+    data = request.json
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE universe
+        SET name=?, type=?, description=?, properties=?
+        WHERE id=?
+    ''', (
+        data['name'],
+        data['type'],
+        data.get('description', ''),
+        json.dumps(data.get('properties', {})),
+        data['id']
+    ))
+    conn.commit()
+    conn.close()
+    return jsonify({'status': 'updated'})
 
-export default function HomeScreen({ navigation }) {
-  const [entities, setEntities] = useState([]);
+@app.route('/universe/delete', methods=['POST'])
+def delete_entity():
+    entity_id = request.json.get('id')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM universe WHERE id=?', (entity_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({'status': 'deleted'})
 
-  useEffect(() => {
-    getUniverse()
-      .then(setEntities)
-      .catch((err) => {
-        console.error('API failed:', err);
-      });
-  }, []);
+@app.route('/universe/event', methods=['POST'])
+def trigger_event():
+    data = request.json
+    entity_id = data.get('target_id')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM universe WHERE id=?', (entity_id,))
+    row = cursor.fetchone()
+    if row and data.get('type') == 'supernova':
+        props = json.loads(row[4])
+        props['state'] = 'black hole'
+        cursor.execute('''
+            UPDATE universe
+            SET type=?, properties=?
+            WHERE id=?
+        ''', (
+            'black hole',
+            json.dumps(props),
+            entity_id
+        ))
+        conn.commit()
+        conn.close()
+        return jsonify({'status': 'event_applied', 'new_type': 'black hole'})
+    conn.close()
+    return jsonify({'status': 'no_effect'})
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <View>
-        <Text>{item.name} ({item.type})</Text>
-      </View>
-    </TouchableOpacity>
-  );
+if __name__ == '__main__':
+    init_db()
+    app.run(host='0.0.0.0', port=5000)
 
-  return (
-    <View style={{ padding: 20 }}>
-      <FlatList
-        data={entities}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
-    </View>
-  );
-}
 
-Commands
-git clone https://github.com/Workinghard90/aetherionai.git
-cd aetherionai
+npm install
+
+npx expo start
+
 cd backend
-web: gunicorn app:app
-.render.yaml (optional for full automation)
-services:
 
-type: web
-name: aetherionai-backend
-env: python
+python -m venv venv
 
-buildCommand: “pip install -r requirements.txt”
+source venv/bin/activate       # Windows: venv\Scripts\activate
 
-startCommand: “gunicorn app:app”
-rootDir: backend
 pip install -r requirements.txt
-python app.py (for local test)
-const API_URL = 'https://aetherionai.onrender.com'; // Your Render backend URL
+
+python app.py
