@@ -18,6 +18,12 @@ Welcome to **AetherionAI**, your spiritually attuned, open-source AI assistant. 
 
 ## Quickstart Instructions
 
+.netlify/config.toml
+[build]
+base = "frontend"
+publish = "frontend/web-build"
+command = "npm run build"
+
 {
   "name": "aetherionai-frontend",
   "version": "1.0.0",
