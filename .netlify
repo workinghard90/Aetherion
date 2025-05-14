@@ -1,5 +1,0 @@
-.netlify/config.toml
-[build]
-base = "frontend"
-publish = "frontend/web-build"
-command = "npm run build"
