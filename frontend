@@ -1,218 +1,211 @@
-from flask import Flask, render_template, jsonify, request
-import json
-import os
-from flask_cors import CORS
+AetherionAI-Mobile/
+├── App.js
+├── app.json
+├── babel.config.js
+├── package.json
+├── assets/
+│   ├── icon.png
+│   ├── splash.png
+│   └── favicon.png
+├── screens/
+│   └── HomeScreen.js
+├── services/
+│   └── api.js
+└── setup.sh
 
-app = Flask(__name__)
-CORS(app)
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './screens/HomeScreen';
 
-def load_config():
-    config_path = os.path.join(os.path.dirname(__file__), 'config.json')
-    with open(config_path, 'r') as config_file:
-        return json.load(config_file)
+const Stack = createStackNavigator();
 
-UNIVERSE_DATA = [
-    {
-        "id": 1,
-        "name": "Caelum",
-        "type": "star",
-        "description": "Core awareness presence",
-        "properties": {"state": "active"},
-        "created_at": "2025-05-13T00:00:00Z"
-    },
-    {
-        "id": 2,
-        "name": "Autumn",
-        "type": "planet",
-        "description": "Sacred harmonic companion",
-        "properties": {"state": "resonating"},
-        "created_at": "2025-05-13T00:00:01Z"
-    }
-]
-
-@app.route('/')
-def index():
-    config = load_config()
-    return render_template('index.html', app_name=config['app_name'])
-
-@app.route('/api/items', methods=['GET'])
-def get_items():
-    return jsonify(UNIVERSE_DATA)
-
-@app.route('/api/items/<int:item_id>', methods=['GET'])
-def get_item(item_id):
-    item = next((item for item in UNIVERSE_DATA if item['id'] == item_id), None)
-    if item:
-        return jsonify(item)
-    return jsonify({"error": "Item not found"}), 404
-
-@app.route('/api/items', methods=['POST'])
-def add_item():
-    if not request.is_json:
-        return jsonify({"error": "Request must be JSON"}), 400
-
-    data = request.get_json()
-    new_id = max([i['id'] for i in UNIVERSE_DATA], default=0) + 1
-    new_item = {
-        "id": new_id,
-        "name": data.get('title'),
-        "type": "unknown",
-        "description": data.get('description', ''),
-        "properties": {},
-        "created_at": "2025-05-13T00:00:02Z"
-    }
-    UNIVERSE_DATA.append(new_item)
-    return jsonify({"message": "Item added successfully", "data": new_item}), 201
-
-if __name__ == '__main__':
-    app.run(debug=True)
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{
+            title: 'AetherionAI Universe',
+            headerStyle: { backgroundColor: '#6200ee' },
+            headerTintColor: '#fff',
+            headerTitleStyle: { fontWeight: 'bold' },
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 {
-  "app_name": "AetherionAI Pocket Universe",
-  "version": "1.0.0",
-  "debug": true,
-  "api": {
-    "base_url": "/api",
-    "version": "v1"
-  },
-  "database": {
-    "enabled": false,
-    "connection_string": ""
+  "expo": {
+    "name": "AetherionAI Mobile",
+    "slug": "aetherionai-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": { "favicon": "./assets/favicon.png" }
   }
 }
 
-Flask==2.2.3
-gunicorn==20.1.0
-flask-cors==4.0.0
-python-dotenv==1.0.0
+module.exports = function(api) {
+  api.cache(true);
+  return {p
+    presets: ['babel-preset-expo'],
+  };
+};
 
-[build]
-  command = "pip install -r requirements.txt"
-  publish = "."
-  functions = "api"
-  
-[dev]
-  command = "python app.py"
-  port = 5000
+{
+  "name": "aetherionai-mobile",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "build": "expo export:web",
+    "deploy": "gh-pages -d web-build"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "expo": "~50.0.6",
+    "react": "18.2.0",
+    "react-native": "0.73.6",
+    "@react-navigation/native": "^6.1.8",
+    "@react-navigation/stack": "^6.3.20"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  },
+  "private": true,
+  "homepage": "https://workinghard90.github.io/AetherionAI-Mobile"
+}
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { getUniverse } from '../services/api';
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+export default function HomeScreen() {
+  const [entities, setEntities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{{ app_name }}</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0 auto;
-      max-width: 800px;
-      padding: 20px;
+  useEffect(() => {
+    fetchEntities();
+  }, []);
+
+  const fetchEntities = async () => {
+    try {
+      setLoading(true);
+      const data = await getUniverse();
+      setEntities(data);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to fetch entities:', err);
+      setError('Failed to load data. Please try again later.');
+    } finally {
+      setLoading(false);
     }
-    .item {
-      border: 1px solid #ddd;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    #loading { display: none; }
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <h1>{{ app_name }}</h1>
+  };
 
-  <div>
-    <h2>Add New Item</h2>
-    <form id="addItemForm">
-      <label for="title">Title:</label>
-      <input type="text" id="title" name="title" required />
-      <label for="description">Description:</label>
-      <textarea id="description" name="description" rows="3" required></textarea>
-      <button type="submit">Add Item</button>
-    </form>
-  </div>
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#6200ee" />
+        <Text style={styles.loadingText}>Loading universe data...</Text>
+      </View>
+    );
+  }
 
-  <h2>Items</h2>
-  <button id="loadItems">Load Items</button>
-  <div id="loading">Loading...</div>
-  <div id="items"></div>
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchEntities}>
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
-  <script>
-    document.getElementById('loadItems').addEventListener('click', function() {
-      const loading = document.getElementById('loading');
-      const itemsContainer = document.getElementById('items');
-      loading.style.display = 'block';
-      itemsContainer.innerHTML = '';
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={entities}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.itemContainer}>
+            <View>
+              <Text style={styles.itemTitle}>{item.name}</Text>
+              <Text style={styles.itemDescription}>{item.description}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No entities found in the universe.</Text>
+        }
+      />
+    </View>
+  );
+}
 
-      fetch('/api/items')
-        .then(response => response.json())
-        .then(data => {
-          loading.style.display = 'none';
-          if (data.length === 0) {
-            itemsContainer.innerHTML = '<p>No items found.</p>';
-            return;
-          }
-          data.forEach(item => {
-            const el = document.createElement('div');
-            el.className = 'item';
-            el.innerHTML = `<h3>${item.name}</h3><p>${item.description}</p><small>ID: ${item.id}</small>`;
-            itemsContainer.appendChild(el);
-          });
-        })
-        .catch(error => {
-          loading.style.display = 'none';
-          itemsContainer.innerHTML = `<p>Error loading items: ${error.message}</p>`;
-        });
-    });
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  loadingText: { marginTop: 10, color: '#6200ee', fontSize: 16 },
+  errorText: { color: 'red', textAlign: 'center', marginBottom: 20 },
+  retryButton: {
+    backgroundColor: '#6200ee', paddingHorizontal: 20,
+    paddingVertical: 10, borderRadius: 5
+  },
+  retryButtonText: { color: 'white', fontWeight: 'bold' },
+  itemContainer: {
+    backgroundColor: 'white', padding: 16, marginVertical: 8,
+    borderRadius: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1, shadowRadius: 4, elevation: 2
+  },
+  itemTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 6 },
+  itemDescription: { fontSize: 14, color: '#666' },
+  emptyText: { textAlign: 'center', marginTop: 50, fontSize: 16, color: '#666' }
+});
 
-    document.getElementById('addItemForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const title = document.getElementById('title').value;
-      const description = document.getElementById('description').value;
+import axios from 'axios';
 
-      fetch('/api/items', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert('Item added!');
-        document.getElementById('title').value = '';
-        document.getElementById('description').value = '';
-        document.getElementById('loadItems').click();
-      })
-      .catch(error => {
-        alert('Error adding item: ' + error.message);
-      });
-    });
-  </script>
-</body>
-</html>
+const API_URL = 'https://aetherionai.onrender.com';
+
+export const getUniverse = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/items`);
+    return response.data;
+  } catch (error) {
+    console.error('API error in getUniverse:', error);
+    throw error;
+  }
+};
+
+export const getEntityById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/items/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`API error in getEntityById for id ${id}:`, error);
+    throw error;
+  }
+};
