@@ -58,7 +58,7 @@ Adds a new entity. Requires JSON body with:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/AetherionAI.git
+   git clone https://github.com/workinghard90/AetherionAI.git
    cd AetherionAI
    ```
 
