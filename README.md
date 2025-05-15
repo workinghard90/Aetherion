@@ -19,6 +19,11 @@
 
 ```
 AetherionAI/
+├── setup.sh             #!/bin/bash
+mkdir -p screens services assets
+touch assets/icon.png assets/splash.png assets/favicon.png
+npm install
+echo "Project structure is set up. Run 'npm start' to start the Expo development server."
 ├── app.py               # Main Flask server
 ├── config.json          # App configuration (name, version, etc.)
 ├── requirements.txt     # Python dependencies
