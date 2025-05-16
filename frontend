@@ -1,10 +1,4 @@
 AetherionAI-Mobile/
-├── backend/                    # Flask API backend (deployed to Render)
-│   ├── app.py                  # Main Flask app
-│   ├── wsgi.py                 # Render entrypoint (for gunicorn)
-│   ├── requirements.txt        # Python dependencies
-│   ├── .env                    # Flask env variables (optional)
-│
 ├── frontend/                   # React Native + Web frontend (Netlify)
 │   ├── App.js                  # App entry point
 │   ├── app.json                # Expo config
@@ -20,6 +14,12 @@ AetherionAI-Mobile/
 │   │   └── HomeScreen.js       # Displays API data
 │   └── services/
 │       └── api.js              # Axios requests to backend
+│
+├── backend/                    # Flask API backend (deployed to Render)
+│   ├── app.py                  # Main Flask app
+│   ├── wsgi.py                 # Render entrypoint (for gunicorn)
+│   ├── requirements.txt        # Python dependencies
+│   ├── .env                    # Flask env variables (optional)
 │
 ├── README.md                   # Docs and launch instructions
 └── setup.sh                    # Setup script (optional)
