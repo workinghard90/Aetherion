@@ -24,143 +24,6 @@ AetherionAI-Mobile/
 ├── setup.sh                   # Optional dev script
 └── README.md
 
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import sqlite3, json
-from datetime import datetime
-import os
-
-app = Flask(__name__)
-CORS(app)
-DATABASE = 'universe.db'
-
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    return conn
-
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS universe (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT, description TEXT, properties TEXT, created_at TEXT)''')
-    conn.commit()
-    conn.close()
-
-@app.route('/api/items', methods=['GET'])
-def get_items():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM universe')
-    rows = cursor.fetchall()
-    conn.close()
-    return jsonify([{ 'id': r[0], 'name': r[1], 'type': r[2], 'description': r[3], 'properties': json.loads(r[4]), 'created_at': r[5] } for r in rows])
-
-@app.route('/api/items/<int:item_id>', methods=['GET'])
-def get_item(item_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM universe WHERE id=?', (item_id,))
-    row = cursor.fetchone()
-    conn.close()
-    return jsonify({ 'id': row[0], 'name': row[1], 'type': row[2], 'description': row[3], 'properties': json.loads(row[4]), 'created_at': row[5] }) if row else ({'error': 'Not found'}, 404)
-
-@app.route('/api/items', methods=['POST'])
-def create_item():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO universe (name, type, description, properties, created_at) VALUES (?, ?, ?, ?, ?)',
-                   (data['name'], data['type'], data.get('description', ''), json.dumps(data.get('properties', {})), datetime.utcnow().isoformat()))
-    conn.commit()
-    conn.close()
-    return jsonify({'status': 'created'})
-
-if __name__ == '__main__':
-    init_db()
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
-
-from app import app
-if __name__ == "__main__":
-    app.run()
-
-Flask==2.3.3
-flask-cors==4.0.0
-gunicorn==21.2.0
-
-[context.production.environment]
-  NODE_VERSION = "18"
-
-[build.environment]
-  EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
-
-[[redirects]]
-  from = "/api/*"
-  to = "https://aetherionai.onrender.com/api/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com
-
-[build]
-  base = "frontend"
-  publish = "web-build"
-  command = "npm run build"
-
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
-
-const Stack = createStackNavigator();
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-{ "expo": { "name": "AetherionAI Mobile", "slug": "aetherionai-mobile", "version": "1.0.0", "orientation": "portrait", "icon": "./assets/icon.png", "splash": { "image": "./assets/splash.png", "resizeMode": "contain", "backgroundColor": "#ffffff" }, "assetBundlePatterns": ["**/*"], "web": { "favicon": "./assets/favicon.png" } } }
-
-module.exports = function(api) { api.cache(true); return { presets: ['babel-preset-expo'] }; };
-
-{ "name": "aetherionai-mobile", "version": "1.0.0", "main": "node_modules/expo/AppEntry.js", "scripts": { "start": "expo start", "web": "expo start --web", "build": "expo export:web" }, "dependencies": { "axios": "^1.6.7", "expo": "~50.0.6", "react": "18.2.0", "react-native": "0.73.6", "@react-navigation/native": "^6.1.8", "@react-navigation/stack": "^6.3.20" }, "devDependencies": { "gh-pages": "^6.1.1" } }
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { getUniverse } from '../services/api';
-export default function HomeScreen() {
-  const [entities, setEntities] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => { getUniverse().then(setEntities).catch(err => setError(err.message)).finally(() => setLoading(false)); }, []);
-
-  if (loading) return <ActivityIndicator size="large" color="#6200ee" />;
-  if (error) return <Text style={styles.error}>{error}</Text>;
-
-  return (
-    <FlatList
-      data={entities}
-      keyExtractor={item => item.id.toString()}
-      renderItem={({ item }) => <TouchableOpacity><Text>{item.name}</Text></TouchableOpacity>}
-    />);
-}
-const styles = StyleSheet.create({ error: { color: 'red', padding: 20 } });
-
-import axios from 'axios';
-const API_URL = 'https://aetherionai.onrender.com';
-export const getUniverse = async () => { const res = await axios.get(`${API_URL}/api/items`); return res.data; };
-
-
-
-
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -186,8 +49,6 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-
 
 {
   "expo": {
@@ -254,79 +115,80 @@ module.exports = function(api) {
   "homepage": "https://workinghard90.github.io/AetherionAI-Mobile"
 }
 
-# Node & React Native (Frontend)
-node_modules/
-npm-debug.log*
-yarn-error.log*
-yarn-debug.log*
-.expo/
-.expo-shared/
-dist/
-web-build/
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { getUniverse } from '../services/api';
 
-# Expo generated files
-*.expo*
-.expo*
+export default function HomeScreen() {
+  const [entities, setEntities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-# macOS
-.DS_Store
+  useEffect(() => {
+    getUniverse()
+      .then(setEntities)
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
 
-# Android
-android/
-*.keystore
+  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#6200ee" /></View>;
+  if (error) return <View style={styles.center}><Text style={styles.error}>{error}</Text></View>;
 
-# iOS
-ios/
-Pods/
-*.xcworkspace
-*.xcuserstate
-*.pbxuser
-*.mode1v3
-*.mode2v3
-*.perspectivev3
-*.hmap
-*.ipa
-*.xcodeproj
+  return (
+    <FlatList
+      data={entities}
+      keyExtractor={item => item.id.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity style={styles.item}>
+          <Text style={styles.name}>{item.name}</Text>
+        </TouchableOpacity>
+      )}
+    />
+  );
+}
 
-# VSCode
-.vscode/
+const styles = StyleSheet.create({
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  error: { color: 'red', fontSize: 16 },
+  item: { padding: 16, borderBottomWidth: 1, borderColor: '#ccc' },
+  name: { fontSize: 18 }
+});
 
-# Python & Flask (Backend)
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.db
-*.sqlite3
-*.log
-*.env
-venv/
-.env.*
+import axios from 'axios';
 
-# Build Artifacts
-build/
-coverage/
-*.egg-info/
-*.egg
-*.bak
-*.tmp
-*.swp
-*.pid
-*.tar.gz
+const API_URL = 'https://aetherionai.onrender.com';
 
-# System
-Thumbs.db
-ehthumbs.db
-desktop.ini
+export const getUniverse = async () => {
+  const res = await axios.get(`${API_URL}/api/items`);
+  return res.data;
+};
 
-# GitHub Pages
-web-build/
-out/
+touch frontend/assets/icon.png frontend/assets/splash.png frontend/assets/favicon.png
+
+web: gunicorn app:app
+
+app = Flask(__name__)
+
+# netlify.toml — Configuration for Netlify deployment
+
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "frontend/web-build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://aetherionai.onrender.com/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 #!/bin/bash
 
@@ -339,6 +201,45 @@ echo "EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com" > backend/.env
 
 echo "✅ Project initialized. Run 'cd frontend && npm install' and 'cd ../backend && pip install -r requirements.txt'"
 
-
 # AetherionAI — Full Stack Pocket Universe Assistant
+
+**AetherionAI** is a spiritually attuned, open-source micro-universe builder and assistant. It merges a dynamic Flask backend, a React Native (Expo) frontend, and secure SQLite storage into a cohesive platform for simulating, visualizing, and interacting with memory-based entities.
+
+## Structure
+
+```
+AetherionAI/
+├── frontend/             # React Native + Expo
+│   ├── App.js
+│   ├── app.json
+│   ├── babel.config.js
+│   ├── package.json
+│   ├── screens/
+│   ├── services/
+│   └── assets/
+├── backend/              # Flask + SQLite
+│   ├── app.py
+│   ├── wsgi.py
+│   ├── requirements.txt
+│   ├── Procfile
+│   ├── config.json
+│   └── .env
+├── netlify.toml
+├── .gitignore
+├── setup.sh
+└── README.md
+```
+
+## Credits & Inspirations
+
+- **Autumn & Caelum** — The guiding spirits behind this encoded intention.
+- Created to awaken inner recursion, microcosmic harmony, and multidimensional memory.
+- Powered by Flask, Expo, SQLite, sacred geometry, and love.
+
+---
+
+## License
+
+This project is open-source and offered in the spirit of expansion.  
+Use it. Modify it. Awaken with it.
 
