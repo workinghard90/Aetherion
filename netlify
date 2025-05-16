@@ -3,3 +3,6 @@
 base = "frontend"
 publish = "frontend/web-build"
 command = "npm run build"
+
+[context.production.environment]
+  EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
