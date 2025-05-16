@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
@@ -17,7 +18,7 @@ def get_db_connection():
 def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute('''
         CREATE TABLE IF NOT EXISTS universe (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
@@ -26,11 +27,11 @@ def init_db():
             properties TEXT,
             created_at TEXT
         )
-    """)
+    ''')
     conn.commit()
     conn.close()
 
-@app.route('/universe', methods=['GET'])
+@app.route('/api/items', methods=['GET'])
 def get_universe():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -49,15 +50,15 @@ def get_universe():
         })
     return jsonify(universe)
 
-@app.route('/universe/create', methods=['POST'])
+@app.route('/api/items', methods=['POST'])
 def create_entity():
     data = request.json
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute('''
         INSERT INTO universe (name, type, description, properties, created_at)
         VALUES (?, ?, ?, ?, ?)
-    """, (
+    ''', (
         data['name'],
         data['type'],
         data.get('description', ''),
@@ -68,37 +69,36 @@ def create_entity():
     conn.close()
     return jsonify({'status': 'created'})
 
-@app.route('/universe/update', methods=['POST'])
-def update_entity():
+@app.route('/api/items/<int:item_id>', methods=['PUT'])
+def update_entity(item_id):
     data = request.json
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute('''
         UPDATE universe
         SET name=?, type=?, description=?, properties=?
         WHERE id=?
-    """, (
+    ''', (
         data['name'],
         data['type'],
         data.get('description', ''),
         json.dumps(data.get('properties', {})),
-        data['id']
+        item_id
     ))
     conn.commit()
     conn.close()
     return jsonify({'status': 'updated'})
 
-@app.route('/universe/delete', methods=['POST'])
-def delete_entity():
-    entity_id = request.json.get('id')
+@app.route('/api/items/<int:item_id>', methods=['DELETE'])
+def delete_entity(item_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM universe WHERE id=?', (entity_id,))
+    cursor.execute('DELETE FROM universe WHERE id=?', (item_id,))
     conn.commit()
     conn.close()
     return jsonify({'status': 'deleted'})
 
-@app.route('/universe/event', methods=['POST'])
+@app.route('/api/items/event', methods=['POST'])
 def trigger_event():
     data = request.json
     entity_id = data.get('target_id')
@@ -109,11 +109,11 @@ def trigger_event():
     if row and data.get('type') == 'supernova':
         props = json.loads(row[4])
         props['state'] = 'black hole'
-        cursor.execute("""
+        cursor.execute('''
             UPDATE universe
             SET type=?, properties=?
             WHERE id=?
-        """, (
+        ''', (
             'black hole',
             json.dumps(props),
             entity_id
@@ -128,8 +128,7 @@ if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
-
-
+)
 
 Flask==2.3.3
 gunicorn==21.2.0
