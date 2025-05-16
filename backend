@@ -14,6 +14,13 @@ from app import app
 if __name__ == "__main__":
     app.run()
 
+# Flask backend
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py
+
 DATABASE = 'universe.db'
 
 def get_db_connection():
