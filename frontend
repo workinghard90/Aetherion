@@ -117,9 +117,12 @@ module.exports = function(api) {
 }
 
 [build]
-  base = "."
-  command = "npm run build"
+  base = "frontend"
   publish = "web-build"
+  command = "npm run build"
+
+[context.production.environment]
+  NODE_VERSION = "18"
 
 [build.environment]
   EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
@@ -137,6 +140,10 @@ module.exports = function(api) {
 EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com
 
 #!/bin/bash
+
+git add netlify.toml
+git commit -m "Add Netlify config for frontend build"
+git push origin main
 
 # Create folders and assets if they don't exist
 mkdir -p assets screens services
