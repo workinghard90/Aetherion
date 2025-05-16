@@ -5,6 +5,9 @@ import json
 import os
 from datetime import datetime
 
+FLASK_ENV=production
+PORT=10000
+
 app = Flask(__name__)
 CORS(app)
 
