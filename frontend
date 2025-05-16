@@ -214,6 +214,10 @@ module.exports = function(api) {
 
 #!/bin/bash
 
+cd AetherionAI-Mobile
+chmod +x setup.sh
+./setup.sh
+
 # Create folders and assets if they don't exist
 mkdir -p assets screens services
 
