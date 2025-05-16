@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
 
 import axios from 'axios';
 
-const API_URL = 'https://aetherionai.onrender.com';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
 
 export const getUniverse = async () => {
   try {
@@ -217,3 +217,8 @@ mkdir -p screens services assets
 touch assets/icon.png assets/splash.png assets/favicon.png
 npm install
 echo "Project structure is set up. Run 'npm start' to start the Expo development server."
+
+/AetherionAI-Mobile/.env
+EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com
+
+
