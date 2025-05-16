@@ -18,28 +18,6 @@
 
 ---
 
-## Stack Overview
-
-```
-AetherionAI/
-├── frontend/             # React Native + Expo
-│   ├── App.js
-│   ├── screens/
-│   ├── services/
-│   └── assets/
-├── backend/              # Flask + SQLite
-│   ├── app.py
-│   ├── requirements.txt
-│   ├── Procfile
-│   └── config.json
-├── netlify.toml          # Netlify deployment config
-├── package.json          # Project metadata
-├── README.md             # This file
-└── .env                  # Environment variables
-```
-
----
-
 ## API Endpoints (Backend)
 
 ### `GET /api/items`
