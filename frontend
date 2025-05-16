@@ -213,12 +213,19 @@ module.exports = function(api) {
 }
 
 #!/bin/bash
-mkdir -p screens services assets
-touch assets/icon.png assets/splash.png assets/favicon.png
+
+# Create folders and assets if they don't exist
+mkdir -p assets screens services
+
+# Touch required asset placeholders
+touch assets/icon.png
+touch assets/splash.png
+touch assets/favicon.png
+
+# Write the environment variable to .env
+echo "EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com" > .env
+
+# Install npm dependencies
 npm install
-echo "Project structure is set up. Run 'npm start' to start the Expo development server."
 
-/AetherionAI-Mobile/.env
-EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com
-
-
+echo "✅ Project structure is set up. Run 'npm start' or 'npm run web' to begin."
