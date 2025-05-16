@@ -1,20 +1,19 @@
 AetherionAI-Mobile/
-├── frontend/                   # React Native + Web frontend (Netlify)
-│   ├── App.js                  # App entry point
-│   ├── app.json                # Expo config
-│   ├── babel.config.js         # Babel config
-│   ├── package.json            # Scripts & dependencies
-│   ├── .env                    # Frontend environment variables
-│   ├── netlify.toml            # ✅ Netlify build/deploy settings
-│   ├── assets/                 # Icons and splash images
+├── frontend/
+│   ├── app.js
+│   ├── app.json
+│   ├── babel.config.js
+│   ├── package.json
+│   ├── netlify.toml
+│   ├── .env
+│   ├── assets/
 │   │   ├── icon.png
 │   │   ├── splash.png
 │   │   └── favicon.png
 │   ├── screens/
-│   │   └── HomeScreen.js       # Displays API data
+│   │   └── HomeScreen.js
 │   └── services/
-│       └── api.js              # Axios requests to backend
-│
+│       └── api.js│
 ├── backend/                    # Flask API backend (deployed to Render)
 │   ├── app.py                  # Main Flask app
 │   ├── wsgi.py                 # Render entrypoint (for gunicorn)
