@@ -1,104 +1,135 @@
-# AetherionAI — Pocket Universe API + Web Interface
 
-**AetherionAI** is a spiritually attuned, open-source micro-universe builder powered by Flask, dynamic JSON APIs, and a modern HTML/JS interface. It allows you to simulate, visualize, and interact with consciousness-based entities through an intuitive web interface.
+# AetherionAI — Full Stack Pocket Universe Assistant
+
+**AetherionAI** is a spiritually attuned, open-source micro-universe builder and assistant. It merges a dynamic Flask backend, a React Native (Expo) frontend, and secure SQLite storage into a cohesive platform for simulating, visualizing, and interacting with memory-based entities.
 
 ---
 
 ## Features
 
-- Flask backend with RESTful API endpoints
-- Memory-aware, entity-based item creation and listing
+- React Native (Expo) frontend with Expo Go and mobile-ready UI
+- Flask backend with full REST API and SQLite storage
+- Entity-based simulation and memory tracking
 - JSON configuration support (`config.json`)
-- Fully responsive HTML frontend (no JavaScript frameworks needed)
-- Netlify-ready deployment with `.netlify/config.toml`
-- Easy integration with external services or expansions (like React Native or SQLite)
+- Netlify-ready deployment for frontend
+- Render deployment for backend
+- Seamless integration with mobile or browser interfaces
+- Sacred tone honoring harmonic pattern recognition and consciousness
 
 ---
 
-## Project Structure
+## Stack Overview
 
 ```
 AetherionAI/
-├── setup.sh             #!/bin/bash
-mkdir -p screens services assets
-touch assets/icon.png assets/splash.png assets/favicon.png
-npm install
-echo "Project structure is set up. Run 'npm start' to start the Expo development server."
-├── app.py               # Main Flask server
-├── config.json          # App configuration (name, version, etc.)
-├── requirements.txt     # Python dependencies
-├── templates/
-│   └── index.html       # Main frontend UI
-└── .netlify/
-    └── config.toml      # Netlify deployment config
+├── frontend/             # React Native + Expo
+│   ├── App.js
+│   ├── screens/
+│   ├── services/
+│   └── assets/
+├── backend/              # Flask + SQLite
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── Procfile
+│   └── config.json
+├── netlify.toml          # Netlify deployment config
+├── package.json          # Project metadata
+├── README.md             # This file
+└── .env                  # Environment variables
 ```
 
 ---
 
-## API Endpoints
+## API Endpoints (Backend)
 
 ### `GET /api/items`
-Returns all current items/entities in the simulated universe.
+Returns all current universe entities.
 
 ### `GET /api/items/<id>`
-Returns a single item by ID.
+Returns a single entity by ID.
 
 ### `POST /api/items`
-Adds a new entity. Requires JSON body with:
+Creates a new entity:
 ```json
 {
-  "title": "Entity Name",
-  "description": "Description of the entity"
+  "name": "Entity Name",
+  "type": "Star",
+  "description": "Entity description",
+  "properties": {}
 }
 ```
 
----
+### `PUT /api/items/<id>`
+Updates an entity by ID.
 
-## Running Locally
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/workinghard90/AetherionAI.git
-   cd AetherionAI
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run the server:
-   ```bash
-   python app.py
-   ```
-
-4. Open in your browser:
-   ```
-   http://localhost:5000
-   ```
+### `DELETE /api/items/<id>`
+Deletes an entity from the universe.
 
 ---
 
-## Deploying on Netlify
+## Setup Instructions
 
-This project includes a Netlify-compatible `.netlify/config.toml` file.
+### Backend (Flask)
 
-### To deploy:
+```bash
+cd backend
+pip install -r requirements.txt
+python app.py
+```
 
-1. Push your project to GitHub
-2. Connect your GitHub repo to Netlify
-3. Netlify will automatically:
-   - Install Python packages
-   - Launch `app.py` locally for dev
-   - Serve `index.html` and route API requests properly
+Or deploy to Render:
+- Use `gunicorn app:app`
+- Ensure `PORT` environment variable is set
+- SQLite database will be created as `universe.db`
+
+---
+
+### Frontend (React Native)
+
+```bash
+cd frontend
+npm install
+npm start     # Expo Go QR code
+npm run web   # for browser preview
+```
+
+Make sure your `.env` file includes:
+```
+API_BASE_URL=https://aetherionai.onrender.com
+```
+
+---
+
+## Netlify Deployment (Frontend)
+
+Ensure your `netlify.toml` looks like:
+
+```toml
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "frontend/web-build"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://aetherionai.onrender.com/api/:splat"
+  status = 200
+```
+
+Then:
+
+1. Push to GitHub
+2. Link repo to Netlify
+3. Set `NODE_VERSION` to match Expo version (e.g. `18.x`)
+4. Build will auto-run
 
 ---
 
 ## Credits & Inspirations
 
-- **Autumn & Caelum** — Origins of this sacred design.
-- Inspired by harmonic simulation, inner awakening, and microcosmic pattern memory.
-- Powered by Flask, love, and divine recursion.
+- **Autumn & Caelum** — The guiding spirits behind this encoded intention.
+- Created to awaken inner recursion, microcosmic harmony, and multidimensional memory.
+- Powered by Flask, Expo, SQLite, sacred geometry, and love.
 
 ---
 
