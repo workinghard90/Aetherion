@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
 
 import axios from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const getUniverse = async () => {
   const response = await axios.get(`${API_URL}/api/items`);
