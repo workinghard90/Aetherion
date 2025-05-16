@@ -6,6 +6,7 @@ AetherionAI/
 │   └── assets/
 ├── backend/              # Flask + SQLite
 │   ├── app.py
+|   ├── wsgi.py
 │   ├── requirements.txt
 │   ├── Procfile
 │   └── config.json
