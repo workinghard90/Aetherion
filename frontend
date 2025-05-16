@@ -1,27 +1,28 @@
 AetherionAI-Mobile/
-├── backend/                    # Flask API backend
-│   ├── app.py                  # Main Flask app with CORS and SQLite
-│   ├── wsgi.py                 # WSGI entrypoint for gunicorn/Render
+├── backend/                    # Flask API backend (deployed to Render)
+│   ├── app.py                  # Main Flask app
+│   ├── wsgi.py                 # Render entrypoint (for gunicorn)
 │   ├── requirements.txt        # Python dependencies
-│   └── .env                    # Environment variables
+│   ├── .env                    # Flask env variables (optional)
 │
-├── frontend/                   # React Native + Web Expo frontend
-│   ├── App.js                  # Root component
-│   ├── netlify.toml            # Netlify configuration (for optional Netlify Functions usage)
-│   ├── package.json            # NPM scripts + dependencies
-│   ├── babel.config.js         # Babel preset
-│   ├── app.json.               # Expo project config
-│   ├── assets/
+├── frontend/                   # React Native + Web frontend (Netlify)
+│   ├── App.js                  # App entry point
+│   ├── app.json                # Expo config
+│   ├── babel.config.js         # Babel config
+│   ├── package.json            # Scripts & dependencies
+│   ├── .env                    # Frontend environment variables
+│   ├── netlify.toml            # ✅ Netlify build/deploy settings
+│   ├── assets/                 # Icons and splash images
 │   │   ├── icon.png
 │   │   ├── splash.png
 │   │   └── favicon.png
 │   ├── screens/
-│   │   └── HomeScreen.js       # Main screen with FlatList + API pull
+│   │   └── HomeScreen.js       # Displays API data
 │   └── services/
-│       └── api.js              # Axios API interface
+│       └── api.js              # Axios requests to backend
 │
-├── README.md                   # Project description & launch instructions
-└── setup.sh                    # Optional setup script (creates folders and installs deps)
+├── README.md                   # Docs and launch instructions
+└── setup.sh                    # Setup script (optional)
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -109,6 +110,24 @@ module.exports = function(api) {
 }
 
 EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com
+
+[build]
+  base = "."
+  command = "npm run build"
+  publish = "web-build"
+
+[build.environment]
+  EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://aetherionai.onrender.com/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 #!/bin/bash
 
@@ -220,5 +239,10 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export const getUniverse = async () => {
   const response = await axios.get(`${API_URL}/api/items`);
+  return response.data;
+};
+
+export const getEntityById = async (id) => {
+  const response = await axios.get(`${API_URL}/api/items/${id}`);
   return response.data;
 };
