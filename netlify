@@ -1,12 +1,19 @@
 .netlify/config.toml
 [build]
-base = "frontend"
-publish = "frontend/web-build"
-command = "npm run build"
+  command = "npm run build"
+  publish = "frontend/web-build"
+  base = "frontend"
 
-[context.production.environment]
+[build.environment]
   EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
 
--
--FLASK_ENV=production
--PORT=10000
+[[redirects]]
+  from = "/api/*"
+  to = "https://aetherionai.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
