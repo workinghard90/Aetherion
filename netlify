@@ -6,3 +6,6 @@ command = "npm run build"
 
 [context.production.environment]
   EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
+
+FLASK_ENV=production
+PORT=10000
