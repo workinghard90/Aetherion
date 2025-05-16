@@ -8,6 +8,7 @@ AetherionAI-Mobile/
 │
 ├── frontend/                   # React Native + Web Expo frontend
 │   ├── App.js                  # Root component
+│   ├── netlify.toml            # Netlify configuration (for optional Netlify Functions usage)
 │   ├── package.json            # NPM scripts + dependencies
 │   ├── babel.config.js         # Babel preset
 │   ├── app.json.               # Expo project config
