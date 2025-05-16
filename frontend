@@ -1,20 +1,27 @@
-AetherionAI/
-├── frontend/             # React Native + Expo
-│   ├── App.js
+AetherionAI-Mobile/
+├── backend/                    # Flask API backend
+│   ├── app.py                  # Main Flask app with CORS and SQLite
+│   ├── wsgi.py                 # WSGI entrypoint for gunicorn/Render
+│   ├── requirements.txt        # Python dependencies
+│   ├── netlify.toml            # Netlify configuration (for optional Netlify Functions usage)
+│   └── .env                    # Environment variables
+│
+├── frontend/                   # React Native + Web Expo frontend
+│   ├── App.js                  # Root component
+│   ├── app.json                # Expo project config
+│   ├── babel.config.js         # Babel preset
+│   ├── package.json            # NPM scripts + dependencies
+│   ├── assets/
+│   │   ├── icon.png
+│   │   ├── splash.png
+│   │   └── favicon.png
 │   ├── screens/
-│   ├── services/
-│   └── assets/
-├── backend/              # Flask + SQLite
-│   ├── app.py
-|   ├── wsgi.py
-│   ├── requirements.txt
-│   ├── Procfile
-│   └── config.json
-├── netlify.toml          # Netlify deployment config
-├── package.json          # Project metadata
-├── README.md             # This file
-└── .env                  # Environment variables
-```
+│   │   └── HomeScreen.js       # Main screen with FlatList + API pull
+│   └── services/
+│       └── api.js              # Axios API interface
+│
+├── README.md                   # Project description & launch instructions
+└── setup.sh                    # Optional setup script (creates folders and installs deps)
 
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
