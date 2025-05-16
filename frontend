@@ -1,12 +1,13 @@
 AetherionAI-Mobile/
-├── backend/
+├── backend/                    # Flask backend (Render)
 │   ├── app.py
 │   ├── wsgi.py
 │   ├── requirements.txt
 │   ├── .env
-│   └── netlify.toml (optional if using Netlify Functions for API)
+│   ├── Procfile
+│   └── config.json             # Optional config or metadata
 │
-├── frontend/
+├── frontend/                   # React Native (Expo)
 │   ├── App.js
 │   ├── app.json
 │   ├── babel.config.js
@@ -14,9 +15,13 @@ AetherionAI-Mobile/
 │   ├── screens/
 │   ├── services/
 │   └── assets/
+│       ├── icon.png
+│       ├── splash.png
+│       └── favicon.png
 │
 ├── .gitignore
-├── setup.sh
+├── netlify.toml               # Must be at root
+├── setup.sh                   # Optional dev script
 └── README.md
 
 from flask import Flask, request, jsonify
