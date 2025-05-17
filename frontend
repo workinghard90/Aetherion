@@ -1,4 +1,5 @@
 AetherionAI-Mobile/
+/
 ├── backend/                    # Flask backend (Render)
 │   ├── app.py
 │   ├── wsgi.py
