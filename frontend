@@ -208,26 +208,21 @@ export const getEntityById = async (id) => {
 // (You can add create/update/delete functions here if needed)
 
 [build]
-  base    = "frontend"
+  base    = "AetherionAI-Mobile/frontend"
   command = "npm run build"
-  publish = "frontend/web-build
-
-cd frontend
-npm install
-npm start     # Expo Go
-npm run web   # Browser
+  publish = "AetherionAI-Mobile/frontend/web-build"
 
 [context.production.environment]
   EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
 
 [[redirects]]
-  from = "/api/*"
-  to   = "https://aetherionai.onrender.com/api/:splat"
+  from   = "/api/*"
+  to     = "https://aetherionai.onrender.com/api/:splat"
   status = 200
 
 [[redirects]]
-  from = "/*"
-  to   = "/index.html"
+  from   = "/*"
+  to     = "/index.html"
   status = 200
 
 # Node / Expo (frontend)
