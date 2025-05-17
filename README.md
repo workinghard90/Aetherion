@@ -7,30 +7,23 @@ A monorepo combining:
 - **netlify.toml**: Netlify build & redirect config  
 - **setup.sh**: Bootstrap script for local development
 
-- AetherionAI-Mobile/
-├── backend/             # Flask API + DB migrations
+AetherionAI-Mobile/
+├── backend/       # Flask API + SQLite
 │   ├── app.py
 │   ├── wsgi.py
 │   ├── requirements.txt
-│   ├── Procfile
+│   ├── Procfile           # For Render deployment
 │   ├── config.json
 │   └── .env.example
-├── frontend/            # Expo React-Native & Web app
+├── frontend/      # Expo React Native & Web
 │   ├── App.js
 │   ├── app.json
-│   ├── babel.config.js
 │   ├── package.json
 │   ├── screens/
-│   │   └── HomeScreen.js
 │   ├── services/
-│   │   └── api.js
 │   └── assets/
-│       ├── icon.png
-│       ├── splash.png
-│       └── favicon.png
-├── netlify.toml         # Netlify build & redirect config
-├── setup.sh             # Bootstrap script for local dev
-├── .gitignore
+├── netlify.toml   # For frontend Netlify deployment
+├── setup.sh       # Local setup script
 └── README.md
 
 
