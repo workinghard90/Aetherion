@@ -26,224 +26,6 @@ AetherionAI-Mobile/
 ├── setup.sh
 └── README.md
 
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/HomeScreen';
-
-const Stack = createStackNavigator();
-
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen 
-          name="Home" 
-          component={HomeScreen} 
-          options={{
-            title: 'AetherionAI Universe',
-            headerStyle: { backgroundColor: '#6200ee' },
-            headerTintColor: '#fff',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-{
-  "expo": {
-    "name": "AetherionAI Mobile",
-    "slug": "aetherionai-mobile",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "assetBundlePatterns": ["**/*"],
-    "ios": { "supportsTablet": true },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "web": { "favicon": "./assets/favicon.png" }
-  }
-}
-
-module.exports = function(api) {
-  api.cache(true);
-  return {
-    presets: ['babel-preset-expo'],
-  };
-};
-
-{
-  "name": "aetherionai-mobile",
-  "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
-  "scripts": {
-    "start": "expo start",
-    "web": "expo start --web",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "build": "expo export:web",
-    "deploy": "gh-pages -d web-build"
-  },
-  "dependencies": {
-    "@react-navigation/native": "^6.1.8",
-    "@react-navigation/stack": "^6.3.20",
-    "axios": "^1.6.7",
-    "expo": "~50.0.6",
-    "expo-status-bar": "~1.11.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-native": "0.73.6",
-    "react-native-gesture-handler": "~2.14.0",
-    "react-native-safe-area-context": "4.8.2",
-    "react-native-screens": "~3.29.0",
-    "react-native-web": "~0.19.6"
-  },
-  "devDependencies": {
-    "gh-pages": "^6.1.1"
-  },
-  "private": true,
-  "homepage": "https://workinghard90.github.io/AetherionAI-Mobile"
-}
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { getUniverse } from '../services/api';
-
-export default function HomeScreen() {
-  const [entities, setEntities] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    getUniverse()
-      .then(setEntities)
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <View style={styles.center}><ActivityIndicator size="large" color="#6200ee" /></View>;
-  if (error) return <View style={styles.center}><Text style={styles.error}>{error}</Text></View>;
-
-  return (
-    <FlatList
-      data={entities}
-      keyExtractor={item => item.id.toString()}
-      renderItem={({ item }) => (
-        <TouchableOpacity style={styles.item}>
-          <Text style={styles.name}>{item.name}</Text>
-        </TouchableOpacity>
-      )}
-    />
-  );
-}
-
-const styles = StyleSheet.create({
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  error: { color: 'red', fontSize: 16 },
-  item: { padding: 16, borderBottomWidth: 1, borderColor: '#ccc' },
-  name: { fontSize: 18 }
-});
-
-import axios from 'axios';
-
-const API_URL = 'https://aetherionai.onrender.com';
-
-export const getUniverse = async () => {
-  const res = await axios.get(`${API_URL}/api/items`);
-  return res.data;
-};
-
-touch frontend/assets/icon.png frontend/assets/splash.png frontend/assets/favicon.png
-
-web: gunicorn app:app
-
-app = Flask(__name__)
-
-# netlify.toml — Configuration for Netlify deployment
-
-[build]
-  base = "frontend"
-  command = "npm run build"
-  publish = "frontend/web-build"
-
-[build.environment]
-  NODE_VERSION = "18"
-  EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
-
-[[redirects]]
-  from = "/api/*"
-  to = "https://aetherionai.onrender.com/api/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-#!/bin/bash
-
-cd AetherionAI-Mobile/AetherionAI-Mobile
-
-# Move all contents up to the root
-mv * ../
-mv .[^.]* ../  # move hidden files like .gitignore, .env too
-
-cd ..
-rm -r AetherionAI-Mobile  # remove the now-empty wrapper folder
-
-git add .
-git commit -m "Flatten directory structure for deployment"
-git push
-
-mkdir -p frontend/assets frontend/screens frontend/services backend
-
-# Create placeholder assets
-touch frontend/assets/icon.png frontend/assets/splash.png frontend/assets/favicon.png
-
-echo "EXPO_PUBLIC_API_URL=https://aetherionai.onrender.com" > backend/.env
-
-echo "✅ Project initialized. Run 'cd frontend && npm install' and 'cd ../backend && pip install -r requirements.txt'"
-
-# AetherionAI — Full Stack Pocket Universe Assistant
-
-**AetherionAI** is a spiritually attuned, open-source micro-universe builder and assistant. It merges a dynamic Flask backend, a React Native (Expo) frontend, and secure SQLite storage into a cohesive platform for simulating, visualizing, and interacting with memory-based entities.
-
-## Structure
-
-```
-AetherionAI/
-├── frontend/             # React Native + Expo
-│   ├── App.js
-│   ├── app.json
-│   ├── babel.config.js
-│   ├── package.json
-│   ├── screens/
-│   ├── services/
-│   └── assets/
-├── backend/              # Flask + SQLite
-│   ├── app.py
-│   ├── wsgi.py
-│   ├── requirements.txt
-│   ├── Procfile
-│   ├── config.json
-│   └── .env
-├── netlify.toml
-├── .gitignore
-├── setup.sh
-└── README.md
-```
 
 ## Credits & Inspirations
 
@@ -255,6 +37,27 @@ AetherionAI/
 
 ## License
 
+---
+
+### Deploy Checklist
+
+- [ ] Push **this** entire structure to GitHub (root of your repo).
+- [ ] On Render (backend service):
+  - **Root**: `backend`
+  - **Build command**: _none_ (Flask has no build step)
+  - **Start command**: `gunicorn wsgi:app`
+  - **Env**: `PORT`, any DB path if you override
+- [ ] On Netlify (frontend site):
+  - **Base dir**: `frontend`
+  - **Build command**: `npm run build`
+  - **Publish dir**: `frontend/web-build`
+  - **Env**: `EXPO_PUBLIC_API_URL`
+- [ ] For Expo Go: just run `npm start` inside `frontend` locally.
+
+This should resolve the missing-directory and missing-package.json errors you’ve been seeing and give you a consistent monorepo for **backend**, **frontend**, **Netlify**, **Render**, and **Expo Go** all in one. Good luck!
+
 This project is open-source and offered in the spirit of expansion.  
 Use it. Modify it. Awaken with it.
+Open-source, crafted with care and cosmic inspiration.
+Use freely, and may your inner cosmos expand.
 
