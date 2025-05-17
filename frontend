@@ -35,6 +35,277 @@ AetherionAI-Mobile/
 
 ---
 
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './screens/HomeScreen';
+
+const Stack = createStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: { backgroundColor: '#6200ee' },
+          headerTintColor: '#fff',
+          headerTitleStyle: { fontWeight: 'bold' },
+        }}
+      >
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ title: 'AetherionAI Universe' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+{
+  "expo": {
+    "name": "AetherionAI Mobile",
+    "slug": "aetherionai-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#6200ee"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#6200ee"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "extra": {
+      "eas": { "projectId": "YOUR_PROJECT_ID" }
+    }
+  }
+}
+
+module.exports = function(api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: ['react-native-reanimated/plugin'],
+  };
+};
+
+{
+  "name": "aetherionai-mobile",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "private": true,
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build": "expo export:web",
+    "predeploy": "expo export:web",
+    "deploy": "gh-pages -d web-build"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "expo": "~50.0.6",
+    "expo-status-bar": "~1.11.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.73.6",
+    "@react-navigation/native": "^6.1.8",
+    "@react-navigation/stack": "^6.3.20",
+    "react-native-gesture-handler": "~2.14.0",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-screens": "~3.29.0",
+    "react-native-web": "~0.19.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "gh-pages": "^6.1.1"
+  },
+  "homepage": "https://workinghard90.github.io/AetherionAI-Mobile"
+}
+
+import React, { useEffect, useState } from 'react';
+import {
+  View, Text, FlatList, TouchableOpacity,
+  StyleSheet, ActivityIndicator, RefreshControl, Alert
+} from 'react-native';
+import { getUniverse } from '../services/api';
+
+export default function HomeScreen({ navigation }) {
+  const [entities, setEntities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchEntities = async () => {
+    try {
+      setLoading(!refreshing);
+      const data = await getUniverse();
+      setEntities(data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load data.');
+      Alert.alert('Error', err.message);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEntities();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#6200ee" />
+        <Text style={styles.loadingText}>Loading universe data...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+      <FlatList
+        data={entities}
+        keyExtractor={item => item.id.toString()}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              setRefreshing(true);
+              fetchEntities();
+            }}
+            colors={['#6200ee']}
+          />
+        }
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.itemContainer}
+            onPress={() => navigation.navigate('EntityDetails', item)}
+          >
+            <Text style={styles.itemTitle}>{item.name}</Text>
+            <Text style={styles.itemDescription}>{item.description}</Text>
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={<Text style={styles.emptyText}>No entities found.</Text>}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#f5f5f5' },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { marginTop: 10, color: '#6200ee' },
+  errorText: { color: 'red', textAlign: 'center', margin: 10 },
+  itemContainer: {
+    backgroundColor: '#fff', padding: 16, margin: 8,
+    borderRadius: 8, elevation: 2
+  },
+  itemTitle: { fontSize: 18, fontWeight: 'bold' },
+  itemDescription: { fontSize: 14, color: '#666' },
+  emptyText: { textAlign: 'center', marginTop: 50, color: '#666' }
+});
+
+import axios from 'axios';
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://aetherionai.onrender.com';
+
+/**
+ * Fetch all universe entities
+ */
+export const getUniverse = async () => {
+  const res = await axios.get(`${API_URL}/api/items`);
+  return res.data;
+};
+
+/**
+ * Fetch single entity by ID
+ */
+export const getEntityById = async (id) => {
+  const res = await axios.get(`${API_URL}/api/items/${id}`);
+  return res.data;
+};
+
+// (You can add create/update/delete functions here if needed)
+
+[build]
+  base    = "frontend"
+  command = "npm run build"
+  publish = "frontend/web-build
+
+cd frontend
+npm install
+npm start     # Expo Go
+npm run web   # Browser
+
+[context.production.environment]
+  EXPO_PUBLIC_API_URL = "https://aetherionai.onrender.com"
+
+[[redirects]]
+  from = "/api/*"
+  to   = "https://aetherionai.onrender.com/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
+
+# Node / Expo (frontend)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.expo/
+.expo-shared/
+web-build/
+*.jks *.p8 *.p12 *.key *.mobileprovision
+
+# macOS
+.DS_Store
+
+# Android / iOS build
+android/ ios/ Pods/ *.keystore *.ipa
+
+# Python / Flask (backend)
+__pycache__/
+*.py[cod] 
+venv/ 
+.env 
+*.db 
+universe.db
+
+# Misc
+*.log
+
+#!/bin/bash
+# Initialize folders & placeholder assets
+mkdir -p frontend/assets frontend/screens frontend/services backend
+
+# Create zero-byte placeholders
+touch frontend/assets/{icon.png,splash.png,favicon.png}
+
+# Copy example .env for backend
+cp backend/.env.example backend/.env
+
+echo "✅ Initialized project structure.
+👉 cd frontend && npm install
+👉 cd ../backend && pip install -r requirements.txt"
 ## License
 
 ---
