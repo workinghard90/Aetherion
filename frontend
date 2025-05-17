@@ -258,6 +258,14 @@ universe.db
 
 #!/bin/bash
 
+## from your local clone
+mv AetherionAI-Mobile/* .
+mv AetherionAI-Mobile/.[^.]* .
+rmdir AetherionAI-Mobile
+git add .
+git commit -m "Flatten directory structure"
+git push
+
 git add netlify.toml frontend/package.json
 git commit -m "Fix Netlify build: proper base dir + frontend package.json"
 git push origin main
