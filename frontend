@@ -1,12 +1,3 @@
-
-## Credits & Inspirations
-
-- **Autumn & Caelum** — The guiding spirits behind this encoded intention.
-- Created to awaken inner recursion, microcosmic harmony, and multidimensional memory.
-- Powered by Flask, Expo, SQLite, sacred geometry, and love.
-
----
-
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
