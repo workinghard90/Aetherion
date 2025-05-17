@@ -1,5 +1,4 @@
 AetherionAI-Mobile/
-/
 ├── backend/                    # Flask backend (Render)
 │   ├── app.py
 │   ├── wsgi.py
@@ -192,12 +191,6 @@ app = Flask(__name__)
   status = 200
 
 #!/bin/bash
-
-mv AetherionAI-Mobile/* .
-rm -r AetherionAI-Mobile
-git add .
-git commit -m "Flatten project structure"
-git push
 
 mkdir -p frontend/assets frontend/screens frontend/services backend
 
