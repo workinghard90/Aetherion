@@ -192,6 +192,19 @@ app = Flask(__name__)
 
 #!/bin/bash
 
+cd AetherionAI-Mobile/AetherionAI-Mobile
+
+# Move all contents up to the root
+mv * ../
+mv .[^.]* ../  # move hidden files like .gitignore, .env too
+
+cd ..
+rm -r AetherionAI-Mobile  # remove the now-empty wrapper folder
+
+git add .
+git commit -m "Flatten directory structure for deployment"
+git push
+
 mkdir -p frontend/assets frontend/screens frontend/services backend
 
 # Create placeholder assets
