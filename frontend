@@ -257,6 +257,11 @@ universe.db
 *.log
 
 #!/bin/bash
+
+git add netlify.toml frontend/package.json
+git commit -m "Fix Netlify build: proper base dir + frontend package.json"
+git push origin main
+
 # Initialize folders & placeholder assets
 mkdir -p frontend/assets frontend/screens frontend/services backend
 
