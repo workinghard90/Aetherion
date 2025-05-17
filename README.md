@@ -1,3 +1,10 @@
+/ (repo root)
+├── frontend/       ← this directory
+├── backend/        ← this directory
+├── netlify.toml
+├── setup.sh
+├── .gitignore
+└── README.md       ← include the ASCII-tree here
 
 # AetherionAI — Full Stack Pocket Universe Assistant
 
