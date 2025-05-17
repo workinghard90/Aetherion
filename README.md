@@ -1,10 +1,21 @@
 / (repo root)
-├── frontend/       ← this directory
-├── backend/        ← this directory
-├── netlify.toml
-├── setup.sh
+├── backend/             # your Flask API
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── Procfile
+│   └── config.json
+├── frontend/            # your Expo‐web app
+│   ├── App.js
+│   ├── app.json
+│   ├── babel.config.js
+│   ├── package.json    ← *this* file
+│   ├── screens/
+│   ├── services/
+│   └── assets/
+├── netlify.toml         ← *at root* 
 ├── .gitignore
-└── README.md       ← include the ASCII-tree here
+├── setup.sh
+└── README.md
 
 # AetherionAI — Full Stack Pocket Universe Assistant
 
