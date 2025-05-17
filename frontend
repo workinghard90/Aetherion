@@ -193,6 +193,12 @@ app = Flask(__name__)
 
 #!/bin/bash
 
+mv AetherionAI-Mobile/* .
+rm -r AetherionAI-Mobile
+git add .
+git commit -m "Flatten project structure"
+git push
+
 mkdir -p frontend/assets frontend/screens frontend/services backend
 
 # Create placeholder assets
