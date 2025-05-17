@@ -1,27 +1,29 @@
 AetherionAI-Mobile/
-├── backend/                    # Flask backend (Render)
+├── backend/
 │   ├── app.py
 │   ├── wsgi.py
 │   ├── requirements.txt
-│   ├── .env
+│   ├── config.json
 │   ├── Procfile
-│   └── config.json             # Optional config or metadata
+│   └── .env.example
 │
-├── frontend/                   # React Native (Expo)
+├── frontend/
 │   ├── App.js
 │   ├── app.json
 │   ├── babel.config.js
 │   ├── package.json
 │   ├── screens/
+│   │   └── HomeScreen.js
 │   ├── services/
+│   │   └── api.js
 │   └── assets/
 │       ├── icon.png
 │       ├── splash.png
 │       └── favicon.png
 │
+├── netlify.toml
 ├── .gitignore
-├── netlify.toml               # Must be at root
-├── setup.sh                   # Optional dev script
+├── setup.sh
 └── README.md
 
 import React from 'react';
