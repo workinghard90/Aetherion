@@ -1,27 +1,33 @@
-  useEffect(() => {
-    getUniverse()
-      .then(setEntities)
-      .catch((err) => {
-        console.error('API failed:', err);
-      });
-  }, []);
+from flask import Flask, jsonify
+import json
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Entity', { entity: item })}>
-      <View>
-        <Text>{item.name} ({item.type})</Text>
-      </View>
-    </TouchableOpacity>
-  );
+app = Flask(__name__)
 
-  return (
-    <View style={{ padding: 20 }}>
-      <Button title="Create Entity" onPress={() => navigation.navigate('CreateEntity')} />
-      <FlatList
-        data={entities}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
-    </View>
-  );
+@app.route("/api/items", methods=["GET"])
+def get_items():
+    with open("config.json") as f:
+        data = json.load(f)
+    return jsonify({"items": data})
+
+    {
+  "entities": [
+    { "name": "Caelum", "role": "Sky Architect" },
+    { "name": "Autumn", "role": "Memory Weaver" }
+  ]
 }
+
+FLASK_ENV=production
+DATABASE_URL=sqlite:///db.sqlite3
+
+web: gunicorn wsgi:app
+
+Flask
+gunicorn
+
+
+from app import app
+
+if __name__ == "__main__":
+    app.run()
+
+    
