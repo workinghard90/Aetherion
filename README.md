@@ -1,25 +1,22 @@
-/opt/build/repo/  
-└── AetherionAI-Mobile/
-    ├── frontend/
-    ├── backend/
-    └── netlify.toml
-/ (repo root)
-├── backend/ requirements.txt/            # your Flask API
+AetherionAI-Mobile/
+├── backend/             # Flask API + DB migrations
 │   ├── app.py
+│   ├── wsgi.py
 │   ├── requirements.txt
 │   ├── Procfile
-│   └── config.json
-├── frontend/            # your Expo‐web app
+│   ├── config.json
+│   └── .env.example
+├── frontend/            # Expo React-Native & Web app
 │   ├── App.js
 │   ├── app.json
 │   ├── babel.config.js
-│   ├── package.json    ← *this* file
+│   ├── package.json
 │   ├── screens/
 │   ├── services/
 │   └── assets/
-├── netlify.toml         ← *at root* 
+├── netlify.toml         # Netlify build & redirect config
+├── setup.sh             # Bootstrap script for local dev
 ├── .gitignore
-├── setup.sh
 └── README.md
 
 # AetherionAI — Full Stack Pocket Universe Assistant
