@@ -1,7 +1,7 @@
 /opt/build/repo/  
 └── AetherionAI-Mobile/
     ├── frontend/
-    ├── backend/
+    ├── backend/requirements.txt/
     └── netlify.toml
 / (repo root)
 ├── backend/             # your Flask API
