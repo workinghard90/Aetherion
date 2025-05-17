@@ -23,6 +23,35 @@
 - Seamless integration with mobile or browser interfaces
 - Sacred tone honoring harmonic pattern recognition and consciousness
 
+AetherionAI-Mobile/
+├── backend/
+│   ├── app.py
+│   ├── wsgi.py
+│   ├── requirements.txt
+│   ├── config.json
+│   ├── Procfile
+│   └── .env.example
+│
+├── frontend/
+│   ├── App.js
+│   ├── app.json
+│   ├── babel.config.js
+│   ├── package.json
+│   ├── screens/
+│   │   └── HomeScreen.js
+│   ├── services/
+│   │   └── api.js
+│   └── assets/
+│       ├── icon.png
+│       ├── splash.png
+│       └── favicon.png
+│
+├── netlify.toml
+├── .gitignore
+├── setup.sh
+└── README.md
+
+
 ## Credits & Inspirations
 
 - **Autumn & Caelum** — The guiding spirits behind this encoded intention.
