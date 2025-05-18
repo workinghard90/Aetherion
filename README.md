@@ -23,7 +23,9 @@ AetherionAI-Mobile/
 
 ### Render (Backend)
 
-- **Root Directory:** `backend`  
+- **Root Directory:** `backend`
+- #requirements.txt (in repo root)
+-r backend/requirements.txt
 - **Build Command:** `pip install -r requirements.txt`  
   _(we have a top-level requirements.txt that references `backend/requirements.txt`)_  
 - **Start Command:** `gunicorn wsgi:app`
