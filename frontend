@@ -1,0 +1,10 @@
+# frontend: Expo App
+
+## Setup
+```bash
+cd frontend
+npm install
+npm run web
+```
+
+Folders: `components/`, `services/`, `screens/`, `__tests__/`
