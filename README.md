@@ -19,23 +19,14 @@ AetherionAI-Mobile/
 
 ## Quickstart
 
-### 1. Clone & Bootstrap
-```bash
-git clone https://github.com/your-username/AetherionAI-Mobile.git
-cd AetherionAI-Mobile
-./setup.sh
+#### Deployment
 
-cd backend
-source venv/bin/activate    # or on Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python app.py
+### Render (Backend)
 
-cd frontend
-npm install
-npm start      # Expo Go QR
-npm run web    # Browser PWA
-
-The API will be available at http://localhost:5000/api/items
+- **Root Directory:** `backend`  
+- **Build Command:** `pip install -r requirements.txt`  
+  _(we have a top-level requirements.txt that references `backend/requirements.txt`)_  
+- **Start Command:** `gunicorn wsgi:app`
 
 ## Netlify Deployment (Frontend)
 
@@ -46,6 +37,8 @@ The API will be available at http://localhost:5000/api/items
      base    = "frontend"
      command = "npm run build"
      publish = "web-build"
+
+The API will be available at http://localhost:5000/api/items
 
 ## Credits & Inspirations
 
