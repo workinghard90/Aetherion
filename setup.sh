@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+npm install
+# or
+npx expo install @expo/metro-runtime
+
 # Bootstrap script for local dev
 
 # 1) create folders & placeholders
