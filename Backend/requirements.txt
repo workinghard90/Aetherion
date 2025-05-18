@@ -1,4 +1,4 @@
-# requirements.txt (in repo root)
+# root-level requirements.txt
 -r backend/requirements.txt
 
 Flask==2.3.3
