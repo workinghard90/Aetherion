@@ -23,4 +23,9 @@ echo "   cd frontend && npm install"
 echo "   npm start        # Expo Go"
 echo "   npm run web      # Web preview"
 
+cd frontend
+git add package.json
+git commit -m "fix build script to use expo export:web"
+git push
+
 chmod +x setup.sh
