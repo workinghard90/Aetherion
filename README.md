@@ -30,6 +30,11 @@ source venv/bin/activate    # or on Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
 
+cd frontend
+npm install
+npm start      # Expo Go QR
+npm run web    # Browser PWA
+
 The API will be available at http://localhost:5000/api/items
 
 ## Netlify Deployment (Frontend)
