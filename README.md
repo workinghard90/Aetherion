@@ -32,10 +32,15 @@ python app.py
 
 The API will be available at http://localhost:5000/api/items
 
-cd frontend
-npm install
-npm start      # Expo Go QR
-npm run web    # Browser PWA
+## Netlify Deployment (Frontend)
+
+1. Ensure `@expo/metro-runtime` is installed (we added it to `package.json`).  
+2. Push your repo—Netlify will read `netlify.toml`:  
+   ```toml
+   [build]
+     base    = "frontend"
+     command = "npm run build"
+     publish = "web-build"
 
 ## Credits & Inspirations
 
