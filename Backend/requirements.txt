@@ -1,7 +1,8 @@
+# requirements.txt (in repo root)
+-r backend/requirements.txt
+
 Flask==2.3.3
 flask-cors==4.0.0
 gunicorn==21.2.0
 python-dotenv==1.0.1
 
-# requirements.txt (in repo root)
--r backend/requirements.txt
