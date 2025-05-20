@@ -1,6 +1,6 @@
 {
-  "name": "aetherion-monorepo",
   "private": true,
+  "workspaces": ["apps/*", "services/*", "shared"],
   "scripts": {
     "install": "cd apps/aetherion-mobile && yarn install",
     "start:expo": "cd apps/aetherion-mobile && yarn start",
