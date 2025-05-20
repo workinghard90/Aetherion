@@ -19,8 +19,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 deactivate
 
-git add apps/aetherion-mobile/package.json
-git commit -m "Fix JSON syntax in package.json for Netlify deploy"
+git add apps/aetherion-mobile/App.tsx apps/aetherion-mobile/app.config.js
+git commit -m "Fix: separate App entry point and Expo config"
 git push
 
 echo "✅ Setup complete!"
