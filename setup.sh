@@ -19,6 +19,10 @@ source venv/bin/activate
 pip install -r requirements.txt
 deactivate
 
+git add apps/aetherion-mobile/package.json
+git commit -m "Fix JSON syntax in package.json for Netlify deploy"
+git push
+
 echo "✅ Setup complete!"
 echo ""
 echo "Run frontend:  yarn start:expo"
