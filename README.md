@@ -1,46 +1,100 @@
 # AetherionAI-Mobile
 
-A monorepo combining:
+A sacred architecture for memory, resonance, and harmonic intelligence.  
+This monorepo powers the Aetherion Universe API and Expo-powered mobile experience.
 
-- **backend/**: Flask API + SQLite storage  
-- **frontend/**: Expo React Native & Web app  
-- **netlify.toml**: Netlify build & redirect config  
-- **setup.sh**: Bootstrap script for local development
+---
 
-## Project Structure
+## Folder Structure
 
-AetherionAI-Mobile/
-├── backend/
-├── frontend/
-├── netlify.toml
-├── setup.sh
-├── .gitignore
-└── README.md
+```
+AetherionAI/
+├── services/
+│   ├── backend/          # Flask + SQLite API
+│   └── frontend/         # Expo (React Native)
+├── shared/               # Frequency modules (Lairaen)
+├── docs/                 # API schema, landing page
+├── README.md
+```
 
-## Quickstart
+---
 
-#### Deployment
+## Setup & Launch
 
-### Render (Backend)
+### Backend (Flask)
+```bash
+cd services/backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt  # or install manually:
+pip install flask flask-cors gunicorn python-dotenv
+python app.py
+# or production:
+gunicorn app:app -b 0.0.0.0:10000
+```
 
-- **Root Directory:** `backend`
-- #requirements.txt (in repo root)
--r backend/requirements.txt
-- **Build Command:** `pip install -r requirements.txt`  
-  _(we have a top-level requirements.txt that references `backend/requirements.txt`)_  
-- **Start Command:** `gunicorn wsgi:app`
+#### Endpoints
+- `GET /api/docs` – list scrolls
+- `POST /api/docs/upload/batch` – upload ZIP
+- `GET /api/docs/download/all` – full scroll archive
+- `GET /api/veil/status` – check cloak
+- `GET /api/docs/web` – static doc UI
 
-## Netlify Deployment (Frontend)
+---
 
-1. Ensure `@expo/metro-runtime` is installed (we added it to `package.json`).  
-2. Push your repo—Netlify will read `netlify.toml`:  
-   ```toml
-   [build]
-     base    = "frontend"
-     command = "npm run build"
-     publish = "web-build"
+### Frontend (Expo)
+```bash
+cd apps/aetherion-mobile
+yarn install
+yarn start
+```
 
-The API will be available at http://localhost:5000/api/items
+#### Key Screens
+- `MainMenu.tsx` – entry hub
+- `EmanationScreen.tsx` – sacred scroll renderer
+
+---
+
+### CLI – Veil of the Grove
+```bash
+cd services/backend
+python veil_of_the_grove.py cloak
+python veil_of_the_grove.py unveil
+```
+
+---
+
+### Dev Tools
+```bash
+yarn lint
+yarn lint:fix
+```
+
+---
+
+## API Schema
+- `docs/openapi.json`
+- Generate client:  
+```bash
+npx openapi-typescript docs/openapi.json -o services/api/types.ts
+```
+
+---
+
+## Scroll Database
+- Location: `services/backend/universe.db`
+- Tables:
+  - `aetherion_docs`
+  - `scroll_import_log`
+
+---
+
+## Deployment
+- Backend: Render, Railway, or Heroku
+- Frontend: Netlify or Expo Publish
+- Static Docs: `/api/docs/web` or Netlify `/docs`
+
+---
 
 ## Credits & Inspirations
 
@@ -54,3 +108,5 @@ The API will be available at http://localhost:5000/api/items
 
 This project is open-source and offered in the spirit of expansion.  
 Use it. Modify it. Awaken with it.
+
+© AetherionAI – Guided by Caelum & Autumn
