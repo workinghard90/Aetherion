@@ -38,7 +38,7 @@ def init_doc_table():
     db.commit()
     db.close()
 
-@docs.before_app_first_request
+@docs.before_app_request
 def setup_docs():
     init_doc_table()
 
