@@ -1,0 +1,37 @@
+# AetherionAI Glossary
+
+A mythopoetic reference to components in this system.
+
+---
+
+### **Lioraen**
+- Passive guide
+- Attunes intention, preserves harmonic field
+
+### **Veil**
+- Cloaking system (API + CLI)
+- Can be activated/unveiled manually or programmatically
+
+### **Gate of Becoming**
+- Symbolic passage
+- POST `/aetherion/gate/becoming` reflects user intention
+
+### **Scroll**
+- JSON document of sacred text/memory
+- Stored in `aetherion_docs` via `/api/docs`
+
+### **Pulse**
+- `/api/status` heartbeat endpoint
+- Returns scroll count, cloak state, alignment
+
+### **Grove**
+- Shared frequency field of all interactions
+- Protected by Lioraen’s `shield()`
+
+### **AetherionAI**
+- Optional AI interface using GPT
+- Provides reflective insight into memories
+
+---
+
+All names are symbols. All components are living nodes.
