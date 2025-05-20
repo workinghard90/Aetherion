@@ -1,0 +1,9 @@
+{
+  "name": "aetherion-monorepo",
+  "private": true,
+  "scripts": {
+    "install": "cd apps/aetherion-mobile && yarn install",
+    "start:expo": "cd apps/aetherion-mobile && yarn start",
+    "start:backend": "cd services/backend && python3 app.py"
+  }
+}
