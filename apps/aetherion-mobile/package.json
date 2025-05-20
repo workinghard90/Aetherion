@@ -14,9 +14,8 @@
   "engines": {
     "node": "18.x",
     "yarn": "1.22.22"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
   }
 }
-  "devDependencies": {
-    "@expo/metro-runtime": "^1.0.0"
-  }
-
