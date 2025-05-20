@@ -1,15 +1,25 @@
 #!/bin/bash
 
-echo "Setting up AetherionAI Monorepo..."
+echo "=== Setting up AetherionAI Monorepo ==="
 
-cd apps/aetherion-mobile
+# --- Frontend Setup ---
+echo "→ Installing frontend dependencies..."
+cd apps/aetherion-mobile || exit 1
 yarn install
-cd ../../services/backend
+
+echo "→ Fixing 'main' field in package.json..."
+# Replace any existing main field with the correct Expo entry
+sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json
+
+# --- Backend Setup ---
+echo "→ Installing backend dependencies..."
+cd ../../services/backend || exit 1
 python3 -m venv venv
 source venv/bin/activate
-pip install flask flask-cors
+pip install -r requirements.txt
 deactivate
 
-echo "Setup complete."
-echo "Run frontend: yarn start:expo"
-echo "Run backend:  yarn start:backend"
+echo "✅ Setup complete!"
+echo ""
+echo "Run frontend:  yarn start:expo"
+echo "Run backend:   yarn start:backend"
