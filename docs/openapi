@@ -1,0 +1,61 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AetherionAI API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://aetherionai-mobile.onrender.com"
+    }
+  ],
+  "paths": {
+    "/aetherion/arrival": {
+      "get": {
+        "summary": "Welcome message"
+      }
+    },
+    "/aetherion/gate/becoming": {
+      "post": {
+        "summary": "Intention attunement",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "intention": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/docs": {
+      "get": {},
+      "post": {}
+    },
+    "/api/docs/download/<name>": {
+      "get": {}
+    },
+    "/api/docs/download/all": {
+      "get": {}
+    },
+    "/api/docs/upload/batch": {
+      "post": {}
+    },
+    "/api/veil/cloak": {
+      "post": {}
+    },
+    "/api/veil/unveil": {
+      "post": {}
+    },
+    "/api/veil/status": {
+      "get": {}
+    }
+  }
+}
