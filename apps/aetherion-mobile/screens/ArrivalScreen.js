@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import Constants from 'expo-constants';
+// apps/aetherion-mobile/screens/EmanationViewer.tsx
 
-const API = Constants.expoConfig?.extra?.apiUrl;
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-interface Scroll {
-  name: string;
-  summary: string;
-  full_content: any;
+export default function EmanationViewer() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Welcome to the Emanation Viewer</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  text: { fontSize: 20 }
+});
 }
 
 // Placeholder ArrivalScreen component
