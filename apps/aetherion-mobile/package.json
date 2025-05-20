@@ -10,14 +10,12 @@
     "expo": "^50.0.0",
     "react": "18.2.0",
     "react-native": "0.73.0"
-    "engines": {
-  "node": "18.x",
-  "yarn": "1.22.22"
-}
-    
-}
+  },
+  "engines": {
+    "node": "18.x",
+    "yarn": "1.22.22"
   }
-},
+}
   "devDependencies": {
     "@expo/metro-runtime": "^1.0.0"
   }
