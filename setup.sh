@@ -7,6 +7,8 @@ echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || exit 1
 yarn install
 
+npx expo customize babel.config.js
+
 echo "→ Fixing 'main' field in package.json..."
 # Replace any existing main field with the correct Expo entry
 sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json
