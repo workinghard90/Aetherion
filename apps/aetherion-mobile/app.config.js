@@ -1,12 +1,15 @@
 // apps/aetherion-mobile/app.config.js
-require('dotenv').config();
+import 'dotenv/config';
 
-module.exports = {
+export default {
   expo: {
     name: "AetherionAI",
     slug: "aetherionai",
+    version: "1.0.0",
+    orientation: "portrait",
+    platforms: ["ios", "android", "web"],
     extra: {
-      apiUrl: process.env.REACT_NATIVE_API_URL
+      apiUrl: process.env.EXPO_PUBLIC_API_URL
     }
   }
 };
