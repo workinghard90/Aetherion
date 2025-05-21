@@ -19,8 +19,11 @@ source venv/bin/activate
 pip install -r requirements.txt
 deactivate
 
-git add apps/aetherion-mobile/App.tsx apps/aetherion-mobile/app.config.js
-git commit -m "Fix: separate App entry point and Expo config"
+cd apps/aetherion-mobile
+rm -f app.config.py  # Delete any stray file
+git rm app.config.py || true
+git add app.config.js
+git commit -m "Ensure correct app.config.js for Netlify"
 git push
 
 git add services/backend/app.py
