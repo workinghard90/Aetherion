@@ -13,7 +13,7 @@ module.exports = {
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({
+    return jsonify({"message": "Aetherion API is running."})
         "status": "AetherionAI API is live.",
         "routes": [
             "/api/items",
