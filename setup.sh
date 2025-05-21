@@ -26,6 +26,8 @@ git add app.config.js
 git commit -m "Ensure correct app.config.js for Netlify"
 git push
 
+npx expo install react-native-web@~0.19.6 react-dom@18.2.0 @expo/metro-runtime@~3.1.3
+
 git add services/backend/app.py
 git commit -m "Add root route to show API status at /"
 git push
