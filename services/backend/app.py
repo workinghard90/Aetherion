@@ -1,4 +1,6 @@
-from flask import Flask
+# services/backend/app.py
+
+from flask import Flask, jsonify
 from routes.docs import docs
 from routes.gates import gates
 from routes.veil import veil
@@ -17,14 +19,14 @@ def home():
     return jsonify({
         "message": "Aetherion API is live.",
         "status": "AetherionAI API is live.",
-        "routes": ["/api", "/docs"]
-    }): [
+        "routes": [
+            "/api",
+            "/docs",
             "/api/items",
             "/aetherion/arrival",
             "/aetherion/gate/becoming"
         ]
     }), 200
-
 
 if __name__ == "__main__":
     app.run(port=10000)
