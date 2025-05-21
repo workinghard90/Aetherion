@@ -14,9 +14,11 @@ def arrival():
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "Aetherion API is running."})
+    return jsonify({
+        "message": "Aetherion API is live.",
         "status": "AetherionAI API is live.",
-        "routes": [
+        "routes": ["/api", "/docs"]
+    }): [
             "/api/items",
             "/aetherion/arrival",
             "/aetherion/gate/becoming"
