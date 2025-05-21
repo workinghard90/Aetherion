@@ -12,5 +12,17 @@ app.register_blueprint(veil)
 def arrival():
     return {"message": "Welcome Guardian", "pulse": "aligned"}
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"message": "Aetherion API is running."})
+        "status": "AetherionAI API is live.",
+        "routes": [
+            "/api/items",
+            "/aetherion/arrival",
+            "/aetherion/gate/becoming"
+        ]
+    }), 200
+
+
 if __name__ == "__main__":
     app.run(port=10000)
