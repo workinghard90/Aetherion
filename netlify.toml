@@ -1,8 +1,8 @@
 [build]
-  base    = "apps/aetherion-mobile"
+  base = "apps/aetherion-mobile"
   publish = "apps/aetherion-mobile/dist"
   command = "yarn install && expo export"
 
-[context.production.environment]
+[build.environment]
   NODE_VERSION = "18"
   EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
