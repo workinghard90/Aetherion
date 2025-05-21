@@ -23,6 +23,10 @@ git add apps/aetherion-mobile/App.tsx apps/aetherion-mobile/app.config.js
 git commit -m "Fix: separate App entry point and Expo config"
 git push
 
+git add services/backend/app.py
+git commit -m "Add root route to show API status at /"
+git push
+
 echo "✅ Setup complete!"
 echo ""
 echo "Run frontend:  yarn start:expo"
