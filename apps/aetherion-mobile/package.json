@@ -1,6 +1,8 @@
 {
   "name": "aetherion-mobile",
   "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
   "main": "App.tsx",
   "scripts": {
     "start": "expo start",
