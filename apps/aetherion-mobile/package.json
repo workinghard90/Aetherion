@@ -1,13 +1,11 @@
 {
   "name": "aetherion-mobile",
   "version": "1.0.0",
-  "main": "App.tsx",
-  "scripts": {
-  "check:secrets": "bash ./security-check.sh"
-}
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "build": "expo export"
+    "build": "expo export --platform web",
+    "check:secrets": "bash security-check.sh"
   },
   "dependencies": {
     "expo": "^50.0.0",
