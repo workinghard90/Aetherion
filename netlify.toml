@@ -4,6 +4,12 @@
   publish = "apps/aetherion-mobile/dist"
 
 [build.environment]
-  NODE_VERSION = "18.20.0"
+  NODE_VERSION = "18"
   YARN_VERSION = "1.22.22"
   EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+
+[context.production.environment]
+  NODE_ENV = "production"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
