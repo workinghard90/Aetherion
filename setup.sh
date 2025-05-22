@@ -9,7 +9,7 @@ echo ""
 # --- Frontend Setup ---
 echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Failed to cd into frontend dir"; exit 1; }
-yarn install
+yarn install || npm install
 
 echo "→ Ensuring correct Expo entry in package.json..."
 sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json || true
@@ -29,6 +29,9 @@ npx expo install \
 echo "→ Adding discord.js..."
 yarn add discord.js
 
+echo "→ Generating .npmrc to handle legacy peer deps..."
+echo "legacy-peer-deps=true" > .npmrc
+
 echo "→ Verifying Babel plugin for react-native-reanimated..."
 BABEL_FILE="babel.config.js"
 if grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
@@ -37,13 +40,17 @@ else
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
+echo "→ Checking for background image..."
+mkdir -p assets
+[ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
+
 echo "→ Cleaning up legacy config files..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 echo "→ Committing frontend setup..."
-git add app.config.js "$BABEL_FILE" package.json yarn.lock || true
-git commit -m "Frontend setup: Expo + peer deps + Babel plugin + discord.js" || true
+git add .npmrc app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
+git commit -m "Frontend setup: Expo, peer deps, reanimated plugin, discord.js, .npmrc, bg.jpg" || true
 git push || true
 
 # --- Backend Setup ---
