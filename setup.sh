@@ -12,7 +12,7 @@ cd apps/aetherion-mobile || { echo "❌ Failed to cd into frontend dir"; exit 1;
 yarn install
 
 echo "→ Ensuring correct Expo entry in package.json..."
-sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json
+sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json || true
 
 echo "→ Installing Expo & navigation dependencies..."
 npx expo install \
@@ -26,7 +26,7 @@ npx expo install \
   @react-navigation/stack \
   @expo/metro-runtime
 
-echo "→ Installing discord.js (manually)..."
+echo "→ Adding discord.js..."
 yarn add discord.js
 
 echo "→ Verifying Babel plugin for react-native-reanimated..."
@@ -42,9 +42,9 @@ rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 echo "→ Committing frontend setup..."
-git add app.config.js "$BABEL_FILE" package.json yarn.lock
+git add app.config.js "$BABEL_FILE" package.json yarn.lock || true
 git commit -m "Frontend setup: Expo + peer deps + Babel plugin + discord.js" || true
-git push
+git push || true
 
 # --- Backend Setup ---
 echo ""
@@ -78,7 +78,7 @@ echo "→ Committing backend changes..."
 cd ../../services/backend
 git add app.py
 git commit -m "Backend: ensure / route & API status endpoint" || true
-git push
+git push || true
 
 # --- Final Output ---
 echo ""
