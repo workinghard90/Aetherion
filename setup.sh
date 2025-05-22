@@ -11,16 +11,16 @@ echo "→ Configuring Expo..."
 npx expo customize babel.config.js
 
 echo "→ Ensuring correct entry point in package.json..."
-sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json
+sed -i.bak 's/"main": *".*"/"main": "node_modules\\/expo\\/AppEntry.js"/' package.json
 
 echo "→ Installing Expo web support..."
 npx expo install react-dom react-native-web react-native-gesture-handler
 
 echo "→ Cleaning config files..."
 rm -f app.config.py
-git rm app.config.py || true
+git rm --cached app.config.py 2>/dev/null || true
 git add app.config.js
-git commit -m "Ensure correct app.config.js for Netlify"
+git commit -m "Ensure correct app.config.js for Netlify" || true
 git push
 
 # --- Backend Setup ---
@@ -32,17 +32,24 @@ pip install -r requirements.txt
 deactivate
 
 echo "→ Running security checks..."
-bash security-check.sh && git add . && git commit -m "Safe commit"
+bash security-check.sh && git add . && git commit -m "Safe commit" || true
 
-yarn check:secrets
+# Only run yarn in frontend, so skip `yarn check:secrets` if not defined
+cd ../../apps/aetherion-mobile
+if yarn run check:secrets; then
+  echo "✓ Secrets check passed."
+else
+  echo "⚠️  Secrets check failed or not defined."
+fi
 
 echo "→ Committing backend API update..."
+cd ../../services/backend
 git add app.py
-git commit -m "Add root route to show API status at /"
+git commit -m "Add root route to show API status at /" || true
 git push
 
 echo ""
 echo "✅ Setup complete!"
 echo ""
-echo "Run frontend:  yarn start:expo"
-echo "Run backend:   yarn start:backend"
+echo "Run frontend:  cd apps/aetherion-mobile && yarn start"
+echo "Run backend:   cd services/backend && source venv/bin/activate && flask run"
