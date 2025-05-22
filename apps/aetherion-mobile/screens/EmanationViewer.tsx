@@ -1,15 +1,17 @@
 // apps/aetherion-mobile/screens/EmanationViewer.tsx
 import React from 'react';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
-
-const backgroundImage = { uri: 'https://images.unsplash.com/photo-1527689368864-3a821dbccc34' };
+import { View, Text, ImageBackground, StyleSheet } from 'react-native';
 
 export default function EmanationViewer() {
   return (
-    <ImageBackground source={backgroundImage} style={styles.background}>
+    <ImageBackground
+      source={{ uri: 'https://images.unsplash.com/photo-1549880338-65ddcdfd017b' }}
+      style={styles.background}
+      resizeMode="cover"
+    >
       <View style={styles.overlay}>
-        <Text style={styles.title}>AetherionAI</Text>
-        <Text style={styles.subtitle}>The gateway is open...</Text>
+        <Text style={styles.title}>Welcome Guardian</Text>
+        <Text style={styles.subtitle}>AetherionAI is live.</Text>
       </View>
     </ImageBackground>
   );
@@ -18,22 +20,21 @@ export default function EmanationViewer() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 30,
-    borderRadius: 12,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    padding: 20,
+    borderRadius: 8,
   },
   title: {
-    color: '#fff',
-    fontSize: 32,
+    color: 'white',
+    fontSize: 28,
     fontWeight: 'bold',
   },
   subtitle: {
-    color: '#ccc',
+    color: 'white',
     fontSize: 18,
     marginTop: 10,
   },
