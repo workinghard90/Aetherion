@@ -7,3 +7,4 @@
   NODE_VERSION = "18"
   YARN_VERSION = "1.22.22"
   EXPO_PUBLIC_API_URL = "https://aetherionai-api.onrender.com"
+  
