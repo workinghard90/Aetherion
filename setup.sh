@@ -23,6 +23,8 @@ deactivate
 
 bash security-check.sh && git add . && git commit -m "Safe commit"
 
+yarn check:secrets
+
 cd apps/aetherion-mobile
 rm -f app.config.py  # Delete any stray file
 git rm app.config.py || true
