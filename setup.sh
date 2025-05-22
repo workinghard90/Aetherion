@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 echo ""
 echo "=== Setting up AetherionAI Monorepo ==="
@@ -11,13 +11,13 @@ echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Failed to cd into frontend dir"; exit 1; }
 yarn install
 
-echo "→ Configuring Expo..."
-npx expo customize babel.config.js || true
+echo "→ Configuring Expo (non-interactive fallback)..."
+npx expo customize babel.config.js || echo "⚠️ Skipped expo customize (likely already customized)"
 
 echo "→ Ensuring correct entry point in package.json..."
-sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json
+sed -i.bak 's/"main": *".*"/"main": "node_modules\\/expo\\/AppEntry.js"/' package.json
 
-echo "→ Installing Expo web + navigation + gesture deps..."
+echo "→ Installing Expo + web + nav + gesture deps..."
 npx expo install \
   react-dom \
   react-native-web \
@@ -29,7 +29,7 @@ npx expo install \
   react-native-screens \
   react-native-safe-area-context
 
-echo "→ Verifying Babel config plugin for reanimated..."
+echo "→ Ensuring Babel plugin for reanimated..."
 BABEL_FILE="babel.config.js"
 if grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   echo "✓ Babel plugin already present."
@@ -68,7 +68,7 @@ cd ../../apps/aetherion-mobile
 if yarn run check:secrets; then
   echo "✓ Secrets check passed."
 else
-  echo "⚠️  Secrets check skipped or failed."
+  echo "⚠️ Secrets check skipped or failed."
 fi
 
 # --- Commit backend API update ---
