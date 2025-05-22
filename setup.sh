@@ -26,6 +26,9 @@ npx expo install \
   @react-navigation/stack \
   @expo/metro-runtime
 
+echo "→ Installing discord.js (manually)..."
+yarn add discord.js
+
 echo "→ Verifying Babel plugin for react-native-reanimated..."
 BABEL_FILE="babel.config.js"
 if grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
@@ -40,7 +43,7 @@ git rm --cached app.config.py 2>/dev/null || true
 
 echo "→ Committing frontend setup..."
 git add app.config.js "$BABEL_FILE" package.json yarn.lock
-git commit -m "Frontend setup: Expo + peer deps + Babel plugin" || true
+git commit -m "Frontend setup: Expo + peer deps + Babel plugin + discord.js" || true
 git push
 
 # --- Backend Setup ---
