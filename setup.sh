@@ -11,11 +11,14 @@ echo "→ Configuring Expo..."
 npx expo customize babel.config.js
 
 echo "→ Ensuring correct entry point in package.json..."
-sed -i.bak 's/"main": *".*"/"main": "node_modules\\/expo\\/AppEntry.js"/' package.json
+sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json
 
 echo "→ Installing Expo web and nav dependencies..."
 npx expo install react-dom react-native-web react-native-gesture-handler react-native-reanimated \
   @react-navigation/native @react-navigation/stack @expo/metro-runtime
+
+echo "→ Adding peer dependencies required by navigation stack..."
+yarn add react-native-screens react-native-safe-area-context
 
 echo "→ Ensuring Babel plugin for react-native-reanimated is present..."
 BABEL_FILE="babel.config.js"
@@ -28,8 +31,8 @@ fi
 echo "→ Cleaning config files..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
-git add app.config.js "$BABEL_FILE" package.json
-git commit -m "Setup frontend with reanimated + web + correct config" || true
+git add app.config.js "$BABEL_FILE" package.json yarn.lock
+git commit -m "Setup frontend with reanimated + web + peer deps + correct config" || true
 git push
 
 # --- Backend Setup ---
