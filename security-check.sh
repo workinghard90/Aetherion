@@ -1,13 +1,23 @@
 #!/bin/bash
 
-echo "Running security checks..."
+echo "Running AetherionAI Security Check..."
 
-# Search for sensitive strings
-grep -rniE 'api[_-]?key|secret[_-]?key|password|access[_-]?token|client[_-]?secret' ./ > security_scan_results.txt
+# Scan for common secret keywords in the entire project
+grep -riEn --color=always \
+  -e 'api[_-]?key' \
+  -e 'secret[_-]?key' \
+  -e 'password' \
+  -e 'access[_-]?token' \
+  -e 'client[_-]?secret' \
+  . > security_scan_results.txt
 
-# Warn if .env exists
-if [ -f .env ]; then
-  echo ".env file exists. Ensure it is excluded from version control."
+if [[ -s security_scan_results.txt ]]; then
+  echo "--------------------------------------------------"
+  echo " WARNING: Potential secrets found in codebase!"
+  echo " Review security_scan_results.txt before committing."
+  echo "--------------------------------------------------"
+  exit 1
+else
+  echo "Security scan passed. No secrets detected."
+  rm -f security_scan_results.txt
 fi
-
-echo "Security scan complete. Results saved to security_scan_results.txt"
