@@ -21,6 +21,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 deactivate
 
+bash security-check.sh && git add . && git commit -m "Safe commit"
+
 cd apps/aetherion-mobile
 rm -f app.config.py  # Delete any stray file
 git rm app.config.py || true
