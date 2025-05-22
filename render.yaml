@@ -1,14 +1,26 @@
 services:
   - type: web
-    name: aetherion-backend
+    name: aetherionai-backend
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn wsgi:app
+    buildCommand: |
+      cd services/backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
+    startCommand: gunicorn app:app --chdir services/backend --bind 0.0.0.0:$PORT
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.11
+      - key: FLASK_ENV
+        value: production
+
+  - type: web
+    name: aetherionai-frontend
+    env: node
+    plan: free
+    buildCommand: bash setup.sh
+    startCommand: yarn start
     buildFilter:
       paths:
-        - services/backend/**/*
-    buildDirectory: services/backend
+        - apps/aetherion-mobile/**
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: YARN_VERSION
+        value: 1.22.22
