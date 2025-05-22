@@ -13,16 +13,14 @@ npx expo customize babel.config.js
 echo "→ Ensuring correct entry point in package.json..."
 sed -i.bak 's/"main": *".*"/"main": "node_modules\\/expo\\/AppEntry.js"/' package.json
 
-echo "→ Installing Expo web support..."
-npx expo install react-dom react-native-web react-native-gesture-handler
+echo "→ Installing Expo web and nav dependencies..."
+npx expo install react-dom react-native-web react-native-gesture-handler react-native-reanimated \
+  @react-navigation/native @react-navigation/stack @expo/metro-runtime
 
-echo "→ Installing reanimated for Babel plugin..."
-npx expo install react-native-reanimated
-
-echo "→ Adding reanimated plugin to Babel config..."
+echo "→ Ensuring Babel plugin for react-native-reanimated is present..."
 BABEL_FILE="babel.config.js"
 if grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
-  echo "✓ Babel plugin already added."
+  echo "✓ Babel plugin already present."
 else
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
@@ -30,8 +28,8 @@ fi
 echo "→ Cleaning config files..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
-git add app.config.js "$BABEL_FILE"
-git commit -m "Ensure correct app.config.js and Babel plugin for Netlify" || true
+git add app.config.js "$BABEL_FILE" package.json
+git commit -m "Setup frontend with reanimated + web + correct config" || true
 git push
 
 # --- Backend Setup ---
