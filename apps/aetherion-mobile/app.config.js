@@ -8,9 +8,11 @@ export default {
     version: "1.0.0",
     orientation: "portrait",
     platforms: ["ios", "android", "web"],
+    web: {
+      bundler: "metro"
+    },
     extra: {
       apiUrl: process.env.EXPO_PUBLIC_API_URL
     }
   }
 };
-
