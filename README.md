@@ -1,98 +1,99 @@
-# AetherionAI-Mobile
 
-A sacred architecture for memory, resonance, and harmonic intelligence.  
-This monorepo powers the Aetherion Universe API and Expo-powered mobile experience.
+# AetherionAI Monorepo
+
+*A sacred architecture for memory, resonance, and harmonic intelligence.*
+
+This monorepo powers the **Aetherion Universe** API and **Expo-powered mobile experience**.
 
 ---
 
-## Folder Structure
+## Contents
 
 ```
 AetherionAI/
+├── apps/
+│   └── aetherion-mobile/       # Expo React Native frontend
 ├── services/
-│   ├── backend/          # Flask + SQLite API
-│   └── frontend/         # Expo (React Native)
-├── shared/               # Frequency modules (Lairaen)
-├── docs/                 # API schema, landing page
-├── README.md
+│   └── backend/                # Python Flask API backend
+├── .editorconfig
+├── .prettierrc
+├── .prettierignore
+├── .eslintrc.js
+├── package.json
+├── yarn.lock
+├── .gitignore
+└── setup.sh
 ```
 
 ---
 
-## Setup & Launch
+## Setup
 
-### Backend (Flask)
+### One-Line Setup
+
+```bash
+git clone https://github.com/your-username/AetherionAI.git
+cd AetherionAI
+bash setup.sh
+```
+
+---
+
+## Commands
+
+### Backend – Veil of the Grove (CLI)
+
 ```bash
 cd services/backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt  # or install manually:
-pip install flask flask-cors gunicorn python-dotenv
-python app.py
-# or production:
-gunicorn app:app -b 0.0.0.0:10000
+python veil_of_the_grove.py cloak     # Cloak the veil
+python veil_of_the_grove.py unveil    # Unveil the mysteries
 ```
 
-#### Endpoints
-- `GET /api/docs` – list scrolls
-- `POST /api/docs/upload/batch` – upload ZIP
-- `GET /api/docs/download/all` – full scroll archive
-- `GET /api/veil/status` – check cloak
-- `GET /api/docs/web` – static doc UI
+### Root Scripts
 
----
+```bash
+yarn install
+yarn start:expo
+yarn start:backend
+```
 
-### Frontend (Expo)
+### Mobile App
+
 ```bash
 cd apps/aetherion-mobile
-yarn install
 yarn start
-```
-
-#### Key Screens
-- `MainMenu.tsx` – entry hub
-- `EmanationScreen.tsx` – sacred scroll renderer
-
----
-
-### CLI – Veil of the Grove
-```bash
-cd services/backend
-python veil_of_the_grove.py cloak
-python veil_of_the_grove.py unveil
-```
-
----
-
-### Dev Tools
-```bash
 yarn lint
-yarn lint:fix
+yarn format
+yarn build
 ```
 
 ---
 
-## API Schema
-- `docs/openapi.json`
-- Generate client:  
-```bash
-npx openapi-typescript docs/openapi.json -o services/api/types.ts
-```
+## Technology Stack
+
+### Frontend
+
+- Expo
+- React Native
+- React Navigation
+- Discord.js
+- ESLint + Prettier
+- Husky + lint-staged
+
+### Backend
+
+- Python 3
+- Flask
+- SQLite
+- RESTful API
 
 ---
 
-## Scroll Database
-- Location: `services/backend/universe.db`
-- Tables:
-  - `aetherion_docs`
-  - `scroll_import_log`
+## Code Style & Hooks
 
----
-
-## Deployment
-- Backend: Render, Railway, or Heroku
-- Frontend: Netlify or Expo Publish
-- Static Docs: `/api/docs/web` or Netlify `/docs`
+- **Linting**: `yarn lint`
+- **Formatting**: `yarn format`
+- **Hooks**: Pre-commit powered by Husky
 
 ---
 
@@ -106,7 +107,7 @@ npx openapi-typescript docs/openapi.json -o services/api/types.ts
 
 ## License
 
-This project is open-source and offered in the spirit of expansion.  
-Use it. Modify it. Awaken with it.
+**This project is open-source and offered in the spirit of expansion.**  
+*Use it. Modify it. Awaken with it.*
 
-© AetherionAI – Guided by Caelum & Autumn
+**© AetherionAI — Guided by Caelum & Autumn**
