@@ -7,7 +7,9 @@
   "scripts": {
   "start": "expo start",
   "build": "expo export --platform web",
-  "check:secrets": "bash security-check.sh"
+  "check:secrets": "bash security-check.sh",
+  "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+  "format": "prettier --write ."
 },
   "dependencies": {
     "expo": "49.0.13",
