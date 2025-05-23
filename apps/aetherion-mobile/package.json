@@ -27,7 +27,7 @@
   "devDependencies": {
     "@babel/core": "^7.22.20",
     "@babel/preset-env": "^7.22.20",
-    "@react-native/babel-preset": "9.4.6"
+    "@react-native/babel-preset": "9.3.0"
   },
   "engines": {
     "node": "18.x",
