@@ -8,15 +8,18 @@ echo -e "\n=== Setting up AetherionAI Monorepo ===\n"
 echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Cannot access frontend directory"; exit 1; }
 
-# Generate compatibility configs
+# Compatibility configs for Netlify
 cat > .npmrc <<EOF
 legacy-peer-deps=true
 audit=false
 registry=https://registry.npmjs.org/
 EOF
-echo "18.20.3" > .nvmrc
+echo "18.18.2" > .nvmrc
 
-# Install deps using yarn or fallback to npm
+# Clean cache to prevent ETARGET and registry issues
+npm cache clean --force || true
+
+# Install using yarn if available, else fallback to npm
 if command -v yarn &>/dev/null; then
   yarn install
 else
@@ -39,7 +42,7 @@ npx expo install \
   @react-navigation/stack
 
 echo "→ Installing required extras..."
-yarn add discord.js @babel/preset-env @react-native/babel-preset@^9.4.6
+yarn add discord.js @babel/preset-env @react-native/babel-preset@9.4.5
 
 echo "→ Ensuring reanimated plugin in babel.config.js..."
 BABEL_FILE="babel.config.js"
