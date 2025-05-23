@@ -1,12 +1,28 @@
 [build]
-base = "apps/aetherion-mobile"
-publish = "apps/aetherion-mobile/dist"
-command = "yarn install && expo export --platform web"
+  base = "apps/aetherion-mobile"
+  command = "yarn install && expo export --platform web"
+  publish = "apps/aetherion-mobile/dist"
+  environment = { 
+    NODE_VERSION = "18.20.3",
+    YARN_VERSION = "1.22.22",
+    EXPO_PUBLIC_API_URL = "https://api.aetherion.ai",
+    CI = "false"
+  }
 
-[functions]
-directory = "apps/aetherion-mobile/netlify/functions"
+[context.production.environment]
+  NODE_VERSION = "18.20.3"
+  YARN_VERSION = "1.22.22"
+  EXPO_PUBLIC_API_URL = "https://api.aetherion.ai"
+  CI = "false"
 
-[build.environment]
-NODE_VERSION = "18.20.3"
-YARN_VERSION = "1.22.22"
-EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com" # Replace with your actual API URL
+[context.deploy-preview.environment]
+  NODE_VERSION = "18.20.3"
+  YARN_VERSION = "1.22.22"
+  EXPO_PUBLIC_API_URL = "https://preview-api.aetherion.ai"
+  CI = "false"
+
+[context.branch-deploy.environment]
+  NODE_VERSION = "18.20.3"
+  YARN_VERSION = "1.22.22"
+  EXPO_PUBLIC_API_URL = "https://dev-api.aetherion.ai"
+  CI = "false"
