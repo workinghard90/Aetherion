@@ -1,7 +1,12 @@
 [build]
-  base = "apps/aetherion-mobile"
-  command = "npm install && npm run build"
-  publish = "apps/aetherion-mobile/dist"
+base = "apps/aetherion-mobile"
+publish = "apps/aetherion-mobile/dist"
+command = "yarn install && expo export --platform web"
 
 [functions]
-  directory = "apps/aetherion-mobile/netlify/functions"
+directory = "apps/aetherion-mobile/netlify/functions"
+
+[build.environment]
+NODE_VERSION = "18.20.3"
+YARN_VERSION = "1.22.22"
+EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com" # Replace with your actual API URL
