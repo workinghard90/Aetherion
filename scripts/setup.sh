@@ -14,9 +14,10 @@ legacy-peer-deps=true
 audit=false
 registry=https://registry.npmjs.org/
 EOF
+
 echo "18.20.3" > .nvmrc
 
-# Write consistent formatting
+# Formatting
 cat > .editorconfig <<EOF
 root = true
 
@@ -29,39 +30,6 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 EOF
 
-# Install deps
-if command -v yarn &>/dev/null; then
-  yarn install
-else
-  npm install --legacy-peer-deps
-fi
-
-# Expo entry
-echo "→ Setting Expo entry to index.js..."
-sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
-echo "import 'expo-router/entry';" > index.js
-
-# Install Expo peer dependencies
-echo "→ Installing Expo and React Native deps..."
-npx expo install \
-  react-dom \
-  react-native-web \
-  react-native-gesture-handler \
-  react-native-reanimated \
-  react-native-screens \
-  react-native-safe-area-context \
-  @expo/metro-runtime \
-  @react-navigation/native \
-  @react-navigation/stack
-
-# Install other dependencies
-echo "→ Installing project dependencies..."
-yarn add discord.js
-yarn add -D @babel/preset-env @react-native/babel-preset@9.4.0 prettier
-
-# Prettier config files
-echo "→ Writing Prettier config..."
-cd ../../
 cat > .prettierrc <<EOF
 {
   "singleQuote": true,
@@ -74,37 +42,80 @@ EOF
 
 cat > .prettierignore <<EOF
 node_modules
-dist
 build
-*.lock
+dist
 EOF
 
-# Git commit prettier config
-git add .prettierrc .prettierignore || true
-git commit -m "Setup: prettier config added" || true
-cd apps/aetherion-mobile
+cat > .eslintrc.js <<EOF
+module.exports = {
+  root: true,
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  parserOptions: {
+    ecmaVersion: 2021,
+    sourceType: 'module',
+    ecmaFeatures: { jsx: true }
+  },
+  env: { browser: true, node: true, es6: true },
+  rules: {
+    semi: ['error', 'always'],
+    quotes: ['error', 'single']
+  }
+};
+EOF
 
-# Ensure Babel reanimated plugin
-echo "→ Ensuring Babel reanimated plugin..."
+# Entry setup
+sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
+echo "import 'expo-router/entry';" > index.js
+
+# Install deps
+if command -v yarn &>/dev/null; then
+  yarn install
+else
+  npm install --legacy-peer-deps
+fi
+
+# Expo deps
+npx expo install \
+  react-dom \
+  react-native-web \
+  react-native-gesture-handler \
+  react-native-reanimated \
+  react-native-screens \
+  react-native-safe-area-context \
+  @expo/metro-runtime \
+  @react-navigation/native \
+  @react-navigation/stack
+
+# Extra packages
+yarn add discord.js
+yarn add -D @babel/preset-env @react-native/babel-preset@9.3.0 prettier eslint husky lint-staged
+
+# Babel plugin
 BABEL_FILE="babel.config.js"
 if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-# Fallback asset
-echo "→ Ensuring background asset..."
+# Git hook setup
+npx husky install
+npx husky add .husky/pre-commit "npx lint-staged"
+
+cat > lint-staged.config.js <<EOF
+module.exports = {
+  '*.{js,jsx,ts,tsx}': ['prettier --write', 'eslint --fix']
+};
+EOF
+
+# Asset check
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
-# Cleanup
-echo "→ Cleaning up old configs..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 # Git commit
-echo "→ Committing frontend setup..."
-git add .editorconfig .npmrc .nvmrc index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
-git commit -m "Setup: frontend index.js, dependencies, babel plugin, config, assets" || true
+git add .editorconfig .npmrc .nvmrc .prettierrc .prettierignore .eslintrc.js lint-staged.config.js index.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
+git commit -m "Setup: full frontend config, lint/format, husky, babel, assets" || true
 git push || true
 
 # === Backend Setup ===
@@ -129,11 +140,10 @@ else
   echo "⚠️  Secrets check skipped or failed."
 fi
 
-# === Backend commit ===
-echo -e "\n→ Committing backend updates..."
+# === Backend Commit ===
 cd ../../services/backend
 git add app.py
-git commit -m "Backend: ensure root route / API status" || true
+git commit -m "Backend: ensure root API route present" || true
 git push || true
 
 # === Done ===
