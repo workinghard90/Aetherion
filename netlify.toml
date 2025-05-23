@@ -1,12 +1,13 @@
 [build]
 base = "apps/aetherion-mobile"
-command = "npm install --legacy-peer-deps && expo export --platform web"
+command = "npm install --legacy-peer-deps && npm run build"
 publish = "apps/aetherion-mobile/dist"
 
 [build.environment]
 NODE_VERSION = "18.20.3"
 YARN_VERSION = "1.22.22"
 EXPO_PUBLIC_API_URL = "https://your-api-domain.com"
+CI = "false"  # avoids certain CI-specific Expo issues
 
 [context.production.environment]
 EXPO_PUBLIC_API_URL = "https://your-api-domain.com"
