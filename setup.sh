@@ -10,16 +10,20 @@ echo ""
 echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Failed to cd into frontend dir"; exit 1; }
 
-# Write .npmrc early for legacy-peer-deps
+# Ensure legacy peer deps are handled properly
 echo "legacy-peer-deps=true" > .npmrc
 
-# Install dependencies
-yarn install || npm install --legacy-peer-deps
+# Prefer yarn if available, fallback to npm
+if command -v yarn &> /dev/null; then
+  yarn install
+else
+  npm install --legacy-peer-deps
+fi
 
-echo "→ Enforcing Expo entry point..."
+echo "→ Ensuring Expo entry point in package.json..."
 sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json || true
 
-echo "→ Installing Expo & React Native deps..."
+echo "→ Installing Expo & React Native dependencies..."
 npx expo install \
   react-dom \
   react-native-web \
@@ -31,10 +35,10 @@ npx expo install \
   @react-navigation/native \
   @react-navigation/stack
 
-echo "→ Adding required and peer packages..."
+echo "→ Adding extra dependencies..."
 yarn add discord.js @babel/preset-env @react-native/babel-preset@^8.5.0
 
-echo "→ Patching Babel config with reanimated plugin..."
+echo "→ Verifying babel.config.js for reanimated plugin..."
 BABEL_FILE="babel.config.js"
 if grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   echo "✓ Babel plugin already configured."
@@ -42,11 +46,11 @@ else
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-echo "→ Verifying background image asset..."
+echo "→ Ensuring background image exists..."
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
-echo "→ Cleaning legacy files..."
+echo "→ Cleaning up legacy files..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
@@ -69,7 +73,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 deactivate
 
-echo "→ Running security check script..."
+echo "→ Running backend security check..."
 bash security-check.sh && git add . && git commit -m "Backend: security check complete" || true
 
 # --- Secrets Check ---
