@@ -29,8 +29,12 @@ npx expo install \
 echo "→ Adding required and peer packages..."
 yarn add discord.js @babel/preset-env @react-native/babel-preset@^8.5.0
 
-echo "→ Creating .npmrc for legacy-peer-deps..."
-echo "legacy-peer-deps=true" > .npmrc
+echo "→ Writing .npmrc to enable compatibility..."
+cat <<EOF > .npmrc
+legacy-peer-deps=true
+audit=false
+registry=https://registry.npmjs.org/
+EOF
 
 echo "→ Patching Babel config with reanimated plugin..."
 BABEL_FILE="babel.config.js"
