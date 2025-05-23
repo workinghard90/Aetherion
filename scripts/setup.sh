@@ -105,7 +105,9 @@ mkdir -p assets
 
 # Husky + lint-staged setup
 npx husky install
-mkdir -p .husky
+
+mkdir -p .husky/_
+
 cat > .husky/pre-commit <<'EOF'
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
@@ -113,6 +115,16 @@ cat > .husky/pre-commit <<'EOF'
 npx lint-staged
 EOF
 chmod +x .husky/pre-commit
+
+cat > .husky/_/husky.sh <<'EOF'
+#!/bin/sh
+# Husky Git hook loader
+
+if [ -z "$HUSKY_SKIP_HOOKS" ]; then
+  . "$(dirname "$0")/husky.sh"
+fi
+EOF
+chmod +x .husky/_/husky.sh
 
 cat > lint-staged.config.js <<EOF
 export default {
@@ -125,8 +137,8 @@ rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 # Git commit frontend
-git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg lint-staged.config.js .husky/pre-commit || true
-git commit -m "Setup: frontend deps, linting, prettier, husky, expo-router, assets" || true
+git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg lint-staged.config.js .husky || true
+git commit -m "Setup: frontend linting, prettier, husky, expo-router, assets" || true
 git push || true
 
 # === Backend Setup ===
