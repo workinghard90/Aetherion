@@ -5,12 +5,12 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-  "start": "expo start",
-  "build": "expo export --platform web",
-  "check:secrets": "bash security-check.sh",
-  "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-  "format": "prettier --write ."
-},
+    "start": "expo start",
+    "build": "expo export --platform web",
+    "check:secrets": "bash security-check.sh",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write ."
+  },
   "dependencies": {
     "expo": "49.0.13",
     "react": "18.2.0",
@@ -29,7 +29,9 @@
   "devDependencies": {
     "@babel/core": "^7.22.20",
     "@babel/preset-env": "^7.22.20",
-    "@react-native/babel-preset": "9.3.0"
+    "@react-native/babel-preset": "9.3.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.4"
   },
   "engines": {
     "node": "18.x",
