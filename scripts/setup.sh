@@ -8,28 +8,28 @@ echo -e "\n=== Setting up AetherionAI Monorepo ===\n"
 echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Cannot access frontend directory"; exit 1; }
 
-# Compatibility configs for Netlify
+# Write compatibility configs
 cat > .npmrc <<EOF
 legacy-peer-deps=true
 audit=false
 registry=https://registry.npmjs.org/
 EOF
-echo "18.18.2" > .nvmrc
+echo "18.20.3" > .nvmrc
 
-# Clean cache to prevent ETARGET and registry issues
-npm cache clean --force || true
-
-# Install using yarn if available, else fallback to npm
+# Install deps
 if command -v yarn &>/dev/null; then
   yarn install
 else
   npm install --legacy-peer-deps
 fi
 
-echo "→ Fixing Expo entry in package.json..."
-sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json || true
+echo "→ Setting main entry to index.js..."
+sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
 
-echo "→ Installing Expo + React Native deps..."
+echo "→ Creating index.js for Expo entry..."
+echo "import 'expo-router/entry';" > index.js
+
+echo "→ Installing Expo and RN peer deps..."
 npx expo install \
   react-dom \
   react-native-web \
@@ -41,29 +41,26 @@ npx expo install \
   @react-navigation/native \
   @react-navigation/stack
 
-echo "→ Installing required extras..."
-yarn add discord.js @babel/preset-env @react-native/babel-preset@9.4.5
+echo "→ Installing project-specific packages..."
+yarn add discord.js @babel/preset-env @react-native/babel-preset@9.4.6
 
 echo "→ Ensuring reanimated plugin in babel.config.js..."
 BABEL_FILE="babel.config.js"
 if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
-  echo "✓ Plugin added to Babel config."
-else
-  echo "✓ Babel plugin already present."
 fi
 
-echo "→ Verifying assets..."
+echo "→ Adding fallback asset..."
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
-echo "→ Cleaning legacy config files..."
+echo "→ Cleaning legacy files..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 echo "→ Committing frontend setup..."
-git add .npmrc .nvmrc app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
-git commit -m "Setup: frontend deps, reanimated, babel, discord.js, image" || true
+git add .npmrc .nvmrc index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
+git commit -m "Fix: frontend entrypoint, deps, expo-router, image" || true
 git push || true
 
 # === Backend Setup ===
@@ -95,7 +92,7 @@ git add app.py
 git commit -m "Backend: API root route check" || true
 git push || true
 
-# === Finish ===
+# === Done ===
 echo -e "\n✅ AetherionAI Setup Complete!\n"
 echo "Frontend:  cd apps/aetherion-mobile && yarn start"
 echo "Backend:   cd services/backend && source venv/bin/activate && flask run"
