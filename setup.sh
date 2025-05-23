@@ -9,7 +9,7 @@ echo ""
 # --- Frontend Setup ---
 echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Failed to cd into frontend dir"; exit 1; }
-yarn install || npm install
+yarn install || npm install --legacy-peer-deps
 
 echo "→ Enforcing Expo entry point..."
 sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json || true
@@ -26,8 +26,8 @@ npx expo install \
   @react-navigation/native \
   @react-navigation/stack
 
-echo "→ Adding peer and project-specific packages..."
-yarn add discord.js @babel/preset-env @react-native/babel-preset
+echo "→ Adding required and peer packages..."
+yarn add discord.js @babel/preset-env @react-native/babel-preset@^8.5.0
 
 echo "→ Creating .npmrc for legacy-peer-deps..."
 echo "legacy-peer-deps=true" > .npmrc
