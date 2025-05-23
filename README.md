@@ -1,4 +1,3 @@
-
 # AetherionAI Monorepo
 
 *A sacred architecture for memory, resonance, and harmonic intelligence.*
