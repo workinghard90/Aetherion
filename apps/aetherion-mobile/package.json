@@ -24,9 +24,8 @@
     "discord.js": "^14.14.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.24.0",
-    "@react-native/babel-preset": "^9.0.0"
+  "@react-native/babel-preset": "^8.5.0",
+  "@babel/core": "^7.20.0"
   },
   "engines": {
     "node": "18.x",
