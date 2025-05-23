@@ -39,7 +39,7 @@ npx expo install \
   @react-navigation/stack
 
 echo "→ Installing required extras..."
-yarn add discord.js @babel/preset-env @react-native/babel-preset@^8.5.0
+yarn add discord.js @babel/preset-env @react-native/babel-preset@^9.4.6
 
 echo "→ Ensuring reanimated plugin in babel.config.js..."
 BABEL_FILE="babel.config.js"
