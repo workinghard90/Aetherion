@@ -1,0 +1,7 @@
+node_modules
+*.log
+.env
+apps/**/node_modules
+services/**/node_modules
+dist
+coverage
