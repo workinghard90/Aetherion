@@ -57,7 +57,32 @@ npx expo install \
 # Install other dependencies
 echo "→ Installing project dependencies..."
 yarn add discord.js
-yarn add -D @babel/preset-env @react-native/babel-preset@9.4.0
+yarn add -D @babel/preset-env @react-native/babel-preset@9.4.0 prettier
+
+# Prettier config files
+echo "→ Writing Prettier config..."
+cd ../../
+cat > .prettierrc <<EOF
+{
+  "singleQuote": true,
+  "semi": true,
+  "tabWidth": 2,
+  "printWidth": 100,
+  "trailingComma": "es5"
+}
+EOF
+
+cat > .prettierignore <<EOF
+node_modules
+dist
+build
+*.lock
+EOF
+
+# Git commit prettier config
+git add .prettierrc .prettierignore || true
+git commit -m "Setup: prettier config added" || true
+cd apps/aetherion-mobile
 
 # Ensure Babel reanimated plugin
 echo "→ Ensuring Babel reanimated plugin..."
