@@ -1,15 +1,12 @@
 {
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "services/*"
-  ],
+  "workspaces": ["apps/*", "services/*"],
   "scripts": {
-  "install": "yarn install",
-  "dev": "concurrently \"yarn start:expo\" \"yarn start:backend\"",
-  "start:expo": "yarn workspace aetherion-mobile start",
-  "start:backend": "yarn workspace backend run dev"
-},
+    "install": "yarn install",
+    "dev": "concurrently \"yarn start:expo\" \"yarn start:backend\"",
+    "start:expo": "yarn workspace aetherion-mobile start",
+    "start:backend": "yarn workspace backend run dev"
+  },
   "devDependencies": {
     "concurrently": "^8.2.0"
   }
