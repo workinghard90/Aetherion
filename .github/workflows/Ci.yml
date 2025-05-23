@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Yarn Classic
+        run: |
+          curl -o- -L https://yarnpkg.com/install.sh | bash
+          echo "::add-path::$HOME/.yarn/bin"
+
+      - name: Install frontend dependencies
+        working-directory: apps/aetherion-mobile
+        run: yarn install
+
+      - name: Run linter
+        working-directory: apps/aetherion-mobile
+        run: yarn lint
+
+      - name: Run Prettier check
+        working-directory: apps/aetherion-mobile
+        run: yarn format --check
+
+      - name: Setup backend
+        working-directory: services/backend
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Security Check
+        working-directory: services/backend
+        run: bash security-check.sh
