@@ -42,9 +42,10 @@ EOF
 
 cat > .prettierignore <<EOF
 node_modules
-build
 dist
+build
 coverage
+*.log
 EOF
 
 # ESLint config
@@ -72,12 +73,12 @@ else
   npm install --legacy-peer-deps
 fi
 
-# Main entry
+# Expo entry
 echo "→ Setting Expo entry to index.js..."
 sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
 echo "import 'expo-router/entry';" > index.js
 
-# Install project & peer dependencies
+# Install Expo & project deps
 npx expo install \
   react-dom \
   react-native-web \
@@ -98,31 +99,31 @@ if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-# Husky setup
+# Asset fallback
+mkdir -p assets
+[ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
+
+# Husky + lint-staged setup
 npx husky install
 npx husky add .husky/pre-commit "npx lint-staged"
 
-# lint-staged config
 cat > lint-staged.config.js <<EOF
-module.exports = {
-  '*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
+export default {
+  "*.{js,jsx,ts,tsx,json,md}": ["prettier --write", "eslint --fix"]
 };
 EOF
-
-# Fallback asset
-mkdir -p assets
-[ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
 # Cleanup
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
-# Git commit
-git add .editorconfig .npmrc .nvmrc .prettierrc .prettierignore .eslintrc.js index.js app.config.js "$BABEL_FILE" lint-staged.config.js package.json yarn.lock assets/bg.jpg || true
-git commit -m "Setup: index.js, lint, prettier, husky, config, babel, assets" || true
+# Git commit frontend
+git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg lint-staged.config.js || true
+git commit -m "Setup: frontend deps, linting, prettier, husky, expo-router, assets" || true
 git push || true
 
 # === Backend Setup ===
+echo -e "\n→ Installing backend dependencies..."
 cd ../../services/backend || { echo "❌ Cannot access backend directory"; exit 1; }
 
 [ -d venv ] || python3 -m venv venv
@@ -131,6 +132,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 deactivate
 
+echo "→ Running backend security checks..."
 bash security-check.sh && git add . && git commit -m "Backend: security check passed" || true
 
 # === Secrets Check ===
@@ -141,13 +143,13 @@ else
   echo "⚠️  Secrets check skipped or failed."
 fi
 
-# === Backend Commit ===
+# === Backend commit ===
 cd ../../services/backend
 git add app.py
 git commit -m "Backend: ensure root route / API status" || true
 git push || true
 
 # === Done ===
-echo -e "\n✅ AetherionAI Setup Complete!\n"
+echo -e "\n✅ AetherionAI Setup Complete!"
 echo "Frontend:  cd apps/aetherion-mobile && yarn start"
 echo "Backend:   cd services/backend && source venv/bin/activate && flask run"
