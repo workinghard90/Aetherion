@@ -10,26 +10,22 @@ echo ""
 echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Failed to cd into frontend dir"; exit 1; }
 
-echo "→ Writing .npmrc and .nvmrc..."
-cat <<EOF > .npmrc
-legacy-peer-deps=true
-audit=false
-registry=https://registry.npmjs.org/
-EOF
-
+# Create compatibility configs
+echo "legacy-peer-deps=true" > .npmrc
+echo "audit=false" >> .npmrc
+echo "registry=https://registry.npmjs.org/" >> .npmrc
 echo "18.20.3" > .nvmrc
 
-echo "→ Installing dependencies with yarn or fallback to npm..."
 if command -v yarn &> /dev/null; then
-  yarn install || true
+  yarn install
 else
-  npm install --legacy-peer-deps || true
+  npm install --legacy-peer-deps
 fi
 
-echo "→ Enforcing Expo entry point in package.json..."
+echo "→ Ensuring Expo entry point in package.json..."
 sed -i.bak 's/"main": *".*"/"main": "node_modules\/expo\/AppEntry.js"/' package.json || true
 
-echo "→ Installing Expo & React Native dependencies..."
+echo "→ Installing Expo & navigation dependencies..."
 npx expo install \
   react-dom \
   react-native-web \
@@ -41,10 +37,10 @@ npx expo install \
   @react-navigation/native \
   @react-navigation/stack
 
-echo "→ Adding project-specific extras..."
+echo "→ Adding required extra dependencies..."
 yarn add discord.js @babel/preset-env @react-native/babel-preset@^8.5.0
 
-echo "→ Updating Babel config for reanimated..."
+echo "→ Verifying babel.config.js for reanimated plugin..."
 BABEL_FILE="babel.config.js"
 if grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   echo "✓ Babel plugin already configured."
@@ -52,17 +48,17 @@ else
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-echo "→ Ensuring background image asset..."
+echo "→ Verifying background image asset..."
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
-echo "→ Cleaning up legacy files..."
+echo "→ Cleaning legacy config files..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 echo "→ Committing frontend setup..."
 git add .npmrc .nvmrc app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
-git commit -m "Setup: frontend deps, .nvmrc, .npmrc, reanimated, discord.js, bg" || true
+git commit -m "Setup: frontend deps, reanimated, discord.js, babel, .npmrc/.nvmrc" || true
 git push || true
 
 # --- Backend Setup ---
