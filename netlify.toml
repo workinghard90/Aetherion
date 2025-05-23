@@ -1,13 +1,12 @@
-# Root Netlify config
 [build]
 base = "apps/aetherion-mobile"
 publish = "apps/aetherion-mobile/dist"
-command = "npm install --legacy-peer-deps && npx expo export --platform web"
+command = "yarn install --legacy-peer-deps && expo export --platform web"
 
 [build.environment]
-NODE_VERSION = "18.20.8"
+NODE_VERSION = "18.20.3"
 YARN_VERSION = "1.22.22"
-EXPO_PUBLIC_API_URL = "https://your-api.example.com"
+EXPO_PUBLIC_API_URL = "https://your-api.example.com" # <-- replace this if needed
 
 [dev]
 command = "expo start --web"
