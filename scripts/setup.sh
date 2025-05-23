@@ -16,6 +16,19 @@ registry=https://registry.npmjs.org/
 EOF
 echo "18.20.3" > .nvmrc
 
+# Write consistent formatting
+cat > .editorconfig <<EOF
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+EOF
+
 # Install deps
 if command -v yarn &>/dev/null; then
   yarn install
@@ -23,12 +36,12 @@ else
   npm install --legacy-peer-deps
 fi
 
-# Expo entry point
-echo "→ Setting Expo main entry to index.js..."
+# Expo entry
+echo "→ Setting Expo entry to index.js..."
 sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
 echo "import 'expo-router/entry';" > index.js
 
-# Peer & project dependencies
+# Install Expo peer dependencies
 echo "→ Installing Expo and React Native deps..."
 npx expo install \
   react-dom \
@@ -41,29 +54,32 @@ npx expo install \
   @react-navigation/native \
   @react-navigation/stack
 
-echo "→ Installing custom + dev dependencies..."
+# Install other dependencies
+echo "→ Installing project dependencies..."
 yarn add discord.js
 yarn add -D @babel/preset-env @react-native/babel-preset@9.4.0
 
-# Reanimated Babel plugin
+# Ensure Babel reanimated plugin
+echo "→ Ensuring Babel reanimated plugin..."
 BABEL_FILE="babel.config.js"
 if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-# Assets
-echo "→ Adding fallback asset..."
+# Fallback asset
+echo "→ Ensuring background asset..."
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
 # Cleanup
+echo "→ Cleaning up old configs..."
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 # Git commit
-echo "→ Committing frontend updates..."
-git add .npmrc .nvmrc index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
-git commit -m "Setup: frontend entrypoint, expo-router, dependencies, config, assets" || true
+echo "→ Committing frontend setup..."
+git add .editorconfig .npmrc .nvmrc index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
+git commit -m "Setup: frontend index.js, dependencies, babel plugin, config, assets" || true
 git push || true
 
 # === Backend Setup ===
