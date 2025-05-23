@@ -14,10 +14,9 @@ legacy-peer-deps=true
 audit=false
 registry=https://registry.npmjs.org/
 EOF
-
 echo "18.20.3" > .nvmrc
 
-# Formatting
+# Editor config
 cat > .editorconfig <<EOF
 root = true
 
@@ -30,6 +29,7 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 EOF
 
+# Prettier config
 cat > .prettierrc <<EOF
 {
   "singleQuote": true,
@@ -44,28 +44,26 @@ cat > .prettierignore <<EOF
 node_modules
 build
 dist
+coverage
 EOF
 
+# ESLint config
 cat > .eslintrc.js <<EOF
 module.exports = {
   root: true,
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
-  parserOptions: {
-    ecmaVersion: 2021,
-    sourceType: 'module',
-    ecmaFeatures: { jsx: true }
+  extends: ['eslint:recommended'],
+  env: {
+    browser: true,
+    node: true,
+    es2021: true,
   },
-  env: { browser: true, node: true, es6: true },
-  rules: {
-    semi: ['error', 'always'],
-    quotes: ['error', 'single']
-  }
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: 'module',
+  },
+  rules: {},
 };
 EOF
-
-# Entry setup
-sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
-echo "import 'expo-router/entry';" > index.js
 
 # Install deps
 if command -v yarn &>/dev/null; then
@@ -74,7 +72,12 @@ else
   npm install --legacy-peer-deps
 fi
 
-# Expo deps
+# Main entry
+echo "→ Setting Expo entry to index.js..."
+sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
+echo "import 'expo-router/entry';" > index.js
+
+# Install project & peer dependencies
 npx expo install \
   react-dom \
   react-native-web \
@@ -86,40 +89,40 @@ npx expo install \
   @react-navigation/native \
   @react-navigation/stack
 
-# Extra packages
 yarn add discord.js
 yarn add -D @babel/preset-env @react-native/babel-preset@9.3.0 prettier eslint husky lint-staged
 
-# Babel plugin
+# Reanimated Babel plugin
 BABEL_FILE="babel.config.js"
 if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-# Git hook setup
+# Husky setup
 npx husky install
 npx husky add .husky/pre-commit "npx lint-staged"
 
+# lint-staged config
 cat > lint-staged.config.js <<EOF
 module.exports = {
-  '*.{js,jsx,ts,tsx}': ['prettier --write', 'eslint --fix']
+  '*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
 };
 EOF
 
-# Asset check
+# Fallback asset
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
+# Cleanup
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 # Git commit
-git add .editorconfig .npmrc .nvmrc .prettierrc .prettierignore .eslintrc.js lint-staged.config.js index.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
-git commit -m "Setup: full frontend config, lint/format, husky, babel, assets" || true
+git add .editorconfig .npmrc .nvmrc .prettierrc .prettierignore .eslintrc.js index.js app.config.js "$BABEL_FILE" lint-staged.config.js package.json yarn.lock assets/bg.jpg || true
+git commit -m "Setup: index.js, lint, prettier, husky, config, babel, assets" || true
 git push || true
 
 # === Backend Setup ===
-echo -e "\n→ Installing backend dependencies..."
 cd ../../services/backend || { echo "❌ Cannot access backend directory"; exit 1; }
 
 [ -d venv ] || python3 -m venv venv
@@ -128,11 +131,9 @@ pip install --upgrade pip
 pip install -r requirements.txt
 deactivate
 
-echo "→ Running backend security checks..."
 bash security-check.sh && git add . && git commit -m "Backend: security check passed" || true
 
 # === Secrets Check ===
-echo -e "\n→ Checking for leaked secrets..."
 cd ../../apps/aetherion-mobile
 if yarn run check:secrets; then
   echo "✓ Secrets check passed."
@@ -143,7 +144,7 @@ fi
 # === Backend Commit ===
 cd ../../services/backend
 git add app.py
-git commit -m "Backend: ensure root API route present" || true
+git commit -m "Backend: ensure root route / API status" || true
 git push || true
 
 # === Done ===
