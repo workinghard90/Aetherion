@@ -10,10 +10,15 @@ echo ""
 echo "→ Installing frontend dependencies..."
 cd apps/aetherion-mobile || { echo "❌ Failed to cd into frontend dir"; exit 1; }
 
-# Ensure legacy peer deps are handled properly
+# Create .npmrc for install compatibility
 echo "legacy-peer-deps=true" > .npmrc
+echo "audit=false" >> .npmrc
+echo "registry=https://registry.npmjs.org/" >> .npmrc
 
-# Prefer yarn if available, fallback to npm
+# Set Node version for Netlify/Render compatibility
+echo "18.20.3" > .nvmrc
+
+# Prefer yarn if available, else fallback to npm
 if command -v yarn &> /dev/null; then
   yarn install
 else
@@ -55,8 +60,8 @@ rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 echo "→ Committing frontend setup..."
-git add .npmrc app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
-git commit -m "Setup: frontend deps, reanimated, discord.js, image, babel, .npmrc" || true
+git add .npmrc .nvmrc app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg || true
+git commit -m "Setup: frontend deps, reanimated, discord.js, image, babel, config" || true
 git push || true
 
 # --- Backend Setup ---
