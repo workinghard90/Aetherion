@@ -30,7 +30,7 @@ export default ({ config }) => ({
     favicon: './assets/meta/favicon.png'
   },
   extra: {
-    apiUrl: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000',
+    apiUrl: process.env.EXPO_PUBLIC_API_URL || 'https://aetherionai-mobile.onrender.com',
     env: process.env.NODE_ENV || 'development'
   },
   plugins: [
