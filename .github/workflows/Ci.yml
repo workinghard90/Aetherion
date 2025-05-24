@@ -28,9 +28,13 @@ jobs:
           curl -o- -L https://yarnpkg.com/install.sh | bash
           echo "$HOME/.yarn/bin" >> $GITHUB_PATH
 
-      - name: Install frontend dependencies
+            - name: Install frontend dependencies
         working-directory: apps/aetherion-mobile
         run: yarn install
+
+      - name: Expo install peer dependencies
+        working-directory: apps/aetherion-mobile
+        run: npx expo install
 
       - name: Expo Build (Web export)
         working-directory: apps/aetherion-mobile
