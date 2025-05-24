@@ -23,7 +23,12 @@ curl -L https://classic.yarnpkg.com/latest.tar.gz | tar xz -C .yarn/releases --s
 
 # Yarn config
 cat > .yarnrc.yml <<EOF
-yarnPath: .yarn/releases/yarn.js
+yarnPath: .yarn/releases/yarn-1.22.22.cjs
+enableImmutableInstalls: false
+enableStrictSsl: true
+preferOffline: true
+cacheFolder: .yarn/cache
+enableGlobalCache: false
 EOF
 
 # Editor config
@@ -102,7 +107,13 @@ npx expo install \
   @react-native-async-storage/async-storage
 
 yarn add discord.js
-yarn add -D @babel/preset-env @react-native/babel-preset@^9.0.1 prettier eslint husky lint-staged
+yarn add -D \
+  @babel/preset-env \
+  @react-native/babel-preset@^9.0.1 \
+  prettier \
+  eslint \
+  husky \
+  lint-staged
 
 # Reanimated Babel plugin
 BABEL_FILE="babel.config.js"
@@ -129,13 +140,13 @@ chmod +x .husky/pre-commit
 cat > .husky/_/husky.sh <<'EOF'
 #!/bin/sh
 # Husky Git hook loader
-
 if [ -z "$HUSKY_SKIP_HOOKS" ]; then
   . "$(dirname "$0")/husky.sh"
 fi
 EOF
 chmod +x .husky/_/husky.sh
 
+# Lint-staged config
 cat > lint-staged.config.js <<EOF
 export default {
   "*.{js,jsx,ts,tsx,json,md}": ["prettier --write", "eslint --fix"]
