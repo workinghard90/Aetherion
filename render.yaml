@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: aetherionai-backend
+    env: python
+    buildCommand: |
+      python -m venv venv &&
+      source venv/bin/activate &&
+      pip install --upgrade pip &&
+      pip install -r services/backend/requirements.txt
+    startCommand: |
+      source venv/bin/activate &&
+      python services/backend/app.py
+    buildFilter:
+      paths:
+        - services/backend/**
+
+  - type: web
+    name: aetherionai-frontend
+    env: node
+    buildCommand: |
+      cd apps/aetherion-mobile &&
+      npm install --legacy-peer-deps &&
+      npx expo export --platform web
+    startCommand: npx serve -s apps/aetherion-mobile/dist
+    staticPublishPath: apps/aetherion-mobile/dist
+    buildFilter:
+      paths:
+        - apps/aetherion-mobile/**
+    envVars:
+      - key: EXPO_PUBLIC_API_URL
+        value: https://aetherionai-backend.onrender.com
