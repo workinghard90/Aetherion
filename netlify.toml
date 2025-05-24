@@ -1,7 +1,7 @@
 [build]
 base = "apps/aetherion-mobile"
 publish = "apps/aetherion-mobile/dist"
-command = "npm install --legacy-peer-deps && npx expo export --platform web"
+command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
 NODE_VERSION = "18.20.8"
@@ -18,7 +18,7 @@ EXPO_PUBLIC_API_URL = "https://preview.aetherionai-mobile.onrender.com"
 EXPO_PUBLIC_API_URL = "https://branch.aetherionai-mobile.onrender.com"
 
 [dev]
-command = "npx expo start --web"
+command = "expo start --web"
 port = 8888
 targetPort = 19006
 framework = "#custom"
