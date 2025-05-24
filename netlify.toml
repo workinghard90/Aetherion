@@ -1,6 +1,6 @@
 [build]
 base = "apps/aetherion-mobile"
-command = "yarn install && yarn build"
+command = "yarn install && expo export --platform web"
 publish = "apps/aetherion-mobile/dist"
 
 [build.environment]
@@ -12,10 +12,10 @@ EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
 [context.deploy-preview.environment]
-EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+EXPO_PUBLIC_API_URL = "https://preview.aetherionai-mobile.onrender.com"
 
 [context.branch-deploy.environment]
-EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+EXPO_PUBLIC_API_URL = "https://branch.aetherionai-mobile.onrender.com"
 
 [dev]
 command = "expo start --web"
