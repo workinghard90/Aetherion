@@ -1,6 +1,6 @@
 [build]
 base = "apps/aetherion-mobile"
-command = "yarn install && expo export --platform web"
+command = "yarn install && yarn build"
 publish = "apps/aetherion-mobile/dist"
 
 [build.environment]
