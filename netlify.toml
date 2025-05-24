@@ -12,10 +12,10 @@ EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
 [context.deploy-preview.environment]
-EXPO_PUBLIC_API_URL = "https://preview.aetherionai.com"
+EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
 [context.branch-deploy.environment]
-EXPO_PUBLIC_API_URL = "https://branch.aetherionai.com"
+EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
 [dev]
 command = "expo start --web"
