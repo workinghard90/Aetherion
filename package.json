@@ -1,14 +1,10 @@
 {
+  "name": "aetherion-monorepo",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cd apps/aetherion-mobile && yarn start",
-    "install": "cd apps/aetherion-mobile && yarn install",
-    "build": "cd apps/aetherion-mobile && yarn build"
-  },
-  "engines": {
-    "node": "18.x",
-    "npm": ">=9.0.0",
-    "yarn": "1.22.22"
+    "install": "npm install",
+    "dev": "concurrently \"npm run start --prefix apps/aetherion-mobile\" \"npm run dev --prefix services/backend\""
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
