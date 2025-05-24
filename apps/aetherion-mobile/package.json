@@ -30,17 +30,14 @@
   "devDependencies": {
     "@babel/core": "^7.22.20",
     "@babel/preset-env": "^7.22.20",
-    "@react-native/babel-preset": "^9.0.0",
+    "@react-native/babel-preset": "^8.5.0",
     "eslint": "^8.56.0",
     "prettier": "^3.2.5",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md}": [
-      "prettier --write",
-      "eslint --fix"
-    ]
+    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"]
   },
   "engines": {
     "node": "18.x",
