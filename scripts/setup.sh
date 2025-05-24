@@ -67,10 +67,10 @@ module.exports = {
 };
 EOF
 
-# Install deps
+# Install base deps
 npm install --legacy-peer-deps
 
-# Expo entry
+# Set entry point
 echo "→ Setting Expo entry to index.js..."
 sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
 echo "import 'expo-router/entry';" > index.js
@@ -89,9 +89,15 @@ npx expo install \
   @react-native-async-storage/async-storage
 
 npm install discord.js
-npm install --save-dev @babel/preset-env @react-native/babel-preset prettier eslint husky lint-staged
+npm install --save-dev \
+  @babel/preset-env \
+  @react-native/babel-preset@8.5.0 \
+  prettier \
+  eslint \
+  husky \
+  lint-staged
 
-# Ensure babel.config.js exists and has reanimated plugin
+# Ensure babel.config.js
 BABEL_FILE="babel.config.js"
 [ -f "$BABEL_FILE" ] || cat > "$BABEL_FILE" <<EOF
 module.exports = {
@@ -104,7 +110,7 @@ if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-# Fallback asset
+# Asset
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
@@ -140,7 +146,7 @@ git rm --cached app.config.py 2>/dev/null || true
 
 # Git commit frontend
 git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json package-lock.json assets/bg.jpg lint-staged.config.js .husky || true
-git commit -m "Setup: npm-only, linting, husky, prettier, expo-router, assets" || true
+git commit -m "Setup: npm deps, linting, husky, expo-router, reanimated plugin" || true
 git push || true
 
 # === Backend Setup ===
