@@ -1,7 +1,7 @@
 [build]
 base = "apps/aetherion-mobile"
 publish = "apps/aetherion-mobile/dist"
-command = "npm install --legacy-peer-deps && npm run build"
+command = "npm install --legacy-peer-deps && npx expo export --platform web"
 
 [build.environment]
 NODE_VERSION = "18.20.8"
