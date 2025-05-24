@@ -10,25 +10,33 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      EXPO_PUBLIC_API_URL: ${{ secrets.EXPO_PUBLIC_API_URL }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Use Node.js 18
+      - name: Setup Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install Yarn Classic
         run: |
+          mkdir -p ~/.yarn
           curl -o- -L https://yarnpkg.com/install.sh | bash
-          echo "::add-path::$HOME/.yarn/bin"
+          echo "$HOME/.yarn/bin" >> $GITHUB_PATH
 
       - name: Install frontend dependencies
         working-directory: apps/aetherion-mobile
         run: yarn install
 
-      - name: Run linter
+      - name: Expo Build (Web export)
+        working-directory: apps/aetherion-mobile
+        run: yarn build
+
+      - name: Run ESLint
         working-directory: apps/aetherion-mobile
         run: yarn lint
 
@@ -36,13 +44,14 @@ jobs:
         working-directory: apps/aetherion-mobile
         run: yarn format --check
 
-      - name: Setup backend
+      - name: Setup backend environment
         working-directory: services/backend
         run: |
           python3 -m venv venv
           source venv/bin/activate
+          pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Security Check
+      - name: Backend security check
         working-directory: services/backend
         run: bash security-check.sh
