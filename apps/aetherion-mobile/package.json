@@ -37,7 +37,7 @@
     "lint-staged": "^15.2.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"]
+    "*.{js,jsx,ts,tsx,json,md}": ["prettier --write", "eslint --fix"]
   },
   "engines": {
     "node": "18.x",
