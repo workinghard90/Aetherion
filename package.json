@@ -1,24 +1,16 @@
 {
   "private": true,
   "scripts": {
-    "install": "yarn install",
-    "dev": "concurrently \"yarn start:expo\" \"yarn start:backend\"",
-    "start:expo": "yarn workspace aetherion-mobile start",
-    "start:backend": "yarn workspace backend run dev",
-    "prepare": "husky install"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "eslint": "^8.56.0",
-    "prettier": "^3.2.5"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"]
+    "dev": "cd apps/aetherion-mobile && yarn start",
+    "install": "cd apps/aetherion-mobile && yarn install",
+    "build": "cd apps/aetherion-mobile && yarn build"
   },
   "engines": {
     "node": "18.x",
+    "npm": ">=9.0.0",
     "yarn": "1.22.22"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
   }
 }
