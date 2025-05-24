@@ -1,3 +1,4 @@
+# .github/workflows/ci.yml
 name: CI
 
 on:
@@ -11,27 +12,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Use Node.js 18
+      - name: Set up Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+          node-version: '18'
 
       - name: Install Yarn Classic
         run: |
-          mkdir -p .yarn/releases
-          curl -L https://classic.yarnpkg.com/latest.tar.gz | tar xz -C .yarn/releases --strip-components=1
-          corepack enable
+          curl -o- -L https://classic.yarnpkg.com/install.sh | bash
+          echo "$HOME/.yarn/bin" >> $GITHUB_PATH
 
-      - name: Install Netlify CLI
-        run: npm install -g netlify-cli
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/yarn
+            apps/aetherion-mobile/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: Install frontend dependencies
         working-directory: apps/aetherion-mobile
@@ -41,28 +41,17 @@ jobs:
         working-directory: apps/aetherion-mobile
         run: yarn lint
 
-      - name: Format check frontend
+      - name: Format check
         working-directory: apps/aetherion-mobile
         run: yarn format --check
 
-      - name: Expo export (static build)
-        working-directory: apps/aetherion-mobile
-        run: yarn build
-
-      - name: Install backend dependencies
+      - name: Setup backend venv & install dependencies
         working-directory: services/backend
         run: |
           python3 -m venv venv
           source venv/bin/activate
-          pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Backend security check
+      - name: Run backend security check
         working-directory: services/backend
         run: bash security-check.sh
-
-      - name: Deploy to Netlify
-        run: npx netlify deploy --dir=apps/aetherion-mobile/dist --prod
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
