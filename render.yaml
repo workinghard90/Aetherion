@@ -1,26 +1,34 @@
+# render.yaml
 services:
   - type: web
-    name: aetherionai-backend
+    name: aetherion-backend
     env: python
     plan: free
-    buildCommand: |
-      cd services/backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
-    startCommand: gunicorn app:app --chdir services/backend --bind 0.0.0.0:$PORT
+    region: oregon  # optional: choose your region
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+    autoDeploy: true
     envVars:
       - key: FLASK_ENV
         value: production
+      - key: PORT
+        value: 10000
+      - key: EXPO_PUBLIC_API_URL
+        value: https://aetherionai-mobile.onrender.com
 
-  - type: web
-    name: aetherionai-frontend
-    env: node
+  - type: static
+    name: aetherion-frontend
+    env: static
     plan: free
-    buildCommand: bash setup.sh
-    startCommand: yarn start
-    buildFilter:
-      paths:
-        - apps/aetherion-mobile/**
+    buildCommand: "npm install --legacy-peer-deps && expo export --platform web"
+    publishPath: "apps/aetherion-mobile/dist"
+    autoDeploy: true
     envVars:
       - key: NODE_VERSION
-        value: 18
+        value: 18.20.3
+      - key: NPM_FLAGS
+        value: --legacy-peer-deps
       - key: YARN_VERSION
         value: 1.22.22
+      - key: EXPO_PUBLIC_API_URL
+        value: https://aetherionai-mobile.onrender.com
