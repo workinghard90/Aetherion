@@ -1,2 +1,18 @@
+# requirements.txt
+
+# Web server and framework
 Flask==2.3.3
 gunicorn==21.2.0
+
+# Security & environment
+python-dotenv==1.0.1
+
+# Development tools
+flake8==6.1.0
+black==24.3.0
+
+# Type hints & linting (optional but recommended)
+mypy==1.10.0
+
+# Additional tools you might use
+requests==2.31.0
