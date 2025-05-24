@@ -7,18 +7,15 @@ publish = "apps/aetherion-mobile/dist"
 NODE_VERSION = "18.20.3"
 YARN_VERSION = "1.22.22"
 EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
-CI = "true"
-NPM_CONFIG_WORKSPACES = "false"
-NPM_FLAGS = "--legacy-peer-deps"
 
 [context.production.environment]
 EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
 [context.deploy-preview.environment]
-EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+EXPO_PUBLIC_API_URL = "https://preview.aetherionai.com"
 
 [context.branch-deploy.environment]
-EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+EXPO_PUBLIC_API_URL = "https://branch.aetherionai.com"
 
 [dev]
 command = "expo start --web"
