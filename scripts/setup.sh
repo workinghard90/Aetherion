@@ -91,8 +91,15 @@ npx expo install \
 npm install discord.js
 npm install --save-dev @babel/preset-env @react-native/babel-preset prettier eslint husky lint-staged
 
-# Reanimated Babel plugin
+# Ensure babel.config.js exists and has reanimated plugin
 BABEL_FILE="babel.config.js"
+[ -f "$BABEL_FILE" ] || cat > "$BABEL_FILE" <<EOF
+module.exports = {
+  presets: ["@babel/preset-env", "@react-native/babel-preset"],
+  plugins: ["react-native-reanimated/plugin"]
+};
+EOF
+
 if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
@@ -103,7 +110,22 @@ mkdir -p assets
 
 # Husky setup
 npx husky install
-npx husky add .husky/pre-commit "npx lint-staged"
+mkdir -p .husky/_
+
+cat > .husky/_/husky.sh <<'EOF'
+#!/bin/sh
+if [ -z "$HUSKY_SKIP_HOOKS" ]; then
+  . "$(dirname "$0")/husky.sh"
+fi
+EOF
+chmod +x .husky/_/husky.sh
+
+cat > .husky/pre-commit <<'EOF'
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+npx lint-staged
+EOF
+chmod +x .husky/pre-commit
 
 # Lint-staged config
 cat > lint-staged.config.js <<EOF
