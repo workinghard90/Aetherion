@@ -1,4 +1,5 @@
 # .github/workflows/ci.yml
+
 name: CI
 
 on:
@@ -22,20 +23,23 @@ jobs:
 
       - name: Install Yarn Classic
         run: |
-          curl -o- -L https://classic.yarnpkg.com/install.sh | bash
-          echo "$HOME/.yarn/bin" >> $GITHUB_PATH
+          mkdir -p .yarn/releases
+          curl -L https://classic.yarnpkg.com/latest.tar.gz | tar xz -C .yarn/releases --strip-components=1
+          echo "$(pwd)/.yarn/releases" >> $GITHUB_PATH
 
-      - name: Cache node_modules
+      - name: Restore yarn cache
         uses: actions/cache@v3
         with:
           path: |
-            ~/.cache/yarn
+            .yarn/cache
             apps/aetherion-mobile/node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install frontend dependencies
         working-directory: apps/aetherion-mobile
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Lint frontend
         working-directory: apps/aetherion-mobile
@@ -45,11 +49,12 @@ jobs:
         working-directory: apps/aetherion-mobile
         run: yarn format --check
 
-      - name: Setup backend venv & install dependencies
+      - name: Setup Python backend and install dependencies
         working-directory: services/backend
         run: |
           python3 -m venv venv
           source venv/bin/activate
+          pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run backend security check
