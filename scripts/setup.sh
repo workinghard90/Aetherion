@@ -14,11 +14,17 @@ legacy-peer-deps=true
 audit=false
 registry=https://registry.npmjs.org/
 EOF
+
 echo "18.20.3" > .nvmrc
 
 # Install Yarn Classic
 mkdir -p .yarn/releases
 curl -L https://classic.yarnpkg.com/latest.tar.gz | tar xz -C .yarn/releases --strip-components=1
+
+# Yarn config
+cat > .yarnrc.yml <<EOF
+yarnPath: .yarn/releases/yarn.js
+EOF
 
 # Editor config
 cat > .editorconfig <<EOF
@@ -92,10 +98,11 @@ npx expo install \
   react-native-safe-area-context \
   @expo/metro-runtime \
   @react-navigation/native \
-  @react-navigation/stack
+  @react-navigation/stack \
+  @react-native-async-storage/async-storage
 
 yarn add discord.js
-yarn add -D @babel/preset-env @react-native/babel-preset@9.3.0 prettier eslint husky lint-staged
+yarn add -D @babel/preset-env @react-native/babel-preset@^9.0.1 prettier eslint husky lint-staged
 
 # Reanimated Babel plugin
 BABEL_FILE="babel.config.js"
@@ -139,9 +146,9 @@ EOF
 rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
-# Git commit
-git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json yarn.lock assets/bg.jpg lint-staged.config.js .husky .yarn || true
-git commit -m "Setup: yarn classic, linting, prettier, husky, expo-router, assets" || true
+# Git commit frontend
+git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json yarn.lock .yarnrc.yml lint-staged.config.js .husky .yarn assets/bg.jpg || true
+git commit -m "Setup: deps, async-storage, husky, yarn classic, configs, expo-router, assets" || true
 git push || true
 
 # === Backend Setup ===
