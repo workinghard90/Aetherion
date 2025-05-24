@@ -10,8 +10,7 @@
     "check:secrets": "bash security-check.sh",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
-    "prepare": "husky install",
-    "dev": "concurrently \"yarn start\" \"cd ../../services/backend && source venv/bin/activate && flask run\""
+    "prepare": "husky install"
   },
   "dependencies": {
     "expo": "49.0.13",
@@ -31,12 +30,11 @@
   "devDependencies": {
     "@babel/core": "^7.22.20",
     "@babel/preset-env": "^7.22.20",
-    "@react-native/babel-preset": "9.0.1",
+    "@react-native/babel-preset": "^9.0.1",
     "eslint": "^8.56.0",
     "prettier": "^3.2.5",
     "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "concurrently": "^8.2.0"
+    "lint-staged": "^15.2.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"]
