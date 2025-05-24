@@ -2,7 +2,7 @@
 
 set -e
 
-echo -e "\n=== Setting up AetherionAI Monorepo ===\n"
+echo -e "\n=== Setting up AetherionAI Monorepo (NPM-Only) ===\n"
 
 # === Frontend Setup ===
 echo "→ Installing frontend dependencies..."
@@ -16,20 +16,6 @@ registry=https://registry.npmjs.org/
 EOF
 
 echo "18.20.3" > .nvmrc
-
-# Install Yarn Classic
-mkdir -p .yarn/releases
-curl -L https://classic.yarnpkg.com/latest.tar.gz | tar xz -C .yarn/releases --strip-components=1
-
-# Yarn config
-cat > .yarnrc.yml <<EOF
-yarnPath: .yarn/releases/yarn-1.22.22.cjs
-enableImmutableInstalls: false
-enableStrictSsl: true
-preferOffline: true
-cacheFolder: .yarn/cache
-enableGlobalCache: false
-EOF
 
 # Editor config
 cat > .editorconfig <<EOF
@@ -81,12 +67,8 @@ module.exports = {
 };
 EOF
 
-# Install deps
-if command -v yarn &>/dev/null; then
-  yarn install
-else
-  npm install --legacy-peer-deps
-fi
+# Install deps with npm
+npm install --legacy-peer-deps
 
 # Expo entry
 echo "→ Setting Expo entry to index.js..."
@@ -106,8 +88,8 @@ npx expo install \
   @react-navigation/stack \
   @react-native-async-storage/async-storage
 
-yarn add discord.js
-yarn add -D \
+npm install discord.js
+npm install --save-dev \
   @babel/preset-env \
   @react-native/babel-preset@^9.0.1 \
   prettier \
@@ -115,38 +97,35 @@ yarn add -D \
   husky \
   lint-staged
 
-# Reanimated Babel plugin
+# Babel plugin
 BABEL_FILE="babel.config.js"
 if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
   sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-# Fallback asset
+# Asset
 mkdir -p assets
 [ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
-# Husky setup
+# Husky + Lint-staged
 npx husky install
 mkdir -p .husky/_
 
 cat > .husky/pre-commit <<'EOF'
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
-
 npx lint-staged
 EOF
 chmod +x .husky/pre-commit
 
 cat > .husky/_/husky.sh <<'EOF'
 #!/bin/sh
-# Husky Git hook loader
 if [ -z "$HUSKY_SKIP_HOOKS" ]; then
   . "$(dirname "$0")/husky.sh"
 fi
 EOF
 chmod +x .husky/_/husky.sh
 
-# Lint-staged config
 cat > lint-staged.config.js <<EOF
 export default {
   "*.{js,jsx,ts,tsx,json,md}": ["prettier --write", "eslint --fix"]
@@ -158,8 +137,8 @@ rm -f app.config.py
 git rm --cached app.config.py 2>/dev/null || true
 
 # Git commit frontend
-git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json yarn.lock .yarnrc.yml lint-staged.config.js .husky .yarn assets/bg.jpg || true
-git commit -m "Setup: deps, async-storage, husky, yarn classic, configs, expo-router, assets" || true
+git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json package-lock.json lint-staged.config.js .husky assets/bg.jpg || true
+git commit -m "Setup: npm-only, husky, prettier, configs, expo-router, assets" || true
 git push || true
 
 # === Backend Setup ===
@@ -177,7 +156,7 @@ bash security-check.sh && git add . && git commit -m "Backend: security check pa
 
 # === Secrets Check ===
 cd ../../apps/aetherion-mobile
-if yarn run check:secrets; then
+if npm run check:secrets; then
   echo "✓ Secrets check passed."
 else
   echo "⚠️  Secrets check skipped or failed."
@@ -191,5 +170,5 @@ git push || true
 
 # === Done ===
 echo -e "\n✅ AetherionAI Setup Complete!"
-echo "Frontend:  cd apps/aetherion-mobile && yarn start"
+echo "Frontend:  cd apps/aetherion-mobile && npm start"
 echo "Backend:   cd services/backend && source venv/bin/activate && flask run"
