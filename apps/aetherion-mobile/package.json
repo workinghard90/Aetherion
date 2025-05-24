@@ -30,7 +30,7 @@
   "devDependencies": {
     "@babel/core": "7.22.20",
     "@babel/preset-env": "7.22.20",
-    "@react-native/babel-preset": "9.2.0",
+    "@react-native/babel-preset": "9.0.2,
     "eslint": "8.56.0",
     "prettier": "3.2.5",
     "husky": "8.0.3",
