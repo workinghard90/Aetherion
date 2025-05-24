@@ -1,29 +1,49 @@
-# Node
+# Node modules & logs
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # Build outputs
-dist/
 build/
+dist/
 coverage/
 .expo/
 .expo-shared/
+web-build/
+*.log
 
-# macOS
+# Metro bundler
+*.hprof
+*.tflite
+
+# Environment
+.env
+.env.*
+.nvmrc
+.node-version
+
+# macOS system
 .DS_Store
 
-# Python
+# Python artifacts
 services/backend/venv/
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyd
 
-# IDE/editor
+# Editor/IDE
 .vscode/
 .idea/
+*.swp
 
-# Env vars
-.env
-.env.*
+# Misc
+*.bak
+*.tmp
+*.orig
+.husky/_/*
+.yarn/*
+.yarn/cache/*
+*.tgz
