@@ -31,9 +31,9 @@ export default ({ config }) => ({
   },
   extra: {
     apiUrl: process.env.EXPO_PUBLIC_API_URL || 'https://aetherionai-mobile.onrender.com',
-    env: process.env.NODE_ENV || 'development'
+    nodeEnv: process.env.NODE_ENV || 'development'
   },
   plugins: [
-    // add additional Expo plugins here if needed
+    // Add Expo plugins here
   ]
 });
