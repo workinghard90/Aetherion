@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "main": "index.js",
+  "workspaces": false,
   "scripts": {
     "start": "expo start",
     "build": "expo export --platform web",
