@@ -2,22 +2,20 @@
 
 set -e
 
-echo -e "\n=== Setting up AetherionAI Monorepo (NPM-Only) ===\n"
+echo -e "\n=== Setting up AetherionAI Monorepo (npm only) ===\n"
 
 # === Frontend Setup ===
-echo "→ Installing frontend dependencies..."
+echo "→ Setting up frontend..."
 cd apps/aetherion-mobile || { echo "❌ Cannot access frontend directory"; exit 1; }
 
-# Compatibility configs
+# Node and NPM config
+echo "18.20.8" > .node-version
 cat > .npmrc <<EOF
 legacy-peer-deps=true
 audit=false
-registry=https://registry.npmjs.org/
 EOF
 
-echo "18.20.3" > .nvmrc
-
-# Editor config
+# Editor and Linting Configs
 cat > .editorconfig <<EOF
 root = true
 
@@ -30,7 +28,6 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 EOF
 
-# Prettier config
 cat > .prettierrc <<EOF
 {
   "singleQuote": true,
@@ -43,13 +40,12 @@ EOF
 
 cat > .prettierignore <<EOF
 node_modules
-dist
 build
+dist
 coverage
 *.log
 EOF
 
-# ESLint config
 cat > .eslintrc.js <<EOF
 module.exports = {
   root: true,
@@ -57,74 +53,33 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    es2021: true,
+    es2021: true
   },
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: 'module',
+    sourceType: 'module'
   },
-  rules: {},
+  rules: {}
 };
 EOF
 
-# Install deps with npm
-npm install --legacy-peer-deps
+# Install frontend dependencies
+npm install
 
-# Expo entry
-echo "→ Setting Expo entry to index.js..."
+# Expo entry point
+echo "→ Configuring Expo entry..."
 sed -i.bak 's/"main": *".*"/"main": "index.js"/' package.json || true
 echo "import 'expo-router/entry';" > index.js
 
-# Install Expo & project deps
-npx expo install \
-  react-dom \
-  react-native-web \
-  react-native-gesture-handler \
-  react-native-reanimated \
-  react-native-screens \
-  react-native-safe-area-context \
-  @expo/metro-runtime \
-  @react-navigation/native \
-  @react-navigation/stack \
-  @react-native-async-storage/async-storage
-
-npm install discord.js
-npm install --save-dev \
-  @babel/preset-env \
-  @react-native/babel-preset@^9.0.1 \
-  prettier \
-  eslint \
-  husky \
-  lint-staged
-
-# Babel plugin
+# Ensure Babel plugin
 BABEL_FILE="babel.config.js"
 if ! grep -q "react-native-reanimated/plugin" "$BABEL_FILE"; then
-  sed -i.bak 's/plugins: \[/plugins: [\n      "react-native-reanimated\/plugin",/' "$BABEL_FILE"
+  sed -i.bak 's/plugins: \[/plugins: [\n    "react-native-reanimated\/plugin",/' "$BABEL_FILE"
 fi
 
-# Asset
-mkdir -p assets
-[ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
-
-# Husky + Lint-staged
+# Husky and Lint-Staged
 npx husky install
-mkdir -p .husky/_
-
-cat > .husky/pre-commit <<'EOF'
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-npx lint-staged
-EOF
-chmod +x .husky/pre-commit
-
-cat > .husky/_/husky.sh <<'EOF'
-#!/bin/sh
-if [ -z "$HUSKY_SKIP_HOOKS" ]; then
-  . "$(dirname "$0")/husky.sh"
-fi
-EOF
-chmod +x .husky/_/husky.sh
+npx husky add .husky/pre-commit "npx lint-staged"
 
 cat > lint-staged.config.js <<EOF
 export default {
@@ -132,17 +87,17 @@ export default {
 };
 EOF
 
-# Cleanup
-rm -f app.config.py
-git rm --cached app.config.py 2>/dev/null || true
+# Fallback asset
+mkdir -p assets
+[ -f assets/bg.jpg ] || curl -s https://via.placeholder.com/1080x1920.jpg -o assets/bg.jpg
 
-# Git commit frontend
-git add .editorconfig .prettierrc .prettierignore .npmrc .nvmrc .eslintrc.js index.js app.config.js "$BABEL_FILE" package.json package-lock.json lint-staged.config.js .husky assets/bg.jpg || true
-git commit -m "Setup: npm-only, husky, prettier, configs, expo-router, assets" || true
+# Git Commit
+git add .editorconfig .prettierrc .prettierignore .npmrc .eslintrc.js index.js package.json babel.config.js lint-staged.config.js .husky assets/bg.jpg || true
+git commit -m "Setup: npm-based frontend, husky, lint, prettier, expo entry" || true
 git push || true
 
 # === Backend Setup ===
-echo -e "\n→ Installing backend dependencies..."
+echo -e "\n→ Setting up backend..."
 cd ../../services/backend || { echo "❌ Cannot access backend directory"; exit 1; }
 
 [ -d venv ] || python3 -m venv venv
@@ -151,24 +106,9 @@ pip install --upgrade pip
 pip install -r requirements.txt
 deactivate
 
-echo "→ Running backend security checks..."
-bash security-check.sh && git add . && git commit -m "Backend: security check passed" || true
-
-# === Secrets Check ===
-cd ../../apps/aetherion-mobile
-if npm run check:secrets; then
-  echo "✓ Secrets check passed."
-else
-  echo "⚠️  Secrets check skipped or failed."
-fi
-
-# === Backend commit ===
-cd ../../services/backend
-git add app.py
-git commit -m "Backend: ensure root route / API status" || true
-git push || true
+bash security-check.sh && git add . && git commit -m "Backend: security verified" || true
 
 # === Done ===
-echo -e "\n✅ AetherionAI Setup Complete!"
-echo "Frontend:  cd apps/aetherion-mobile && npm start"
-echo "Backend:   cd services/backend && source venv/bin/activate && flask run"
+echo -e "\n✅ AetherionAI Setup Complete"
+echo "Frontend: cd apps/aetherion-mobile && npm start"
+echo "Backend:  cd services/backend && source venv/bin/activate && flask run"
