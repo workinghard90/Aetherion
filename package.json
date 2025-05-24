@@ -1,6 +1,5 @@
 {
   "private": true,
-  "workspaces": ["apps/*", "services/*"],
   "scripts": {
     "install": "yarn install",
     "dev": "concurrently \"yarn start:expo\" \"yarn start:backend\"",
