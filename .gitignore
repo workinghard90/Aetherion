@@ -1,32 +1,35 @@
 # Node
 node_modules/
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 package-lock.json
 
-# Expo
-.expo/
-.expo-shared/
-*.expo
-
-# Web / Mobile build
+# Build
 dist/
 build/
 coverage/
-*.log
+.expo/
+.expo-shared/
+web-build/
 
-# macOS system
+# macOS
 .DS_Store
 
 # Python
-services/backend/venv/
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyc
+services/backend/venv/
 
-# IDE/editor
+# Env
+.env
+.env.*
+
+# IDE
 .vscode/
 .idea/
 
-# Env files
-.env
-.env.*
+# Husky
+.husky/_/
