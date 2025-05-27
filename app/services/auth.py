@@ -3,7 +3,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from ..models.user import User
-from ..services.auth import generate_token
 from ..database import db
 
 auth_bp = Blueprint("auth", __name__)
