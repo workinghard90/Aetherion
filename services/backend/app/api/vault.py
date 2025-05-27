@@ -92,3 +92,31 @@ def delete_file(file_id):
     db.session.commit()
 
     return jsonify({"message": "File deleted"}), 200
+
+from ..models.audit import AuditLog
+
+def log_action(user_id, action, file_id):
+    entry = AuditLog(
+        user_id=user_id,
+        action=action,
+        file_id=file_id,
+        ip_address=request.remote_addr
+    )
+    db.session.add(entry)
+    db.session.commit()
+
+@vault_bp.route("/metadata/<int:file_id>", methods=["PATCH"])
+@require_auth
+def update_metadata(file_id):
+    vault_file = VaultFile.query.filter_by(id=file_id, user_id=request.user_id).first()
+    if not vault_file:
+        return jsonify({"error": "File not found"}), 404
+
+    data = request.json
+    vault_file.title = data.get("title", vault_file.title)
+    vault_file.tags = data.get("tags", vault_file.tags)
+
+    db.session.commit()
+    log_action(request.user_id, "metadata", file_id)
+
+    return jsonify({"message": "File metadata updated"}), 200
