@@ -7,6 +7,7 @@ services:
     branch: main
     buildCommand: |
       cd services/backend
+      pip install --upgrade pip
       pip install -r requirements.txt
     startCommand: |
       cd services/backend
@@ -18,5 +19,7 @@ services:
         generateValue: true
       - key: UPLOAD_FOLDER
         value: uploads
+      - key: MAX_CONTENT_LENGTH
+        value: "104857600"
       - key: SQLALCHEMY_DATABASE_URI
-        value: sqlite:///vault.db  # or connect to Render Postgres
+        value: sqlite:///vault.db
