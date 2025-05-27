@@ -5,6 +5,7 @@ from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from ..models.file import VaultFile
 from ..database import db
+from ..services.crypto import encrypt_file, decrypt_file
 
 vault_bp = Blueprint("vault", __name__)
 
@@ -20,28 +21,55 @@ def upload_file():
     filename = secure_filename(file.filename)
     path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
-    file.save(path)
+
+    encrypted_data = encrypt_file(file.read())
+    with open(path, "wb") as f:
+        f.write(encrypted_data)
 
     new_file = VaultFile(
         filename=filename,
         original_name=file.filename,
         mime_type=file.mimetype,
-        size=os.path.getsize(path),
+        size=len(encrypted_data),
     )
     db.session.add(new_file)
     db.session.commit()
 
     return jsonify({"message": "File uploaded", "file_id": new_file.id}), 201
 
-@vault_bp.route("/files", methods=["GET"])
-def list_files():
-    files = VaultFile.query.all()
-    return jsonify([
+@vault_bp.route("/download/<int:file_id>", methods=["GET"])
+def download_file(file_id):
+    vault_file = VaultFile.query.get(file_id)
+    if not vault_file:
+        return jsonify({"error": "File not found"}), 404
+
+    path = os.path.join(current_app.config["UPLOAD_FOLDER"], vault_file.filename)
+    if not os.path.exists(path):
+        return jsonify({"error": "Encrypted file missing"}), 404
+
+    with open(path, "rb") as f:
+        decrypted_data = decrypt_file(f.read())
+
+    return (
+        decrypted_data,
+        200,
         {
-            "id": f.id,
-            "name": f.original_name,
-            "type": f.mime_type,
-            "size": f.size,
-            "uploaded": f.upload_time.isoformat()
-        } for f in files
-    ])
+            "Content-Type": vault_file.mime_type,
+            "Content-Disposition": f"attachment; filename={vault_file.original_name}"
+        },
+    )
+
+@vault_bp.route("/delete/<int:file_id>", methods=["DELETE"])
+def delete_file(file_id):
+    vault_file = VaultFile.query.get(file_id)
+    if not vault_file:
+        return jsonify({"error": "File not found"}), 404
+
+    path = os.path.join(current_app.config["UPLOAD_FOLDER"], vault_file.filename)
+    if os.path.exists(path):
+        os.remove(path)
+
+    db.session.delete(vault_file)
+    db.session.commit()
+
+    return jsonify({"message": "File deleted"}), 200
