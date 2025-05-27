@@ -1,36 +1,35 @@
-from flask import Blueprint, request, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-from ..models.user import User
-from ..database import db
-from ..services.auth import generate_token
+import jwt
+import datetime
+from flask import current_app, request
+from functools import wraps
 
-auth_bp = Blueprint("auth", __name__)
+def generate_token(user_id):
+    payload = {
+        "user_id": user_id,
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)
+    }
+    secret = current_app.config["JWT_SECRET"]
+    return jwt.encode(payload, secret, algorithm="HS256")
 
-@auth_bp.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-    if not data or not data.get("username") or not data.get("password"):
-        return jsonify({"error": "Username and password are required"}), 400
+def decode_token(token):
+    try:
+        secret = current_app.config["JWT_SECRET"]
+        return jwt.decode(token, secret, algorithms=["HS256"])
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
 
-    if User.query.filter_by(username=data["username"]).first():
-        return jsonify({"error": "User already exists"}), 409
-
-    hashed = generate_password_hash(data["password"])
-    new_user = User(username=data["username"], password=hashed)
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({"message": "User registered"}), 201
-
-@auth_bp.route("/login", methods=["POST"])
-def login():
-    data = request.get_json()
-    if not data or not data.get("username") or not data.get("password"):
-        return jsonify({"error": "Username and password are required"}), 400
-
-    user = User.query.filter_by(username=data["username"]).first()
-    if not user or not check_password_hash(user.password, data["password"]):
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    token = generate_token(user.id)
-    return jsonify({"token": token})
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.startswith("Bearer "):
+            return {"error": "Missing or invalid auth header"}, 401
+        token = auth_header.split(" ")[1]
+        data = decode_token(token)
+        if not data:
+            return {"error": "Invalid or expired token"}, 401
+        request.user_id = data["user_id"]
+        return f(*args, **kwargs)
+    return decorated
