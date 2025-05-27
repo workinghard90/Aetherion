@@ -1,11 +1,7 @@
 [tool.ruff]
-# Max line length for consistency
 line-length = 100
-
-# Python version compatibility
 target-version = "py310"
 
-# Linting rule sets
 select = [
   "E",    # pycodestyle
   "F",    # pyflakes
@@ -16,26 +12,21 @@ select = [
   "UP",   # pyupgrade
   "SIM",  # simplify
   "ARG",  # unused arguments
-  "RUF"   # ruff-specific
+  "RUF"   # ruff-specific rules
 ]
 
-# Ignore certain rule violations
 ignore = [
-  "E501",  # Line too long (optional if using black)
-  "B008",  # Function calls in argument defaults
+  "E501",  # line too long
+  "B008"   # function call as default arg
 ]
 
-# Paths to ignore (project-root aware)
 exclude = [
-  "**/migrations",
-  "**/__pycache__",
-  "**/.venv",
-  "**/tests",
-  "**/env",
-  "**/venv",
-  "**/.git",
-  "**/.github"
+  "migrations",
+  "__pycache__",
+  ".venv",
+  "tests",
+  "env",
+  "venv",
+  ".git",
+  ".github"
 ]
-
-# Uncomment to enable auto-fix with `ruff --fix`
-# fix = true
