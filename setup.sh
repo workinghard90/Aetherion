@@ -33,7 +33,16 @@ line-length = 100
 target-version = "py310"
 select = ["E", "F", "I", "B", "C90", "N", "UP", "SIM", "ARG", "RUF"]
 ignore = ["E501", "B008"]
-exclude = ["migrations", "__pycache__", ".venv", "tests", "env", "venv", ".git", ".github"]
+exclude = [
+  "migrations",
+  "__pycache__",
+  ".venv",
+  "tests",
+  "env",
+  "venv",
+  ".git",
+  ".github"
+]
 EOF
 
 # Patch veil_of_the_grove.py for dynamic port
