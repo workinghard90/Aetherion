@@ -1,26 +1,36 @@
-# Root .gitignore
-
-# Ignore real secrets
+# === ENVIRONMENT & SECRETS ===
+.env
+.env.*
 services/backend/.env
 
-# Bytecode
+# === PYTHON ARTIFACTS ===
 __pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 *.pyc
 
-# Env
-*.env
+# === VIRTUAL ENVIRONMENTS ===
 .venv/
-env/
 venv/
+env/
 
-# Flask-Migrate
+# === FLASK MIGRATIONS ===
 services/backend/migrations/
 
-# Tests and logs
+# === TEST OUTPUTS ===
 *.log
+.coverage
 coverage.xml
+htmlcov/
 
-# Mac / IDEs
+# === IDE & EDITOR FILES ===
 .DS_Store
 .vscode/
 .idea/
+
+# === PYTEST CACHE ===
+.pytest_cache/
+
+# === LINTER CACHE ===
+ruff_cache/
