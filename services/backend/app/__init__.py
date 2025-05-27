@@ -31,3 +31,16 @@ def create_app():
     return app
 
 from .models.audit import AuditLog
+# services/backend/app/__init__.py
+
+from flask_migrate import Migrate
+from .models.audit import AuditLog  # ensures table exists
+
+migrate = Migrate()
+
+def create_app():
+    ...
+    db.init_app(app)
+    migrate.init_app(app, db)
+    ...
+
