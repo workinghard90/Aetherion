@@ -2,13 +2,12 @@ services:
   - type: web
     name: aetherion-backend
     env: python
-    repo: https://github.com/your-username/AetherionAI
+    repo: https://github.com/workinghard90/AetherionAI
     branch: main
     buildCommand: |
       pip install --upgrade pip && \
       pip install -r requirements.txt
-    startCommand: |
-      gunicorn veil_of_the_grove:app
+    startCommand: gunicorn veil_of_the_grove:app
     envVars:
       - key: FLASK_ENV
         value: production
