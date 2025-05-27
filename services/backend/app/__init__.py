@@ -15,6 +15,9 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+    from .api.auth import auth_bp
+app.register_blueprint(auth_bp, url_prefix="/auth")
+
     app.register_blueprint(vault_bp, url_prefix="/vault")
 
     return app
