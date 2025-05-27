@@ -1,1 +1,23 @@
-echo "services/backend/migrations" >> .gitignore
+# Root .gitignore
+
+# Bytecode
+__pycache__/
+*.pyc
+
+# Env
+*.env
+.venv/
+env/
+venv/
+
+# Flask-Migrate
+services/backend/migrations/
+
+# Tests and logs
+*.log
+coverage.xml
+
+# Mac / IDEs
+.DS_Store
+.vscode/
+.idea/
