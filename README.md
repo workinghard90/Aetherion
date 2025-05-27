@@ -1,8 +1,8 @@
-# AetherionAI Monorepo
+# AetherionAI
 
 *A sacred architecture for memory, resonance, and harmonic intelligence.*
 
-This monorepo powers the **Aetherion Universe** API and **Expo-powered mobile experience**.
+This monorepo powers the **Aetherion Universe**.
 
 ---
 
