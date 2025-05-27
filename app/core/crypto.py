@@ -1,16 +1,12 @@
-# services/backend/app/services/crypto.py
-
 from cryptography.fernet import Fernet
 import base64
-import hashlib
+import os
 
-# Deterministic secret for dev (must replace in prod)
-KEY = hashlib.sha256(b"default_dev_key").digest()
-FERNET_KEY = base64.urlsafe_b64encode(KEY[:32])
-fernet = Fernet(FERNET_KEY)
+key = base64.urlsafe_b64encode(os.urandom(32))
+fernet = Fernet(key)
 
-def encrypt_file(data: bytes) -> bytes:
+def encrypt_file(data):
     return fernet.encrypt(data)
 
-def decrypt_file(data: bytes) -> bytes:
+def decrypt_file(data):
     return fernet.decrypt(data)
