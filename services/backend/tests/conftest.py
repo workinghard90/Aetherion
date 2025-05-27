@@ -1,9 +1,8 @@
-# services/backend/tests/conftest.py
-
 import os
 import tempfile
 import pytest
 from app import create_app, db
+
 
 @pytest.fixture
 def client():
