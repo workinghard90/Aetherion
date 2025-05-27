@@ -1,9 +1,8 @@
-```python
 import os
 from flask import Flask
-from .config import get_config
-from .extensions import db, migrate, cors
-from .api import register_blueprints
+from aetherion.config import get_config
+from aetherion.extensions import db, migrate, cors
+from aetherion.api import register_blueprints
 
 def create_app():
     app = Flask(__name__)
@@ -16,4 +15,3 @@ def create_app():
 
     register_blueprints(app)
     return app
-```
