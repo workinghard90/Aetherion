@@ -1,8 +1,8 @@
 import os
 import tempfile
 import pytest
-from app import create_app, db
-
+from aetherion import create_app
+from aetherion.extensions import db
 
 @pytest.fixture
 def client():
