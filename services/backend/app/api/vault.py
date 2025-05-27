@@ -4,11 +4,17 @@ import os
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 from ..models.file import VaultFile
+from ..models.audit import AuditLog
 from ..database import db
 from ..services.crypto import encrypt_file, decrypt_file
 from ..services.auth import require_auth
 
 vault_bp = Blueprint("vault", __name__)
+
+def log_action(user_id, action, file_id):
+    entry = AuditLog(user_id=user_id, action=action, file_id=file_id, ip_address=request.remote_addr)
+    db.session.add(entry)
+    db.session.commit()
 
 @vault_bp.route("/upload", methods=["POST"])
 @require_auth
@@ -37,6 +43,8 @@ def upload_file():
     )
     db.session.add(new_file)
     db.session.commit()
+
+    log_action(request.user_id, "upload", new_file.id)
 
     return jsonify({"message": "File uploaded", "file_id": new_file.id}), 201
 
@@ -68,6 +76,8 @@ def download_file(file_id):
     with open(path, "rb") as f:
         decrypted_data = decrypt_file(f.read())
 
+    log_action(request.user_id, "download", file_id)
+
     return (
         decrypted_data,
         200,
@@ -91,19 +101,9 @@ def delete_file(file_id):
     db.session.delete(vault_file)
     db.session.commit()
 
+    log_action(request.user_id, "delete", file_id)
+
     return jsonify({"message": "File deleted"}), 200
-
-from ..models.audit import AuditLog
-
-def log_action(user_id, action, file_id):
-    entry = AuditLog(
-        user_id=user_id,
-        action=action,
-        file_id=file_id,
-        ip_address=request.remote_addr
-    )
-    db.session.add(entry)
-    db.session.commit()
 
 @vault_bp.route("/metadata/<int:file_id>", methods=["PATCH"])
 @require_auth
@@ -120,6 +120,7 @@ def update_metadata(file_id):
     log_action(request.user_id, "metadata", file_id)
 
     return jsonify({"message": "File metadata updated"}), 200
+
 @vault_bp.route("/audit", methods=["GET"])
 @require_auth
 def get_audit_log():
