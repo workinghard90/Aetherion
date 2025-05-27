@@ -1,20 +1,20 @@
 import os
 
-class Config:
+class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///vault.db")
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "uploads")
     MAX_CONTENT_LENGTH = int(os.getenv("MAX_CONTENT_LENGTH", 104857600))
-    JWT_SECRET = os.getenv("JWT_SECRET", "dev_key")
+    JWT_SECRET = os.getenv("JWT_SECRET")
 
-class DevelopmentConfig(Config):
+class DevelopmentConfig(BaseConfig):
     DEBUG = True
 
-class ProductionConfig(Config):
+class ProductionConfig(BaseConfig):
     DEBUG = False
 
 def get_config(env):
     return {
         "development": DevelopmentConfig,
-        "production": ProductionConfig,
-    }.get(env, DevelopmentConfig)
+        "production": ProductionConfig
+    }.get(env, BaseConfig)
