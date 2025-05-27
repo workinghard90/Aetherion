@@ -1,5 +1,3 @@
-# AetherionAI/.github/workflows/backend-tests.yml
-
 name: Backend Tests
 
 on:
@@ -27,19 +25,35 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Set up pip cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Create virtualenv and install deps
         run: |
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
-          pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] pytest pytest-flask ruff
+          pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] \
+                      pytest pytest-flask pytest-cov ruff
 
-      - name: Run ruff lint
+      - name: Run Ruff linter
         run: |
           source .venv/bin/activate
           ruff check .
 
-      - name: Run tests
+      - name: Run Pytest with coverage
         run: |
           source .venv/bin/activate
-          pytest
+          pytest --cov=app --cov-report=term-missing
+
+      - name: Upload HTML coverage report (optional)
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: htmlcov
+          path: services/backend/htmlcov/
