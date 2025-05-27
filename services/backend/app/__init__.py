@@ -29,3 +29,5 @@ def create_app():
     app.register_blueprint(vault_bp, url_prefix="/vault")
 
     return app
+
+from .models.audit import AuditLog
