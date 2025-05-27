@@ -1,2 +1,0 @@
-curl -s https://via.placeholder.com/512.png -o apps/aetherion-mobile/assets/icons/icon.png
-curl -s https://via.placeholder.com/1024.png -o apps/aetherion-mobile/assets/icons/adaptive-icon.png
