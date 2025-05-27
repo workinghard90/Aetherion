@@ -17,7 +17,7 @@ select = [
 
 ignore = [
   "E501",  # line too long
-  "B008"   # function call as default arg
+  "B008"   # function call in default arg
 ]
 
 exclude = [
