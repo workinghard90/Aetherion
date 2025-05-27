@@ -73,3 +73,12 @@ def delete_file(file_id):
     db.session.commit()
 
     return jsonify({"message": "File deleted"}), 200
+
+from ..services.auth import require_auth
+
+@vault_bp.route("/upload", methods=["POST"])
+@require_auth
+def upload_file():
+    ...
+    new_file.user_id = request.user_id
+    ...
