@@ -12,3 +12,7 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run()
+
+from flask_cors import CORS
+app = create_app()
+CORS(app)
