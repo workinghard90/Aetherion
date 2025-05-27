@@ -35,6 +35,10 @@ ignore = ["E501", "B008"]
 exclude = ["migrations", "__pycache__", ".venv", "tests", "env", "venv", ".git", ".github"]
 EOF
 
+# Auto-patch veil_of_the_grove.py to use Render PORT
+echo "==> Ensuring veil_of_the_grove.py uses PORT env var..."
+sed -i '' 's/port=5000/port = int(os.environ.get("PORT", 5000))/' veil_of_the_grove.py
+
 echo ""
 echo "✅ Setup complete!"
 echo "Activate virtualenv: source .venv/bin/activate"
