@@ -1,26 +1,21 @@
 # services/backend/app/__init__.py
 
-import os
 from flask import Flask
-from dotenv import load_dotenv
 from .database import db
+from flask_migrate import Migrate
+
 from .api.vault import vault_bp
 from .api.auth import auth_bp
+from .models.audit import AuditLog  # Ensure table is created
 
-load_dotenv()  # Load .env values into environment
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    env = os.getenv("FLASK_ENV", "development")
-
-    if env == "production":
-        from config import ProductionConfig as AppConfig
-    else:
-        from config import DevelopmentConfig as AppConfig
-
-    app.config.from_object(AppConfig)
+    app.config.from_object("config.DevelopmentConfig")
 
     db.init_app(app)
+    migrate.init_app(app, db)
 
     with app.app_context():
         db.create_all()
@@ -29,18 +24,3 @@ def create_app():
     app.register_blueprint(vault_bp, url_prefix="/vault")
 
     return app
-
-from .models.audit import AuditLog
-# services/backend/app/__init__.py
-
-from flask_migrate import Migrate
-from .models.audit import AuditLog  # ensures table exists
-
-migrate = Migrate()
-
-def create_app():
-    ...
-    db.init_app(app)
-    migrate.init_app(app, db)
-    ...
-
