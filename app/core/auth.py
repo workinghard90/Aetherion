@@ -1,23 +1,20 @@
 import jwt
 import datetime
-from flask import current_app, request
+from flask import request
 from functools import wraps
+from flask import current_app as app
 
 def generate_token(user_id):
     payload = {
         "user_id": user_id,
         "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)
     }
-    secret = current_app.config["JWT_SECRET"]
-    return jwt.encode(payload, secret, algorithm="HS256")
+    return jwt.encode(payload, app.config["JWT_SECRET"], algorithm="HS256")
 
 def decode_token(token):
     try:
-        secret = current_app.config["JWT_SECRET"]
-        return jwt.decode(token, secret, algorithms=["HS256"])
+        return jwt.decode(token, app.config["JWT_SECRET"], algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
-        return None
-    except jwt.InvalidTokenError:
         return None
 
 def require_auth(f):
