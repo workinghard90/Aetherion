@@ -12,7 +12,8 @@ source .venv/bin/activate
 
 echo "==> Installing dependencies..."
 pip install --upgrade pip
-pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] pytest pytest-flask ruff
+pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] \
+            pytest pytest-flask pytest-cov ruff gunicorn flask-migrate
 
 echo "==> Writing .env file..."
 cat > .env <<EOF
@@ -23,15 +24,22 @@ MAX_CONTENT_LENGTH=104857600
 JWT_SECRET=aetherion_secret_key
 EOF
 
-echo "==> Creating ruff config..."
+echo "==> Creating pyproject.toml with strict Ruff rules..."
 cat > pyproject.toml <<EOF
 [tool.ruff]
 line-length = 100
-select = ["E", "F", "I"]
+target-version = "py310"
+select = ["E", "F", "I", "B", "C90", "N", "UP", "SIM", "ARG", "RUF"]
+ignore = ["E501", "B008"]
+exclude = ["migrations", "__pycache__", ".venv", "tests", "env", "venv", ".git", ".github"]
 EOF
 
-echo "==> Creating test folder and test files..."
+echo "==> Creating tests/ and test files..."
 mkdir -p tests
+
+cat > tests/__init__.py <<EOF
+# Init for pytest discovery
+EOF
 
 cat > tests/conftest.py <<EOF
 import os
@@ -106,7 +114,8 @@ def test_file_download_and_delete(client):
 EOF
 
 echo "==> All set!"
+echo
 echo "Activate virtualenv: source .venv/bin/activate"
 echo "Run backend:          python veil_of_the_grove.py"
-echo "Run tests:            pytest"
+echo "Run tests:            pytest --cov=app --cov-report=term"
 echo "Run linter:           ruff check ."
