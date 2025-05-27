@@ -1,15 +1,24 @@
 # services/backend/app/__init__.py
 
+import os
 from flask import Flask
+from dotenv import load_dotenv
 from .database import db
 from .api.vault import vault_bp
 from .api.auth import auth_bp
 
+load_dotenv()  # Load .env values into environment
+
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vault.db'
-    app.config['UPLOAD_FOLDER'] = 'uploads'
-    app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
+    env = os.getenv("FLASK_ENV", "development")
+
+    if env == "production":
+        from config import ProductionConfig as AppConfig
+    else:
+        from config import DevelopmentConfig as AppConfig
+
+    app.config.from_object(AppConfig)
 
     db.init_app(app)
 
