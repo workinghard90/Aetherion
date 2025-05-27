@@ -1,44 +1,41 @@
 [tool.ruff]
-# Max line length for readability + formatting
+# Max line length for consistency
 line-length = 100
 
-# Enable high-impact, fast linting categories
-select = [
-  "E",  # pycodestyle
-  "F",  # pyflakes
-  "I",  # isort
-  "B",  # bugbear
-  "C90",  # mccabe complexity
-  "N",  # pep8-naming
-  "UP",  # pyupgrade
-  "SIM",  # simplify
-  "ARG",  # unused arguments
-  "RUF"  # ruff-specific rules
-]
-
-# Ignore things like trailing commas, magic numbers etc (customizable)
-ignore = [
-  "E501",  # line too long (handled by black if used later)
-  "B008",  # do not perform function call in argument defaults
-]
-
-# Version targeting
+# Python version compatibility
 target-version = "py310"
 
-# Exclude generated folders and hidden cache
-exclude = [
-  "migrations",
-  "__pycache__",
-  ".venv",
-  "tests",
-  "env",
-  "venv",
-  ".git",
-  ".github"
+# Linting rule sets
+select = [
+  "E",    # pycodestyle
+  "F",    # pyflakes
+  "I",    # isort
+  "B",    # bugbear
+  "C90",  # mccabe complexity
+  "N",    # pep8-naming
+  "UP",   # pyupgrade
+  "SIM",  # simplify
+  "ARG",  # unused arguments
+  "RUF"   # ruff-specific
 ]
 
-# Optional: Fix issues automatically with `ruff --fix`
-# fix = true
+# Ignore certain rule violations
+ignore = [
+  "E501",  # Line too long (optional if using black)
+  "B008",  # Function calls in argument defaults
+]
 
-# Optional: Show full file paths in logs
-# show-fixes = true
+# Paths to ignore (project-root aware)
+exclude = [
+  "**/migrations",
+  "**/__pycache__",
+  "**/.venv",
+  "**/tests",
+  "**/env",
+  "**/venv",
+  "**/.git",
+  "**/.github"
+]
+
+# Uncomment to enable auto-fix with `ruff --fix`
+# fix = true
