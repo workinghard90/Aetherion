@@ -4,17 +4,23 @@ set -e
 
 echo "==> Setting up AetherionAI Backend..."
 
+# Create virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
 
+# Install dependencies
 echo "==> Installing Python packages..."
 pip install --upgrade pip
-pip install Flask Flask-SQLAlchemy Flask-Migrate cryptography PyJWT passlib[bcrypt] \
-            python-dotenv gunicorn ruff pytest pytest-flask pytest-cov
+pip install Flask Flask-SQLAlchemy Flask-Migrate \
+            cryptography PyJWT passlib[bcrypt] \
+            python-dotenv gunicorn
 
+# Optional dev/test tools
+pip install pytest pytest-flask pytest-cov ruff
+
+# Create .env file
 echo "==> Writing .env file..."
-cat <<'EOF' > .env
-FLASK_APP=app
+cat <<EOF > .env
 FLASK_ENV=development
 SQLALCHEMY_DATABASE_URI=sqlite:///vault.db
 UPLOAD_FOLDER=uploads
@@ -22,8 +28,9 @@ MAX_CONTENT_LENGTH=104857600
 JWT_SECRET=aetherion_secret_key
 EOF
 
+# Write Ruff config
 echo "==> Writing pyproject.toml..."
-cat <<'EOF' > pyproject.toml
+cat <<EOF > pyproject.toml
 [tool.ruff]
 line-length = 100
 target-version = "py310"
@@ -41,18 +48,18 @@ exclude = [
 ]
 EOF
 
-echo "==> Ensuring main.py uses dynamic port..."
-sed -i.bak 's/port=5000/port = int(os.environ.get("PORT", 5000))/' main.py || true
-rm -f main.py.bak
+# Ensure upload folder exists
+mkdir -p uploads
 
-echo "==> Running DB migrations..."
-export FLASK_APP=app
-flask db upgrade
+# Initialize DB if not already
+echo "==> Initializing DB..."
+export FLASK_APP=main.py
+flask db upgrade || echo "Migration skipped if not defined yet"
 
 echo ""
 echo "✅ Setup complete!"
-echo "Activate virtualenv: source .venv/bin/activate"
-echo "Run server:          flask run"
-echo "Run production:      gunicorn main:app"
-echo "Run tests:           pytest --cov=app"
-echo "Run linter:          ruff check ."
+echo "Activate: source .venv/bin/activate"
+echo "Run dev server: flask run"
+echo "Run prod server: gunicorn main:app"
+echo "Run tests: pytest --cov=aetherion"
+echo "Lint check: ruff check ."
