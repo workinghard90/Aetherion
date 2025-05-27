@@ -120,3 +120,15 @@ def update_metadata(file_id):
     log_action(request.user_id, "metadata", file_id)
 
     return jsonify({"message": "File metadata updated"}), 200
+@vault_bp.route("/audit", methods=["GET"])
+@require_auth
+def get_audit_log():
+    logs = AuditLog.query.filter_by(user_id=request.user_id).order_by(AuditLog.timestamp.desc()).all()
+    return jsonify([
+        {
+            "action": log.action,
+            "file_id": log.file_id,
+            "timestamp": log.timestamp.isoformat(),
+            "ip": log.ip_address
+        } for log in logs
+    ])
