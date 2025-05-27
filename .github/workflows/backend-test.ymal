@@ -3,18 +3,24 @@ name: Backend Tests
 on:
   push:
     paths:
-      - 'services/backend/**'
+      - '**.py'
+      - '.env'
+      - 'pyproject.toml'
+      - 'requirements.txt'
+      - 'tests/**'
+      - 'app/**'
   pull_request:
     paths:
-      - 'services/backend/**'
+      - '**.py'
+      - '.env'
+      - 'pyproject.toml'
+      - 'requirements.txt'
+      - 'tests/**'
+      - 'app/**'
 
 jobs:
   test-backend:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: services/backend
 
     steps:
       - name: Checkout Code
@@ -29,31 +35,30 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Create virtualenv and install deps
+      - name: Install dependencies
         run: |
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
-          pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] \
-                      pytest pytest-flask pytest-cov ruff
+          pip install -r requirements.txt
 
-      - name: Run Ruff linter
+      - name: Lint with Ruff
         run: |
           source .venv/bin/activate
           ruff check .
 
-      - name: Run Pytest with coverage
+      - name: Run tests with coverage
         run: |
           source .venv/bin/activate
           pytest --cov=app --cov-report=term-missing
 
-      - name: Upload HTML coverage report (optional)
-        if: success()
+      - name: Upload HTML coverage (optional)
         uses: actions/upload-artifact@v3
+        if: success()
         with:
           name: htmlcov
-          path: services/backend/htmlcov/
+          path: htmlcov/
