@@ -2,7 +2,7 @@ services:
   - type: web
     name: aetherion-backend
     env: python
-    repo: https://github.com/workinghard90/AetherionAI
+    repo: https://github.com/your-username/AetherionAI
     branch: main
     buildCommand: |
       pip install --upgrade pip && \
