@@ -1,3 +1,5 @@
+# AetherionAI/.github/workflows/backend-tests.yml
+
 name: Backend Tests
 
 on:
@@ -30,7 +32,12 @@ jobs:
           python -m venv .venv
           source .venv/bin/activate
           pip install --upgrade pip
-          pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] pytest pytest-flask
+          pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] pytest pytest-flask ruff
+
+      - name: Run ruff lint
+        run: |
+          source .venv/bin/activate
+          ruff check .
 
       - name: Run tests
         run: |
