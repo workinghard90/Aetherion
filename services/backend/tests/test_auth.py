@@ -1,5 +1,3 @@
-# services/backend/tests/test_auth.py
-
 def test_register_and_login(client):
     # Register
     res = client.post("/auth/register", json={
