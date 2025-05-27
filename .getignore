@@ -1,5 +1,8 @@
 # Root .gitignore
 
+# Ignore real secrets
+services/backend/.env
+
 # Bytecode
 __pycache__/
 *.pyc
