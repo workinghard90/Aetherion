@@ -2,17 +2,15 @@ services:
   - type: web
     name: aetherion-backend
     env: python
-    repo: https://github.com/your-username/AetherionAI
-    branch: main
     buildCommand: |
-      pip install --upgrade pip &&               pip install -r requirements.txt
+      pip install --upgrade pip && \
+      pip install -r requirements.txt
     startCommand: gunicorn main:app
-    healthCheckPath: /ping
     envVars:
       - key: FLASK_ENV
         value: production
-      - key: FLASK_APP
-        value: aetherion
+      - key: PYTHONPATH
+        value: .
       - key: JWT_SECRET
         generateValue: true
       - key: UPLOAD_FOLDER
