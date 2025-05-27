@@ -1,4 +1,3 @@
-# render.yaml
 services:
   - type: web
     name: aetherion-backend
@@ -6,11 +5,11 @@ services:
     repo: https://github.com/your-username/AetherionAI
     branch: main
     buildCommand: |
-      cd services/backend
-      pip install --upgrade pip
+      cd services/backend && \
+      pip install --upgrade pip && \
       pip install -r requirements.txt
     startCommand: |
-      cd services/backend
+      cd services/backend && \
       gunicorn veil_of_the_grove:app
     envVars:
       - key: FLASK_ENV
