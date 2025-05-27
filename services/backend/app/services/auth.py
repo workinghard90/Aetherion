@@ -5,19 +5,21 @@ import datetime
 from flask import current_app, request
 from functools import wraps
 
-JWT_SECRET = "changeme"  # move to .env for production
-
 def generate_token(user_id):
     payload = {
         "user_id": user_id,
         "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1)
     }
-    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+    secret = current_app.config["JWT_SECRET"]
+    return jwt.encode(payload, secret, algorithm="HS256")
 
 def decode_token(token):
     try:
-        return jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        secret = current_app.config["JWT_SECRET"]
+        return jwt.decode(token, secret, algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
         return None
 
 def require_auth(f):
