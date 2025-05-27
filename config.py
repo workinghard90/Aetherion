@@ -1,4 +1,3 @@
-```python
 import os
 
 class Config:
@@ -19,4 +18,3 @@ def get_config(env):
         "development": DevelopmentConfig,
         "production": ProductionConfig,
     }.get(env, DevelopmentConfig)
-```
