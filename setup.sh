@@ -16,7 +16,7 @@ pip install Flask Flask-SQLAlchemy Flask-Migrate cryptography PyJWT passlib[bcry
 
 # Create .env file
 echo "==> Writing .env file..."
-cat > .env <<EOF
+cat <<'EOF' > .env
 FLASK_ENV=development
 SQLALCHEMY_DATABASE_URI=sqlite:///vault.db
 UPLOAD_FOLDER=uploads
@@ -26,7 +26,7 @@ EOF
 
 # Create Ruff config
 echo "==> Writing pyproject.toml..."
-cat > pyproject.toml <<EOF
+cat <<'EOF' > pyproject.toml
 [tool.ruff]
 line-length = 100
 target-version = "py310"
@@ -35,7 +35,8 @@ ignore = ["E501", "B008"]
 exclude = ["migrations", "__pycache__", ".venv", "tests", "env", "venv", ".git", ".github"]
 EOF
 
-echo "==> Setup complete!"
+echo ""
+echo "✅ Setup complete!"
 echo "Activate virtualenv: source .venv/bin/activate"
 echo "Run server:          python veil_of_the_grove.py"
 echo "Run tests:           pytest --cov=app"
