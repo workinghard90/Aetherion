@@ -8,9 +8,12 @@ services:
       pip install --upgrade pip && \
       pip install -r requirements.txt
     startCommand: gunicorn veil_of_the_grove:app
+    healthCheckPath: /ping
     envVars:
       - key: FLASK_ENV
         value: production
+      - key: FLASK_APP
+        value: app
       - key: JWT_SECRET
         generateValue: true
       - key: UPLOAD_FOLDER
