@@ -12,7 +12,7 @@ source .venv/bin/activate
 
 echo "==> Installing dependencies..."
 pip install --upgrade pip
-pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] pytest pytest-flask
+pip install Flask Flask-SQLAlchemy python-dotenv cryptography PyJWT passlib[bcrypt] pytest pytest-flask ruff
 
 echo "==> Writing .env file..."
 cat > .env <<EOF
@@ -21,6 +21,13 @@ SQLALCHEMY_DATABASE_URI=sqlite:///vault.db
 UPLOAD_FOLDER=uploads
 MAX_CONTENT_LENGTH=104857600
 JWT_SECRET=aetherion_secret_key
+EOF
+
+echo "==> Creating ruff config..."
+cat > pyproject.toml <<EOF
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]
 EOF
 
 echo "==> Creating test folder and test files..."
@@ -100,5 +107,6 @@ EOF
 
 echo "==> All set!"
 echo "Activate virtualenv: source .venv/bin/activate"
-echo "Run the backend:     python veil_of_the_grove.py"
-echo "Run tests:           pytest"
+echo "Run backend:          python veil_of_the_grove.py"
+echo "Run tests:            pytest"
+echo "Run linter:           ruff check ."
