@@ -1,5 +1,44 @@
-# services/backend/pyproject.toml
-
 [tool.ruff]
+# Max line length for readability + formatting
 line-length = 100
-select = ["E", "F", "I"]
+
+# Enable high-impact, fast linting categories
+select = [
+  "E",  # pycodestyle
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # bugbear
+  "C90",  # mccabe complexity
+  "N",  # pep8-naming
+  "UP",  # pyupgrade
+  "SIM",  # simplify
+  "ARG",  # unused arguments
+  "RUF"  # ruff-specific rules
+]
+
+# Ignore things like trailing commas, magic numbers etc (customizable)
+ignore = [
+  "E501",  # line too long (handled by black if used later)
+  "B008",  # do not perform function call in argument defaults
+]
+
+# Version targeting
+target-version = "py310"
+
+# Exclude generated folders and hidden cache
+exclude = [
+  "migrations",
+  "__pycache__",
+  ".venv",
+  "tests",
+  "env",
+  "venv",
+  ".git",
+  ".github"
+]
+
+# Optional: Fix issues automatically with `ruff --fix`
+# fix = true
+
+# Optional: Show full file paths in logs
+# show-fixes = true
