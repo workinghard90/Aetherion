@@ -1,11 +1,15 @@
-import React from "react";
-import api from "./api";
+// frontend/src/App.jsx
+import React from 'react';
+import './App.css';
 
 function App() {
   return (
-    <div className="container">
-      <h1>Welcome to AetherionAI</h1>
-      <p>This is your connected frontend powered by React + Vite + Netlify.</p>
+    <div className="homepage-container">
+      <div className="hero">
+        <h1 className="title">AetherionAI</h1>
+        <p className="tagline">Harness Intelligence, Unlock the Vault</p>
+        <a href="#vault" className="cta-button">Explore the Vault</a>
+      </div>
     </div>
   );
 }
