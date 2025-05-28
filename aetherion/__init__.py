@@ -1,8 +1,8 @@
-# === aetherion/__init__.py ===
+# aetherion/__init__.py
 
 from flask import Flask
-from aetherion.config import get_config
 from aetherion.extensions import db
+from aetherion.config import get_config
 from aetherion.api.auth import auth_bp
 from aetherion.api.vault import vault_bp
 from aetherion.api.health import health_bp
