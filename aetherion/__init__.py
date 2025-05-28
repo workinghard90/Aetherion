@@ -1,17 +1,20 @@
-import os
+# === aetherion/__init__.py ===
+
 from flask import Flask
 from aetherion.config import get_config
-from aetherion.extensions import db, migrate, cors
-from aetherion.api import register_blueprints
+from aetherion.extensions import db
+from aetherion.api.auth import auth_bp
+from aetherion.api.vault import vault_bp
+from aetherion.api.health import health_bp
 
 def create_app():
     app = Flask(__name__)
-    config = get_config(os.getenv("FLASK_ENV", "development"))
-    app.config.from_object(config)
+    app.config.from_object(get_config())
 
     db.init_app(app)
-    migrate.init_app(app, db)
-    cors.init_app(app)
 
-    register_blueprints(app)
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(vault_bp, url_prefix="/vault")
+    app.register_blueprint(health_bp)
+
     return app
