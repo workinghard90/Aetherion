@@ -1,11 +1,11 @@
 import React from "react";
-import "./App.css";
+import api from "./api";
 
 function App() {
   return (
-    <div className="App">
+    <div className="container">
       <h1>Welcome to AetherionAI</h1>
-      <p>This is your secure AI vault frontend.</p>
+      <p>This is your connected frontend powered by React + Vite + Netlify.</p>
     </div>
   );
 }
