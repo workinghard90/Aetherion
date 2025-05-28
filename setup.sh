@@ -8,17 +8,17 @@ echo "==> Setting up AetherionAI Backend..."
 python3 -m venv .venv
 source .venv/bin/activate
 
-# Install dependencies
+# Install runtime dependencies
 echo "==> Installing Python packages..."
 pip install --upgrade pip
-pip install Flask Flask-SQLAlchemy Flask-Migrate \
-            cryptography PyJWT passlib[bcrypt] \
-            python-dotenv gunicorn
+pip install Flask==2.3.3 Flask-SQLAlchemy==3.1.1 Flask-Migrate==4.0.5 \
+            cryptography==42.0.5 PyJWT==2.8.0 passlib[bcrypt]==1.7.4 \
+            python-dotenv==1.0.1 gunicorn==21.2.0
 
-# Optional dev/test tools
+# Install dev/test tools
 pip install pytest pytest-flask pytest-cov ruff
 
-# Create .env file
+# Generate .env
 echo "==> Writing .env file..."
 cat <<EOF > .env
 FLASK_ENV=development
@@ -33,7 +33,7 @@ echo "==> Writing pyproject.toml..."
 cat <<EOF > pyproject.toml
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py311"
 select = ["E", "F", "I", "B", "C90", "N", "UP", "SIM", "ARG", "RUF"]
 ignore = ["E501", "B008"]
 exclude = [
@@ -51,10 +51,10 @@ EOF
 # Ensure upload folder exists
 mkdir -p uploads
 
-# Initialize DB if not already
+# Initialize DB
 echo "==> Initializing DB..."
 export FLASK_APP=main.py
-flask db upgrade || echo "Migration skipped if not defined yet"
+flask db upgrade || echo "==> Skipped DB migration (if not defined yet)"
 
 echo ""
 echo "✅ Setup complete!"
