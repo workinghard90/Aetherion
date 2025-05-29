@@ -1,18 +1,19 @@
 from aetherion import create_app
 from aetherion.extensions import db
-from aetherion.models import User, Document
+import aetherion.models as models  # import models module directly
+import inspect
 
 app = create_app()
 
-# Optional: shell context for `flask shell`
+# Dynamically add all SQLAlchemy models to the shell context
 @app.shell_context_processor
 def make_shell_context():
-    return {
-        "app": app,
-        "db": db,
-        "User": User,
-        "Document": Document,
+    model_dict = {
+        name: cls
+        for name, cls in vars(models).items()
+        if inspect.isclass(cls) and hasattr(cls, "__tablename__")
     }
+    return {"app": app, "db": db, **model_dict}
 
 if __name__ == "__main__":
     import os
