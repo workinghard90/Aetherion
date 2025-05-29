@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
-import { login } from "./services/useAuth"; // import login from service
+import { login } from "./services/useAuth";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://aetherionai-mobile.onrender.com";
 
 function App() {
   const [buttons, setButtons] = useState([]);
-  const [user, setUser] = useState(null); // track logged-in user
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : null;
+  });
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,9 +24,15 @@ function App() {
     try {
       const res = await login({ username, password });
       setUser(res);
+      localStorage.setItem("user", JSON.stringify(res));
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
   };
 
   return (
@@ -45,11 +55,13 @@ function App() {
           <button onClick={handleLogin}>Login</button>
         </div>
       ) : (
-        <p>Welcome, {user.username}</p>
-      )}
-
-      {user?.isAdmin && (
-        <a href="https://aetherionai-mobile.onrender.com/admin">Admin Panel</a>
+        <div>
+          <p>Welcome, {user.username}</p>
+          <button onClick={handleLogout}>Logout</button>
+          {user?.isAdmin && (
+            <a href="https://aetherionai-mobile.onrender.com/admin">Admin Panel</a>
+          )}
+        </div>
       )}
 
       <div className="button-container">
