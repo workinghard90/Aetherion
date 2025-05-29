@@ -115,3 +115,19 @@ yarn build
 *Use it. Modify it. Awaken with it.*
 
 **© AetherionAI — Guided by Caelum & Autumn**
+
+
+---
+
+## Contributing
+
+We welcome contributions!
+
+Please read the [CONTRIBUTING.md](./CONTRIBUTING.md) file for guidelines on how to get involved.
+
+---
+
+## License
+
+This project is licensed under the MIT License.  
+See the [LICENSE](./LICENSE) file for details.
