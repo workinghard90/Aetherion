@@ -1,17 +1,26 @@
-// src/App.jsx
-import React from "react";
-import "./App.css";
+import React, { useEffect, useState } from "react";
+import linksData from "./data/links.json";
 
 function App() {
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    setLinks(linksData);
+  }, []);
+
   return (
-    <div className="app">
-      <div className="mystic-circle">
-        <div className="mystic-symbol">⊛ ⚜ ✶</div>
-      </div>
-      <h1>Aetherion AI</h1>
-      <button>Enter the Vault</button>
-      <button>Read the Scrolls</button>
-      <button>Summon Intelligence</button>
+    <div className="button-group">
+      {links.map((link, idx) => (
+        <a
+          key={idx}
+          className="mystic-btn"
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {link.icon} {link.label}
+        </a>
+      ))}
     </div>
   );
 }
