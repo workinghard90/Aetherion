@@ -1,12 +1,14 @@
-from flask import Blueprint, jsonify, request
+# aetherion/routes/buttons.py
+
+from flask import Blueprint, jsonify, request, g
 from aetherion.models.button import Button
 from aetherion.core.auth_middleware import try_auth
 
-buttons_bp = Blueprint("buttons", __name__)
+buttons_bp = Blueprint("buttons", __name__, url_prefix="/api/buttons")
 
-@buttons_bp.route("/api/buttons", methods=["GET"])
+@buttons_bp.route("/", methods=["GET"])
 def get_buttons():
-    try_auth()  # sets request.user if token valid
+    try_auth()  # Sets g.user if token valid
 
     static_buttons = [
         {
@@ -29,7 +31,6 @@ def get_buttons():
         }
     ]
 
-    # Optional: filter based on user role or permissions
     dynamic_buttons = Button.query.all()
     dynamic = [
         {"id": b.id, "label": b.label, "sigil": b.sigil, "url": b.url}
