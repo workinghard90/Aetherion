@@ -5,7 +5,7 @@ from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 
 from aetherion.extensions import db, migrate, cors
-from aetherion.models import User, Document
+from aetherion.models import User
 from aetherion.routes import register_routes  # ✅ NEW
 from aetherion.admin.views import SecureAdmin
 import aetherion.models as models
