@@ -1,25 +1,21 @@
-# aetherion/config.py
-
 import os
 
-
-class Config:
+class BaseConfig:
+    SECRET_KEY = os.getenv("JWT_SECRET", "aetherion_secret_key")
+    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///vault.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET = os.getenv("JWT_SECRET", "aetherion_secret_key")
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "uploads")
     MAX_CONTENT_LENGTH = int(os.getenv("MAX_CONTENT_LENGTH", 104857600))
+    PROJECT_NAME = "Aetherion"
 
-
-class DevelopmentConfig(Config):
+class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///vault.db")
+    FLASK_ENV = "development"
 
-
-class ProductionConfig(Config):
+class ProductionConfig(BaseConfig):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
-
+    FLASK_ENV = "production"
 
 def get_config():
-    env = os.getenv("FLASK_ENV", "development")
+    env = os.getenv("FLASK_ENV", "production").lower()
     return DevelopmentConfig if env == "development" else ProductionConfig
