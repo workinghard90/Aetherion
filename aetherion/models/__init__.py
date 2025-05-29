@@ -1,5 +1,5 @@
-# aetherion/models/__init__.py
-
-# Optional: import models here if needed
 from .user import User
-from .file import VaultFile
+from .document import Document
+from .button import Button
+
+__all__ = ["User", "Document", "Button"]
