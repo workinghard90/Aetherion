@@ -10,10 +10,13 @@ This monorepo powers the **Aetherion Universe**.
 
 ```
 AetherionAI/
-├── apps/
-│   └── aetherion-mobile/       # Expo React Native frontend
-├── services/
-│   └── backend/                # Python Flask API backend
+├── aetherion/           # Core backend logic and models
+├── frontend/            # Frontend application (likely React/Vite or similar)
+├── extensions/          # Custom plugin modules or extensions
+├── main.py              # Entry point for the backend
+├── setup.sh             # Setup script for initial environment
+├── render.yaml          # Infrastructure config (e.g., Render.com)
+├── requirements.txt     # Python dependencies
 ├── .editorconfig
 ├── .prettierrc
 ├── .prettierignore
@@ -21,8 +24,10 @@ AetherionAI/
 ├── package.json
 ├── yarn.lock
 ├── .gitignore
-└── setup.sh
+└── README.md
 ```
+
+This structure ensures clear separation of frontend, backend, and modular components.
 
 ---
 
@@ -43,7 +48,7 @@ bash setup.sh
 ### Backend – Veil of the Grove (CLI)
 
 ```bash
-cd services/backend
+cd aetherion
 python veil_of_the_grove.py cloak     # Cloak the veil
 python veil_of_the_grove.py unveil    # Unveil the mysteries
 ```
@@ -59,7 +64,7 @@ yarn start:backend
 ### Mobile App
 
 ```bash
-cd apps/aetherion-mobile
+cd frontend
 yarn start
 yarn lint
 yarn format
