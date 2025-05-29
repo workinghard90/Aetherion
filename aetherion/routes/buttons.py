@@ -1,27 +1,31 @@
-# aetherion/routes/buttons.py
-
-from flask import Blueprint, jsonify, request, g
+from flask import Blueprint, jsonify, request
 from aetherion.models.button import Button
 from aetherion.core.auth_middleware import try_auth
 
-buttons_bp = Blueprint("buttons", __name__, url_prefix="/api/buttons")
+buttons_bp = Blueprint("buttons", __name__)
 
-@buttons_bp.route("/", methods=["GET"])
+@buttons_bp.route("/api/buttons", methods=["GET"])
 def get_buttons():
-    try_auth()  # Sets g.user if token valid
+    try_auth()
 
     static_buttons = [
         {
             "id": "docs",
-            "label": "Docs",
+            "label": "Scrolls",
             "sigil": "📜",
-            "url": "https://your-docs-link.com"
+            "url": "https://scrolls.aetherion.io"
         },
         {
             "id": "vault",
             "label": "Vault",
             "sigil": "🔐",
-            "url": "https://your-vault-link.com"
+            "url": "https://vault.aetherion.io"
+        },
+        {
+            "id": "oracle",
+            "label": "Oracle",
+            "sigil": "🧿",
+            "url": "https://oracle.aetherion.io"
         },
         {
             "id": "github",
