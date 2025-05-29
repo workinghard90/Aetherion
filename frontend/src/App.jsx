@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { login } from "./services/useAuth";
-
-const API_URL = import.meta.env.VITE_API_URL || "https://aetherionai-mobile.onrender.com";
+import api from "./services/api"; // Auth-aware Axios instance
 
 function App() {
   const [buttons, setButtons] = useState([]);
@@ -14,9 +13,8 @@ function App() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    fetch(`${API_URL}/api/buttons`)
-      .then(res => res.json())
-      .then(setButtons)
+    api.get("/api/buttons")
+      .then(res => setButtons(res.data))
       .catch(err => console.error("Failed to load buttons:", err));
   }, []);
 
