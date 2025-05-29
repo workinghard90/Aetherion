@@ -1,20 +1,15 @@
-from flask import Flask
-from flask_cors import CORS
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from aetherion.admin.views import SecureAdmin
 from aetherion.extensions import db
-from aetherion.api.auth import auth_bp
-from aetherion.api.vault import vault_bp
-from aetherion.api.health import health_bp
-from aetherion.config import get_config
+from aetherion.models import User, Document  # Add your models
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(get_config())
+    # config, init_extensions, blueprints...
 
-    db.init_app(app)
-    CORS(app, origins=["https://aetherionai.netlify.app"])
-
-    app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(vault_bp, url_prefix="/vault")
-    app.register_blueprint(health_bp, url_prefix="/")
+    admin = Admin(app, index_view=SecureAdmin(), template_mode="bootstrap4")
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Document, db.session))
 
     return app
