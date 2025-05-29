@@ -12,6 +12,10 @@ function App() {
       .catch(err => console.error("Failed to load buttons:", err));
   }, []);
 
+  {user?.isAdmin && (
+  <a href="https://aetherionai-mobile.onrender.com/admin">Admin Panel</a>
+)}
+  
   return (
     <div className="App">
       <h1>Aetherion</h1>
