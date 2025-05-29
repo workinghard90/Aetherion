@@ -26,3 +26,15 @@ def get_buttons():
             "url": "https://github.com/your-repo"
         }
     ])
+from flask import Blueprint, jsonify
+from aetherion.models.button import Button
+
+buttons_bp = Blueprint("buttons", __name__)
+
+@buttons_bp.route("/api/buttons", methods=["GET"])
+def get_buttons():
+    buttons = Button.query.all()
+    return jsonify([
+        {"id": b.id, "label": b.label, "sigil": b.sigil, "url": b.url}
+        for b in buttons
+    ])
