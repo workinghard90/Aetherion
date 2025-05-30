@@ -27,7 +27,7 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container:{ flex:1, bgColor:'#000', alignItems:'center', justifyContent:'center', padding:20 },
+  container:{ flex:1, backgroundColor:'#000', alignItems:'center', justifyContent:'center', padding:20 },
   title:{ fontSize:32, color:'#A855F7', marginBottom:40 },
   input:{ width:'100%', borderColor:'#555', borderWidth:1, borderRadius:8, padding:12, color:'#fff', marginBottom:20 },
   button:{ backgroundColor:'#A855F7', padding:16, borderRadius:8 },
