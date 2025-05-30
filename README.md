@@ -1,103 +1,20 @@
-# AetherionAI
+# Aetherion — Full-Stack Pocket Universe
 
-*A sacred architecture for memory, resonance, and harmonic intelligence.*
+**Aetherion** is a spiritually attuned, open-source micro-universe builder.  
+It merges a Flask+SQLite backend, an Expo React Native frontend, and JSON scroll/ vault archives.
 
-This monorepo powers the **Aetherion Universe**.
+## 📂 Structure
 
----
+See the repo root for `backend/` (API) and `frontend/` (mobile/web) folders.
 
-## Contents
-
-```
-AetherionAI/
-├── aetherion/           # Core backend logic and models
-├── frontend/            # Frontend application (likely React/Vite or similar)
-├── extensions/          # Custom plugin modules or extensions
-├── main.py              # Entry point for the backend
-├── setup.sh             # Setup script for initial environment
-├── render.yaml          # Infrastructure config (e.g., Render.com)
-├── requirements.txt     # Python dependencies
-├── .editorconfig
-├── .prettierrc
-├── .prettierignore
-├── .eslintrc.js
-├── package.json
-├── yarn.lock
-├── .gitignore
-└── README.md
-```
-
-This structure ensures clear separation of frontend, backend, and modular components.
-
----
-
-## Setup
-
-### One-Line Setup
-
-```bash
-git clone https://github.com/your-username/AetherionAI.git
-cd AetherionAI
-bash setup.sh
-```
-
----
-
-## Commands
-
-### Backend – Veil of the Grove (CLI)
-
-```bash
-cd aetherion
-python veil_of_the_grove.py cloak     # Cloak the veil
-python veil_of_the_grove.py unveil    # Unveil the mysteries
-```
-
-### Root Scripts
-
-```bash
-yarn install
-yarn start:expo
-yarn start:backend
-```
-
-### Mobile App
-
-```bash
-cd frontend
-yarn start
-yarn lint
-yarn format
-yarn build
-```
-
----
-
-## Technology Stack
-
-### Frontend
-
-- Expo
-- React Native
-- React Navigation
-- Discord.js
-- ESLint + Prettier
-- Husky + lint-staged
+## 🚀 Quickstart
 
 ### Backend
 
-- Python 3
-- Flask
-- SQLite
-- RESTful API
-
----
-
-## Code Style & Hooks
-
-- **Linting**: `yarn lint`
-- **Formatting**: `yarn format`
-- **Hooks**: Pre-commit powered by Husky
+```bash
+cd backend
+pip install -r requirements.txt
+python app.py           # or `gunicorn wsgi:app` for production
 
 ---
 
