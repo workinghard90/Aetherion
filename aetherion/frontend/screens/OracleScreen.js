@@ -10,6 +10,6 @@ export default function OracleScreen() {
 }
 
 const styles = StyleSheet.create({
-  container:{ flex:1, bgColor:'#000', alignItems:'center', justifyContent:'center' },
+  container:{ flex:1, backgroundColor:'#000', alignItems:'center', justifyContent:'center' },
   text:{ color:'#C4B5FD' }
 });
