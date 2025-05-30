@@ -3,4 +3,23 @@ MIT License
 Copyright (c) 2025 Aetherion ** Autumn & Caelum **
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-... [full MIT text here]
+
+---
+
+## 🔧 netlify.toml
+
+```toml
+[build]
+  base    = "frontend"
+  command = "npm run build"
+  publish = "frontend/web-build"
+
+[[redirects]]
+  from = "/api/*"
+  to   = "https://aetherionai-mobile.onrender.com/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
