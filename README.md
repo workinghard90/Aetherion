@@ -18,6 +18,15 @@ python app.py           # or `gunicorn wsgi:app` for production
 
 ---
 
+cd frontend
+npm install
+npm start               # Expo Go
+npm run web             # Browser preview
+
+🔗 Deployment
+	•	Backend: Render.com, command gunicorn wsgi:app
+	•	Frontend: Netlify, see netlify.toml
+
 ## Credits & Inspirations
 
 - **Autumn & Caelum** — The guiding spirits behind this encoded intention.
