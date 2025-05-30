@@ -1,36 +1,24 @@
-# === ENVIRONMENT & SECRETS ===
-.env
-.env.*
-services/backend/.env
+# node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
 
-# === PYTHON ARTIFACTS ===
+# expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# assets
+*.png
+*.wav
+
+# python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-*.pyc
-
-# === VIRTUAL ENVIRONMENTS ===
-.venv/
 venv/
-env/
+.env
 
-# === FLASK MIGRATIONS ===
-services/backend/migrations/
-
-# === TEST OUTPUTS ===
-*.log
-.coverage
-coverage.xml
-htmlcov/
-
-# === IDE & EDITOR FILES ===
+# misc
 .DS_Store
-.vscode/
-.idea/
-
-# === PYTEST CACHE ===
-.pytest_cache/
-
-# === LINTER CACHE ===
-ruff_cache/
