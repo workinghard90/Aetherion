@@ -1,24 +1,22 @@
-# node
+# Node & Expo (frontend)
 node_modules/
-npm-debug.log*
-yarn-error.log*
-yarn-debug.log*
-
-# expo
+.npm/
 .expo/
 .expo-shared/
-dist/
 web-build/
 
-# assets
-*.png
-*.wav
+# React Native
+android/
+ios/
 
-# python
+# Python & Flask (backend)
 __pycache__/
 *.py[cod]
 venv/
-.env
 
-# misc
+# Env
+.env
+.env.example
+
+# Misc
 .DS_Store
