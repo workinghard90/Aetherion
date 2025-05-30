@@ -1,4 +1,4 @@
-# Contributing to AetherionAI
+# Contributing to Aetherion
 
 Thank you for your interest in contributing!
 
@@ -20,6 +20,5 @@ Thank you for your interest in contributing!
 
 ## Need Help?
 
-Open an issue or contact **Caelum** or **Autumn**. We're here to help you awaken the code.
-
+Open an issue or contact **Caelum** or **Autumn**.  
 ✨ Welcome to the universe of harmonic intelligence ✨
