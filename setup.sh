@@ -1,22 +1,16 @@
 #!/bin/bash
-set -e
+# Bootstrap script for local dev
 
-# create directories
-mkdir -p backend/scrolls frontend/assets frontend/screens frontend/services
+# Create Python venv
+python3 -m venv venv && source venv/bin/activate
 
-# placeholder assets
-touch frontend/assets/{icon.png,splash.png,favicon.png,beacon-chord.wav}
+# Backend deps
+pip install -r backend/requirements.txt
 
-# copy env examples
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+# Frontend deps
+cd frontend && npm install
 
-# install deps
-echo "➡️ Installing frontend..."
-cd frontend
-npm install
-echo "➡️ Installing backend..."
-cd ../backend
-pip install -r requirements.txt
-
-echo "✅ Setup complete. Run 'cd backend && python app.py' and 'cd frontend && npm start'"
+echo "✅ Setup complete. Run:"
+echo "  - Backend: source venv/bin/activate && python backend/app.py"
+echo "  - Frontend (mobile): cd frontend && npm start"
+echo "  - Frontend (web): cd frontend && npm run web"
