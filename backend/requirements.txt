@@ -9,3 +9,4 @@ requests==2.31.0
 transformers==4.40.1
 torch==2.3.0
 sentence-transformers==2.7.0
+Werkzeg==2.3.4
