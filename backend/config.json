@@ -1,5 +1,16 @@
 {
-  "app_name": "Aetherion API",
+  "app_name": "Aetherion",
   "version": "1.0.0",
-  "debug": true
+  "debug": true,
+  "api": {
+    "base_url": "/api",
+    "version": "v1"
+  },
+  "database": {
+    "enabled": true,
+    "connection_string": "sqlite:///universe.db"
+  },
+  "security": {
+    "secret_key_env": "SECRET_KEY"
+  }
 }
