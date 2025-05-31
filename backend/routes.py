@@ -6,6 +6,12 @@ from .auth import require_auth, try_auth
 import json
 from datetime import datetime
 
+main_bp = Blueprint("main", __name__)
+
+@main_bp.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "OK", "message": "Backend is alive!"})
+
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 @api_bp.before_request
