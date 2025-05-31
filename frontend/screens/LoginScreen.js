@@ -1,43 +1,43 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import { loginUser } from "../services/api";
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import axios from 'axios';
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const API_URL = process.env.EXPO_PUBLIC_API_URL + "/auth/login";
 
   const handleLogin = async () => {
     try {
-      const data = await loginUser({ username, password });
-      // data = { token: "...", user: {...} }
-      const token = data.token;
-      // Store token in AsyncStorage or context
-      // For now, pass it as param:
+      const response = await axios.post(API_URL, { username, password });
+      const { token } = response.data;
+      // Store token (in AsyncStorage) for later calls. For brevity, skip storing here.
       navigation.replace("OthersGate", { token });
     } catch (err) {
-      Alert.alert("Login Failed", err.response?.data?.error || err.message);
+      Alert.alert("Error", err.response?.data?.error || err.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Aetherion Login</Text>
+      <Text style={styles.title}>Aetherion</Text>
       <TextInput
         style={styles.input}
         placeholder="Username"
+        placeholderTextColor="#ccc"
         value={username}
         onChangeText={setUsername}
-        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#ccc"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginText}>Enter the Grove</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>🜂 Enter the Gate</Text>
       </TouchableOpacity>
     </View>
   );
@@ -46,34 +46,40 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#111",
     justifyContent: "center",
-    padding: 20
+    alignItems: "center",
+    padding: 16
   },
   title: {
-    fontSize: 28,
-    color: "#aaccff",
-    textAlign: "center",
+    color: "#E0CFFF",
+    fontSize: 36,
     marginBottom: 32,
-    fontFamily: "Verdana"
+    fontStyle: "italic",
+    letterSpacing: 2
   },
   input: {
+    width: "100%",
     backgroundColor: "#222",
     color: "#fff",
-    marginVertical: 8,
     padding: 12,
+    marginVertical: 8,
     borderRadius: 8
   },
-  loginButton: {
-    backgroundColor: "#663399",
-    padding: 16,
-    borderRadius: 8,
+  button: {
     marginTop: 24,
-    alignItems: "center"
+    backgroundColor: "#6200ee",
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5
   },
-  loginText: {
+  buttonText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold"
   }
 });
