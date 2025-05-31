@@ -1,4 +1,7 @@
-from app import app
+# backend/wsgi.py
 
-if __name__ == "__main__":
-    app.run()
+from .app import create_app
+
+# This “app” variable is discovered by Gunicorn when you run:
+#    gunicorn backend.wsgi:app
+app = create_app()
