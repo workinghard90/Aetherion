@@ -1,78 +1,33 @@
-import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-// Use environment variable for base URL
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API_BASE = process.env.EXPO_PUBLIC_API_URL || "https://aetherion-mobile.onrender.com/api";
 
-export const getUniverse = async () => {
+export const storeToken = async (token) => {
   try {
-    const response = await axios.get(`${API_URL}/api/items`);
-    return response.data;
-  } catch (error) {
-    console.error("API error in getUniverse:", error);
-    throw error;
+    await AsyncStorage.setItem("authToken", token);
+  } catch {
+    // ignore
   }
 };
 
-export const loginUser = async (credentials) => {
+export const getToken = async () => {
   try {
-    const response = await axios.post(`${API_URL}/api/auth/login`, credentials);
-    return response.data; // {token: "...", user: {...}}
-  } catch (error) {
-    console.error("API error in loginUser:", error);
-    throw error;
+    return await AsyncStorage.getItem("authToken");
+  } catch {
+    return null;
   }
 };
 
-export const createItem = async (itemData, token) => {
-  try {
-    const response = await axios.post(
-      `${API_URL}/api/items`,
-      itemData,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("API error in createItem:", error);
-    throw error;
-  }
-};
+export const apiClient = axios.create({
+  baseURL: API_BASE,
+  headers: { "Content-Type": "application/json" }
+});
 
-// Similarly implement updateItem, deleteItem, getItemById, etc.
-export const getItemById = async (id) => {
-  try {
-    const response = await axios.get(`${API_URL}/api/items/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`API error in getItemById(${id}):`, error);
-    throw error;
+apiClient.interceptors.request.use(async (config) => {
+  const token = await getToken();
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
   }
-};
-
-export const uploadFile = async (file, token) => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    const response = await axios.post(`${API_URL}/api/vault/upload`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data"
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error("API error in uploadFile:", error);
-    throw error;
-  }
-};
-
-export const getScrolls = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/api/scrolls`);
-    return response.data;
-  } catch (error) {
-    console.error("API error in getScrolls:", error);
-    throw error;
-  }
-};
-
-// And so on for other routes (vault/download, oracle chat, etc.)
+  return config;
+}, (error) => Promise.reject(error));
