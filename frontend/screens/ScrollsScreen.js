@@ -1,52 +1,41 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Alert
-} from "react-native";
-import { getScrolls } from "../services/api";
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+import { getToken } from '../services/api';
 
 export default function ScrollsScreen() {
   const [scrolls, setScrolls] = useState([]);
-  const [error, setError] = useState(null);
+  const API_URL = process.env.EXPO_PUBLIC_API_URL + "/scrolls";
+
+  const fetchScrolls = async () => {
+    try {
+      const token = await getToken();
+      const res = await axios.get(API_URL, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setScrolls(res.data.scrolls);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     fetchScrolls();
   }, []);
 
-  const fetchScrolls = async () => {
-    try {
-      const data = await getScrolls();
-      setScrolls(data);
-    } catch (err) {
-      setError("Failed to load scrolls.");
-      Alert.alert("Error", err.message || err);
-    }
-  };
-
-  if (error) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
+      <Text style={styles.heading}>📜 Archive of Scrolls</Text>
       <FlatList
         data={scrolls}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.scrollItem}>
+          <TouchableOpacity style={styles.scrollRow}>
             <Text style={styles.scrollTitle}>{item.title}</Text>
-            <Text style={styles.scrollDesc}>{item.description}</Text>
+            <Text style={styles.scrollDesc}>{item.content.substring(0, 60)}...</Text>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text style={styles.emptyText}>No scrolls found.</Text>}
+        ListEmptyComponent={<Text style={styles.empty}>No scrolls available.</Text>}
       />
     </View>
   );
@@ -55,35 +44,34 @@ export default function ScrollsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#111",
     padding: 16
   },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
+  heading: {
+    color: "#E0CFFF",
+    fontSize: 24,
+    marginBottom: 12
   },
-  scrollItem: {
+  scrollRow: {
     backgroundColor: "#222",
-    padding: 14,
+    padding: 12,
     marginVertical: 6,
     borderRadius: 6
   },
   scrollTitle: {
     color: "#fff",
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: "600"
   },
   scrollDesc: {
     color: "#ccc",
     fontSize: 14,
     marginTop: 4
   },
-  emptyText: {
-    marginTop: 32,
-    textAlign: "center",
-    color: "#777"
-  },
-  errorText: {
-    color: "#ff6666"
+  empty: {
+    color: "#aaa",
+    fontSize: 16,
+    marginTop: 20,
+    textAlign: "center"
   }
 });
