@@ -1,24 +1,18 @@
-# ───────────────────────────────────────────────────────────────────────────────
-# netlify.toml (place this at the repository root: AetherionAI-Mobile/netlify.toml)
-# ───────────────────────────────────────────────────────────────────────────────
-
 [build]
-  base    = "frontend"                     # ← Netlify will cd into ./frontend
-  command = "npm run build"                # ← runs "expo export:web"
-  publish = "frontend/web-build"           # ← this is where Expo outputs the static Web build
+  base = "frontend"
+  command = "npm run build"
+  publish = "frontend/web-build"
 
-  # Pass any needed ENV vars to Netlify builds:
-  environment = { 
-    NODE_VERSION      = "18",                      # match your local Node version
-    EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
-  }
+[context.production.environment]
+  NODE_VERSION = "18"
+  EXPO_PUBLIC_API_URL = "https://aetherion-mobile.onrender.com/api"
 
 [[redirects]]
   from = "/api/*"
-  to   = "https://aetherionai-mobile.onrender.com/api/:splat"
+  to = "https://aetherion-mobile.onrender.com/:splat"
   status = 200
 
 [[redirects]]
   from = "/*"
-  to   = "/index.html"
+  to = "/index.html"
   status = 200
