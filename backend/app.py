@@ -27,6 +27,9 @@ migrate.init_app(app, db)
 from .models.universe import Universe
 from .models.file import VaultFile
 
+from .vault import vault_bp
+app.register_blueprint(vault_bp)
+
 from .routes import api_bp
 app.register_blueprint(api_bp)
 
