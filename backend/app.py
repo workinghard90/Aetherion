@@ -1,49 +1,34 @@
+# backend/app.py
+
 import os
 from flask import Flask
 from flask_cors import CORS
-from flask_migrate import Migrate
-from dotenv import load_dotenv
-
-# 1) Load .env
-basedir = os.path.abspath(os.path.dirname(__file__))
-load_dotenv(os.path.join(basedir, ".env"))
-
-# 2) Create Flask app
-app = Flask(__name__)
-
-# 3) Load config from config.py
-app.config.from_object("config.Config")
-
-# 4) Enable CORS
-CORS(app)
-
-# 5) Initialize DB extensions
 from .extensions import db, migrate
-db.init_app(app)
-migrate.init_app(app, db)
-
-# 6) Register models and blueprints
-#     Universe and VaultFile models are registered via SQLAlchemy when we import them below.
-from .models.universe import Universe
-from .models.file import VaultFile
-
+from .config import Config
+from .routes import main_bp
 from .vault import vault_bp
-app.register_blueprint(vault_bp)
 
-from .routes import api_bp
-app.register_blueprint(api_bp)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-from .health import health_bp
-app.register_blueprint(health_bp)
+    CORS(app)
 
-from .scrolls import scrolls_bp
-app.register_blueprint(scrolls_bp)
+    # Initialize database & migrations
+    db.init_app(app)
+    migrate.init_app(app, db)
 
-# 7) Register health or other views if needed
-#    e.g.: from .health import health_bp
-#          app.register_blueprint(health_bp)
+    # Register Blueprints under `/api` prefix
+    app.register_blueprint(main_bp, url_prefix="/api")
+    app.register_blueprint(vault_bp, url_prefix="/api/vault")
+
+    # Create tables if they don’t exist
+    with app.app_context():
+        db.create_all()
+
+    return app
 
 if __name__ == "__main__":
-    # On local dev, run with Flask dev server
-    port = int(os.getenv("PORT", 5000))
+    port = int(os.environ.get("PORT", 5000))
+    app = create_app()
     app.run(host="0.0.0.0", port=port, debug=True)
