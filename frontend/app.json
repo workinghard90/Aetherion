@@ -1,20 +1,18 @@
 {
   "expo": {
-    "name": "Aetherion",
-    "slug": "aetherion",
+    "name": "Aetherion Mobile",
+    "slug": "aetherion-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#6200ee"
     },
     "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
+    "ios": { "supportsTablet": true },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -22,8 +20,10 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "apiUrl": process.env.EXPO_PUBLIC_API_URL || "https://aetherion-mobile.onrender.com/api"
     }
   }
 }
