@@ -1,16 +1,27 @@
 #!/bin/bash
-# Bootstrap script for local dev
 
-# Create Python venv
-python3 -m venv venv && source venv/bin/activate
+# Create backend and frontend folder structure (if not existing)
+mkdir -p backend
+mkdir -p frontend/assets
+mkdir -p frontend/screens
+mkdir -p frontend/services
 
-# Backend deps
-pip install -r backend/requirements.txt
+# Create placeholder assets
+touch frontend/assets/icon.png
+touch frontend/assets/splash.png
+touch frontend/assets/favicon.png
+touch frontend/assets/gate_background.png
 
-# Frontend deps
+# Copy .env.example to .env for both backend & frontend
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+
+# Install frontend dependencies
 cd frontend && npm install
 
-echo "✅ Setup complete. Run:"
-echo "  - Backend: source venv/bin/activate && python backend/app.py"
-echo "  - Frontend (mobile): cd frontend && npm start"
-echo "  - Frontend (web): cd frontend && npm run web"
+# Install backend dependencies
+cd ../backend && python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+echo "✅ Project structure is set up. Use 'cd backend && python app.py' to run the backend, and 'cd frontend && npm start' to launch the frontend."
