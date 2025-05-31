@@ -5,6 +5,8 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 from .health import health_bp
 app.register_blueprint(health_bp)
+from .scrolls import scrolls_bp
+app.register_blueprint(scrolls_bp)
 
 
 # 1) Load .env
