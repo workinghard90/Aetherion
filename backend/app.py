@@ -3,6 +3,9 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+from .health import health_bp
+app.register_blueprint(health_bp)
+
 
 # 1) Load .env
 basedir = os.path.abspath(os.path.dirname(__file__))
