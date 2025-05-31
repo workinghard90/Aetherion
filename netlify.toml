@@ -1,16 +1,24 @@
-# Tell Netlify to build from the "frontend" folder
-[build]
-  base    = "frontend"
-  command = "npm run build"
-  publish = "frontend/web-build"
+# ───────────────────────────────────────────────────────────────────────────────
+# netlify.toml (place this at the repository root: AetherionAI-Mobile/netlify.toml)
+# ───────────────────────────────────────────────────────────────────────────────
 
-# Redirect API calls to the Render backend
+[build]
+  base    = "frontend"                     # ← Netlify will cd into ./frontend
+  command = "npm run build"                # ← runs "expo export:web"
+  publish = "frontend/web-build"           # ← this is where Expo outputs the static Web build
+
+  # Pass any needed ENV vars to Netlify builds:
+  environment = { 
+    NODE_VERSION      = "18",                      # match your local Node version
+    EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+  }
+
 [[redirects]]
-  from   = "/api/*"
-  to     = "https://aetherionai-mobile.onrender.com/api/:splat"
+  from = "/api/*"
+  to   = "https://aetherionai-mobile.onrender.com/api/:splat"
   status = 200
 
 [[redirects]]
-  from   = "/"
-  to     = "/index.html"
+  from = "/*"
+  to   = "/index.html"
   status = 200
