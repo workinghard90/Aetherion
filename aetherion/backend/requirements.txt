@@ -4,4 +4,5 @@ gunicorn==21.2.0
 python-dotenv==1.0.1
 cryptography==42.0.7
 Flask-Migrate==4.0.4
+Flask-SQLAlchemy==3.0.0
 # ...plus any existing deps (requests, transformers, etc.)
