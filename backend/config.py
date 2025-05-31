@@ -1,10 +1,12 @@
-import os
-from dotenv import load_dotenv
+# backend/config.py
 
-load_dotenv()  # reads .env
+import os
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
-    SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite:///universe.db")
+    # If you set DATABASE_URL in Render's Environment Variables, it will override the default SQLite.
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///universe.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", "./uploads")
+    SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret-key")
+
+    # Where uploaded files will be stored. Ensure this folder is writable.
+    UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "/opt/render/project/data/uploads")
