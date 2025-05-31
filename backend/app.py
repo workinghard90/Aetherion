@@ -3,11 +3,6 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-from .health import health_bp
-app.register_blueprint(health_bp)
-from .scrolls import scrolls_bp
-app.register_blueprint(scrolls_bp)
-
 
 # 1) Load .env
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -34,6 +29,12 @@ from .models.file import VaultFile
 
 from .routes import api_bp
 app.register_blueprint(api_bp)
+
+from .health import health_bp
+app.register_blueprint(health_bp)
+
+from .scrolls import scrolls_bp
+app.register_blueprint(scrolls_bp)
 
 # 7) Register health or other views if needed
 #    e.g.: from .health import health_bp
