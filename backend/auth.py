@@ -1,46 +1,49 @@
+import os
+import jwt
 from functools import wraps
 from flask import request, jsonify, g
-import jwt
-import os
-from datetime import datetime, timedelta
+from models import User
+from extensions import db
 
-# Replace this with your own secret / JWT logic
-SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey")
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
 
-def encode_token(user_id):
-    payload = {
-        "sub": user_id,
-        "exp": datetime.utcnow() + timedelta(hours=24),
-    }
+def generate_token(user_id):
+    payload = {"user_id": user_id}
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
     return token
 
 def decode_token(token):
-    return jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    return payload  # e.g. {"user_id": 1}
 
-def require_auth(fn):
-    @wraps(fn)
-    def wrapper(*args, **kwargs):
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
         auth_header = request.headers.get("Authorization", "")
         if not auth_header.startswith("Bearer "):
             return jsonify({"error": "Missing or invalid token"}), 401
+
         token = auth_header.split(" ")[1]
         try:
-            user_data = decode_token(token)
-            g.user_id = user_data["sub"]
+            payload = decode_token(token)
+            user = User.query.get(payload.get("user_id"))
+            if not user:
+                raise Exception("User not found")
+            g.user = user
         except Exception:
             return jsonify({"error": "Invalid or expired token"}), 403
-        return fn(*args, **kwargs)
-    return wrapper
+        return f(*args, **kwargs)
+    return decorated
 
 def try_auth():
+    """Silently attach user if token valid, else g.user = None."""
     auth_header = request.headers.get("Authorization", "")
     if auth_header.startswith("Bearer "):
         token = auth_header.split(" ")[1]
         try:
-            user_data = decode_token(token)
-            g.user_id = user_data["sub"]
-        except Exception:
-            g.user_id = None
+            payload = decode_token(token)
+            g.user = User.query.get(payload.get("user_id"))
+        except:
+            g.user = None
     else:
-        g.user_id = None
+        g.user = None
