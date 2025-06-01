@@ -1,63 +1,107 @@
+# Aetherion/backend/aetherion/routes.py
+
+from flask import Blueprint, request, jsonify, g, current_app, send_file
+from .extensions import db
+from .models import User, VaultFile
+from .auth import authenticate, create_user
+from .auth_middleware import require_auth, try_auth
+from .crypto import decrypt_file
 import os
-from flask import Blueprint, request, jsonify, current_app, send_file
-from werkzeug.utils import secure_filename
-from extensions import db
-from models import VaultFile
-from crypto import encrypt_file, decrypt_file
-from auth import require_auth
 
-vault_bp = Blueprint("vault", __name__)
+api_bp = Blueprint("api", __name__)
 
-@vault_bp.route("/vault/upload", methods=["POST"])
-@require_auth
-def upload_file():
-    if "file" not in request.files:
-        return jsonify({"error": "No file provided"}), 400
+#
+# ─── AUTH ENDPOINTS ────────────────────────────────────────────────────────────
+#
 
-    file = request.files["file"]
-    if file.filename == "":
-        return jsonify({"error": "Empty filename"}), 400
+@api_bp.route("/auth/register", methods=["POST"])
+def register():
+    data = request.json or {}
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
 
-    filename = secure_filename(file.filename)
-    upload_folder = current_app.config["UPLOAD_FOLDER"]
-    os.makedirs(upload_folder, exist_ok=True)
-    path = os.path.join(upload_folder, filename)
+    if not username or not password:
+        return jsonify({"error": "Username and password required"}), 400
 
-    encrypted_data = encrypt_file(file.read())
-    with open(path, "wb") as f:
-        f.write(encrypted_data)
+    if User.query.filter_by(username=username).first():
+        return jsonify({"error": "Username already taken"}), 400
 
-    new_file = VaultFile(
-        filename=filename,
-        original_name=file.filename,
-        mime_type=file.mimetype,
-        size=len(encrypted_data),
-        user_id=request.g.user.id
-    )
-    db.session.add(new_file)
-    db.session.commit()
+    user = create_user(username, password)
+    return jsonify({"message": "User created", "user_id": user.id}), 201
 
-    return jsonify({"message": "File uploaded", "file_id": new_file.id}), 201
 
-@vault_bp.route("/vault/download/<int:file_id>", methods=["GET"])
-@require_auth
-def download_file(file_id):
+@api_bp.route("/auth/login", methods=["POST"])
+def login():
+    data = request.json or {}
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
+    token = authenticate(username, password)
+    if token:
+        return jsonify({"token": token}), 200
+    return jsonify({"error": "Invalid credentials"}), 401
+
+
+#
+# ─── VAULT ENDPOINTS ───────────────────────────────────────────────────────────
+#
+
+from .vault import vault_bp
+api_bp.register_blueprint(vault_bp, url_prefix="/vault")
+
+
+#
+# ─── SCROLLS / ARCHIVE ─────────────────────────────────────────────────────────
+#
+
+@api_bp.route("/archive", methods=["GET"])
+@try_auth
+def list_archive():
+    """
+    Returns list of all archived scrolls/files (metadata), optionally with content
+    if the user is authenticated and allowed. 
+    """
+    # If a user is logged in, we can return their files; otherwise just metadata.
+    user = getattr(g, "user", None)
+    files = VaultFile.query.all()
+    return jsonify([f.to_dict() for f in files]), 200
+
+
+@api_bp.route("/archive/<int:file_id>", methods=["GET"])
+@try_auth
+def get_scroll(file_id):
+    """
+    If a user is authenticated, we decrypt and send the file contents.
+    Otherwise we just respond with metadata.
+    """
     vf = VaultFile.query.get_or_404(file_id)
-    upload_folder = current_app.config["UPLOAD_FOLDER"]
-    path = os.path.join(upload_folder, vf.filename)
-    if not os.path.exists(path):
-        return jsonify({"error": "File not found on server"}), 404
+    user = getattr(g, "user", None)
+    if user and user["user_id"] == vf.user_id:
+        path = os.path.join(current_app.config["UPLOAD_FOLDER"], vf.filename)
+        with open(path, "rb") as f:
+            decrypted = decrypt_file(f.read())
+        # Return the decrypted bytes with correct mime type
+        return send_file(
+            io.BytesIO(decrypted), 
+            download_name=vf.original_name, 
+            mimetype=vf.mime_type
+        )
+    else:
+        # Not allowed or not authenticated: return metadata only
+        return jsonify(vf.to_dict()), 200
 
-    with open(path, "rb") as f:
-        decrypted = decrypt_file(f.read())
 
-    # Temporarily write to a local file to send, or use BytesIO
-    from io import BytesIO
-    bio = BytesIO(decrypted)
-    bio.seek(0)
-    return send_file(
-        bio,
-        download_name=vf.original_name,
-        mimetype=vf.mime_type,
-        as_attachment=True
-    )
+#
+# ─── ORACLE ENDPOINT (Chatbot) ──────────────────────────────────────────────────
+#
+
+@api_bp.route("/oracle", methods=["POST"])
+@try_auth       # Will still work if not logged in; g.user will be None
+def oracle_chat():
+    data = request.json or {}
+    question = data.get("question", "").strip()
+    if not question:
+        return jsonify({"error": "Question is required"}), 400
+
+    # Dummy placeholder: you should hook this into your actual LLM/transformers pipeline
+    answer = f"Grove says: I hear you asking '{question}'. I am still learning to answer."
+    return jsonify({"answer": answer}), 200
