@@ -1,22 +1,73 @@
-# Node & Expo (frontend)
+# Node & React Native
 node_modules/
-.npm/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
 .expo/
 .expo-shared/
+dist/
 web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
 
-# React Native
-android/
-ios/
+# Expo generated files
+*.expo*
+.expo*
 
-# Python & Flask (backend)
-__pycache__/
-*.py[cod]
-venv/
-
-# Env
-.env
-.env.example
-
-# Misc
+# macOS
 .DS_Store
+
+# Android
+android/
+*.keystore
+
+# iOS
+ios/
+Pods/
+*.xcworkspace
+*.xcuserstate
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.hmap
+*.ipa
+*.xcodeproj
+
+# VSCode
+.vscode/
+
+# Python & Flask (Backend)
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/*.db
+backend/*.sqlite3
+backend/*.log
+backend/.env
+backend/instance/
+backend/venv/
+backend/.env.*
+
+# Build Artifacts
+build/
+coverage/
+*.egg-info/
+*.egg
+*.bak
+*.tmp
+*.swp
+*.pid
+*.tar.gz
+
+# System
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# GitHub Pages
+frontend/web-build/
