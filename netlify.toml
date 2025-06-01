@@ -1,20 +1,16 @@
-# netlify.toml
+# netlify.toml (at the root of your Git repo)
 
 [build]
-  base   = "frontend"
+  base    = "frontend"
   command = "npm run build"
-  publish = "frontend/web-build"
-
-[dev]
-  # if you use Netlify Dev locally
-  framework = "none"
+  publish = "web-build"
 
 [[redirects]]
-  from = "/api/*"
-  to   = "https://aetherionai-mobile.onrender.com/api/:splat"
-  status = 200
+  from    = "/api/*"
+  to      = "https://aetherion-mobile.onrender.com/api/:splat"
+  status  = 200
 
 [[redirects]]
-  from = "/*"
-  to   = "/index.html"
-  status = 200
+  from    = "/*"
+  to      = "/index.html"
+  status  = 200
