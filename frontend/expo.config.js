@@ -30,7 +30,6 @@ export default ({ config }) => {
         favicon: "./assets/favicon.png",
       },
       extra: {
-        // Any environment variable references must go here in JS.
         apiUrl: process.env.EXPO_PUBLIC_API_URL
           ? process.env.EXPO_PUBLIC_API_URL + "/api"
           : "https://aetherion-mobile.onrender.com/api",
