@@ -1,4 +1,6 @@
-# netlify.toml (at the root of your Git repo)
+# ─────────────────────────────────────────────────────────
+# Netlify configuration (placed at the project root)
+# ─────────────────────────────────────────────────────────
 
 [build]
   base    = "frontend"
