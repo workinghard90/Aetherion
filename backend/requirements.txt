@@ -2,10 +2,10 @@ Flask==2.3.3
 flask-cors==4.0.0
 Flask-Migrate==4.0.4
 Flask-SQLAlchemy==3.0.3
+SQLAlchemy==1.4.46
 python-dotenv==1.0.1
 cryptography==42.0.7
-Werkzeug==2.3.7
 PyJWT==2.8.0
+Werkzeug==2.3.7
 requests==2.31.0
 gunicorn==21.2.0
-SQLAlachemy==1.4.46
