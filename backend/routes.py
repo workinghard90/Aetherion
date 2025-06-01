@@ -1,81 +1,98 @@
-from flask import Blueprint, request, jsonify, g
-from extensions import db
-from models import User
-from auth import generate_token, require_auth, try_auth
-from vault import vault_bp
+# backend/routes.py
 
-api_bp = Blueprint("api_bp", __name__)
+import os
+import json
+from flask import Blueprint, request, jsonify, current_app, g
+from werkzeug.utils import secure_filename
+from app import db
+from models import VaultFile, User
+from auth import require_auth, try_auth
+from crypto import encrypt_file, decrypt_file
 
-# Register vault blueprint under /api
-api_bp.register_blueprint(vault_bp)
+api_bp = Blueprint("api", __name__)
 
-# --- Authentication Routes ---
-
-@api_bp.route("/auth/register", methods=["POST"])
-def register():
-    data = request.json or {}
-    username = data.get("username")
-    password = data.get("password")
-    if not username or not password:
-        return jsonify({"error": "Username & password required"}), 400
-
-    if User.query.filter_by(username=username).first():
-        return jsonify({"error": "Username already exists"}), 400
-
-    from werkzeug.security import generate_password_hash
-    new_user = User(username=username, password_hash=generate_password_hash(password))
-    db.session.add(new_user)
-    db.session.commit()
-    token = generate_token(new_user.id)
-    return jsonify({"message": "User created", "token": token}), 201
-
-@api_bp.route("/auth/login", methods=["POST"])
-def login():
-    data = request.json or {}
-    username = data.get("username")
-    password = data.get("password")
-    from werkzeug.security import check_password_hash
-    user = User.query.filter_by(username=username).first()
-    if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({"error": "Invalid credentials"}), 401
-    token = generate_token(user.id)
-    return jsonify({"message": "Login successful", "token": token})
-
-# --- Universe “items” endpoints (simple example) ---
-
+# PUBLIC: get all items
 @api_bp.route("/items", methods=["GET"])
-@require_auth
 def get_items():
-    from datetime import datetime
-    # Example static data; in practice you’d fetch from DB
-    sample = [
-        {"id": 1, "name": "Star Alpha", "type": "Star", "description": "A bright star", "created_at": datetime.utcnow().isoformat()},
-        {"id": 2, "name": "Planet Beta", "type": "Planet", "description": "A rocky planet", "created_at": datetime.utcnow().isoformat()}
-    ]
-    return jsonify(sample)
+    items = VaultFile.query.all()
+    return jsonify([
+        {
+            "id": item.id,
+            "filename": item.filename,
+            "original_name": item.original_name,
+            "mime_type": item.mime_type,
+            "size": item.size,
+            "user_id": item.user_id,
+            "created_at": item.created_at.isoformat(),
+        } for item in items
+    ]), 200
 
+# PUBLIC: get single item by ID
 @api_bp.route("/items/<int:item_id>", methods=["GET"])
-@require_auth
 def get_item(item_id):
-    # Dummy response
-    return jsonify({"id": item_id, "name": f"Entity {item_id}", "type": "Unknown", "description": "Details here"})
+    item = VaultFile.query.get(item_id)
+    if not item:
+        return jsonify({"error": "Not found"}), 404
+    return jsonify({
+        "id": item.id,
+        "filename": item.filename,
+        "original_name": item.original_name,
+        "mime_type": item.mime_type,
+        "size": item.size,
+        "user_id": item.user_id,
+        "created_at": item.created_at.isoformat(),
+    }), 200
 
+# PROTECTED: create/upload a new file
 @api_bp.route("/items", methods=["POST"])
 @require_auth
-def create_item():
-    data = request.json or {}
-    # Dummy create
-    return jsonify({"message": "Created", "data": data}), 201
+def upload_item():
+    if "file" not in request.files:
+        return jsonify({"error": "No file provided"}), 400
 
-@api_bp.route("/items/<int:item_id>", methods=["PUT"])
-@require_auth
-def update_item(item_id):
-    data = request.json or {}
-    # Dummy update
-    return jsonify({"message": f"Item {item_id} updated", "data": data})
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
 
+    filename = secure_filename(file.filename)
+    upload_folder = current_app.config["UPLOAD_FOLDER"]
+    os.makedirs(upload_folder, exist_ok=True)
+    path = os.path.join(upload_folder, filename)
+
+    # Encrypt the raw file bytes before saving
+    encrypted_data = encrypt_file(file.read())
+    with open(path, "wb") as f:
+        f.write(encrypted_data)
+
+    new_file = VaultFile(
+        filename=filename,
+        original_name=file.filename,
+        mime_type=file.mimetype,
+        size=len(encrypted_data),
+        user_id=g.user["id"]  # assuming decode_token sets g.user to a dict with "id"
+    )
+    db.session.add(new_file)
+    db.session.commit()
+
+    return jsonify({"message": "File uploaded", "file_id": new_file.id}), 201
+
+# PROTECTED: delete an item
 @api_bp.route("/items/<int:item_id>", methods=["DELETE"])
 @require_auth
 def delete_item(item_id):
-    # Dummy delete
-    return jsonify({"message": f"Item {item_id} deleted"})
+    item = VaultFile.query.get(item_id)
+    if not item:
+        return jsonify({"error": "Not found"}), 404
+    if item.user_id != g.user["id"]:
+        return jsonify({"error": "Forbidden"}), 403
+
+    # Remove the file from disk
+    file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], item.filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({"message": "Deleted"}), 200
+
+# (Add further endpoints as needed…)
