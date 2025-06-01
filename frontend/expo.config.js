@@ -1,12 +1,11 @@
-// expo.config.js
-import 'dotenv/config'; // only needed if you want to load local .env when running expo locally
+import 'dotenv/config'; 
 
 export default ({ config }) => {
   return {
     ...config,
     expo: {
       ...config.expo,
-      name: "Aetherion",                          // display name
+      name: "Aetherion",                          
       slug: "aetherion-mobile",
       version: "1.0.0",
       orientation: "portrait",
