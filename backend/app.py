@@ -1,34 +1,47 @@
+# backend/app.py
+
 import os
 from flask import Flask
 from flask_cors import CORS
-from extensions import db, migrate
-from routes import api_bp
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
+# initialize extensions
+db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app():
-    app = Flask(__name__, instance_relative_config=False)
-    app.config.from_pyfile("config.json")
-    # Load environment variables from .env if present
-    from dotenv import load_dotenv
-    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+    app = Flask(__name__)
 
-    # Override config from environment
-    app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER", app.config["UPLOAD_FOLDER"])
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", app.config["SQLALCHEMY_DATABASE_URI"])
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    # Load settings from config.py (must be valid Python)
+    app.config.from_object("config")
 
+    # Initialize CORS
     CORS(app)
+
+    # Initialize database and migration engine
     db.init_app(app)
     migrate.init_app(app, db)
 
-    # Register blueprints
+    # Make sure upload folder exists
+    os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+    # Register your Blueprints / routes here:
+    from routes import api_bp
     app.register_blueprint(api_bp, url_prefix="/api")
+
     return app
 
-app = create_app()
+# If you had a wsgi.py that does `from app import app`, 
+# update it to call create_app()
 
 if __name__ == "__main__":
-    # Create tables and run
+    # On direct run, create the tables if needed and start the server
+    app = create_app()
+
+    # Ensure the database file / tables exist
     with app.app_context():
         db.create_all()
-    port = int(os.environ.get("PORT", 5000))
+
+    port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
