@@ -1,13 +1,10 @@
 // frontend/expo.config.js
-import 'dotenv/config'; 
-// The above line only matters if you want locals like `EXPO_PUBLIC_API_URL` to be picked up
-// when running `expo start` on your machine.  Netlify will inject `EXPO_PUBLIC_API_URL` 
-// into the environment automatically during CI.
+import 'dotenv/config';
 
 export default ({ config }) => ({
   ...config,
   expo: {
-    name: "Aetherion",                   // must match the display name you want
+    name: "Aetherion",
     slug: "aetherion-mobile",
     version: "1.0.0",
     orientation: "portrait",
@@ -26,12 +23,12 @@ export default ({ config }) => ({
         backgroundColor: "#6200ee"
       }
     },
+    platforms: ["ios", "android", "web"],
     web: {
-      favicon: "./assets/favicon.png"
+      favicon: "./assets/favicon.png",
+      bundler: "metro"
     },
     extra: {
-      // At build time, Netlify will set EXPO_PUBLIC_API_URL in its environment.
-      // Locally, if that variable is not set, we default to the Render URL + "/api".
       apiUrl:
         process.env.EXPO_PUBLIC_API_URL
           ? process.env.EXPO_PUBLIC_API_URL + "/api"
