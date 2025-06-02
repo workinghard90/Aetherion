@@ -1,21 +1,69 @@
 # ───────────── Root / IDE / OS ─────────────
+
+# If you ever install any packages at the repo root (e.g. a top-level node_modules), ignore them:
 node_modules/
+
+# Log files
 *.log
+yarn-error.log*
+npm-debug.log*
+
+# macOS
 .DS_Store
+
+# Environment variables (if you keep a .env at the root)
 .env
+
+# Editor/IDE folders
 .vscode/
 .idea/
 
 # ───────────── Backend ─────────────
+
+# Virtual environment for Flask (if you ever create one under backend/venv/)
 backend/venv/
+
+# Python bytecode caches
 backend/__pycache__/
+
+# SQLite files (ignore any .db so you don’t accidentally commit the local DB)
 backend/*.db
-backend/migrations/
+
+# If you keep a per-service .env inside backend/, ignore it too:
+backend/.env
+
+# ───────────── (YOU *MIGHT* WANT TO TRACK MIGRATIONS!) ─────────────
+# 
+# If you use Flask-Migrate/Alembic, you’ll usually want to commit your
+# migrations folder so that everyone’s schema stays in sync. In that case,
+# remove (or comment out) the next line:
+#
+# backend/migrations/
+#
+# Otherwise, if you truly want to re-generate migrations on every machine,
+# keep this ignore. But typically, it’s best to track migrations in Git.
+# 
+# ─────────────────────────────────────────────────────
 
 # ───────────── Frontend ─────────────
+
+# React/Expo dependencies
 frontend/node_modules/
+
+# Expo caching and build output
 frontend/.expo/
 frontend/.expo-shared/
+
+# Expo’s “export:web” output (we let Netlify rebuild on each deploy)
 frontend/web-build/
 
+# If you ever use a per-frontend .env file (e.g. REACT_APP_… vars), ignore it:
+frontend/.env
+
+# Other common logs in the frontend folder
+frontend/npm-debug.log*
+frontend/yarn-error.log*
+
 # ───────────── Other ─────────────
+
+# (Add any other generated or local‐only folders/files here as needed)
