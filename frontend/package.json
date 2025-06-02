@@ -12,21 +12,21 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-  "expo": "~50.0.6",
-  "react": "18.2.0",
-  "react-dom": "18.2.0",
-  "react-native": "0.73.6",
-  "react-native-reanimated": "~3.4.0",    // <–– installed
-  "@react-navigation/native": "^6.1.8",
-  "@react-navigation/stack": "^6.3.20",
-  "axios": "^1.6.7",
-  "react-native-gesture-handler": "~2.14.0",
-  "react-native-safe-area-context": "4.8.2",
-  "react-native-screens": "~3.29.0",
-  "react-native-web": "~0.19.6"
-},
-"devDependencies": {
-  "babel-preset-expo": "^10.5.1",
-  "gh-pages": "^6.1.1"
+    "expo": "~50.0.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.73.6",
+    "react-native-reanimated": "~3.4.0",
+    "@react-navigation/native": "^6.1.8",
+    "@react-navigation/stack": "^6.3.20",
+    "axios": "^1.6.7",
+    "react-native-gesture-handler": "~2.14.0",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-screens": "~3.29.0",
+    "react-native-web": "~0.19.6"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^10.5.1",
+    "gh-pages": "^6.1.1"
+  }
 }
-    
