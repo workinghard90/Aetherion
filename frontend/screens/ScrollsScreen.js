@@ -1,41 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import axios from 'axios';
-import { getToken } from '../services/api';
+// Aetherion/frontend/screens/ScrollsScreen.js
+
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function ScrollsScreen() {
   const [scrolls, setScrolls] = useState([]);
-  const API_URL = process.env.EXPO_PUBLIC_API_URL + "/scrolls";
-
-  const fetchScrolls = async () => {
-    try {
-      const token = await getToken();
-      const res = await axios.get(API_URL, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setScrolls(res.data.scrolls);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const apiUrl = Expo.Constants.manifest.extra.apiUrl;
 
   useEffect(() => {
     fetchScrolls();
   }, []);
 
+  const fetchScrolls = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/archive`);
+      setScrolls(res.data);
+    } catch (e) {
+      console.error(e);
+      Alert.alert("Error", "Failed to fetch scrolls.");
+    }
+  };
+
+  const viewScroll = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const res = await axios.get(`${apiUrl}/archive/${id}`, {
+        responseType: "blob",
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      // For brevity: you might present the file or blob to the user. Here we just alert.
+      Alert.alert("Scroll fetched", `Scroll ${id} fetched successfully.`);
+    } catch (e) {
+      console.error(e);
+      Alert.alert("Error", "Failed to load scroll.");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>📜 Archive of Scrolls</Text>
+      <Text style={styles.header}>📜 Archive of Scrolls</Text>
       <FlatList
         data={scrolls}
         keyExtractor={(item) => item.id.toString()}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No scrolls in the archive.</Text>
+        }
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.scrollRow}>
-            <Text style={styles.scrollTitle}>{item.title}</Text>
-            <Text style={styles.scrollDesc}>{item.content.substring(0, 60)}...</Text>
+          <TouchableOpacity
+            style={styles.scrollRow}
+            onPress={() => viewScroll(item.id)}
+          >
+            <Text style={styles.scrollName}>{item.original_name}</Text>
+            <Text style={styles.scrollMeta}>
+              uploaded by {item.user_id} on {new Date(item.uploaded_at).toLocaleDateString()}
+            </Text>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text style={styles.empty}>No scrolls available.</Text>}
+        style={{ width: "90%" }}
       />
     </View>
   );
@@ -44,34 +67,34 @@ export default function ScrollsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#111",
-    padding: 16
+    backgroundColor: "#1e1e2e",
+    alignItems: "center",
+    paddingTop: 30
   },
-  heading: {
-    color: "#E0CFFF",
-    fontSize: 24,
-    marginBottom: 12
-  },
-  scrollRow: {
-    backgroundColor: "#222",
-    padding: 12,
-    marginVertical: 6,
-    borderRadius: 6
-  },
-  scrollTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600"
-  },
-  scrollDesc: {
-    color: "#ccc",
-    fontSize: 14,
-    marginTop: 4
+  header: {
+    fontSize: 22,
+    color: "#e0c0ff",
+    marginBottom: 16
   },
   empty: {
-    color: "#aaa",
-    fontSize: 16,
-    marginTop: 20,
+    marginTop: 40,
+    color: "#bbb",
+    fontStyle: "italic",
     textAlign: "center"
+  },
+  scrollRow: {
+    backgroundColor: "#2c2c3e",
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 6
+  },
+  scrollName: {
+    color: "#ffd1ff",
+    fontSize: 16
+  },
+  scrollMeta: {
+    fontSize: 12,
+    color: "#aaa",
+    marginTop: 4
   }
 });
