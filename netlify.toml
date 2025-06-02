@@ -6,7 +6,7 @@
   # “base” = where Netlify will cd into before running npm
   base    = "frontend"
   # run install + build
-  command = "npm install && npm run build"
+  command = "npm install && expo export"
   # where to look for the compiled web output
   publish = "frontend/web-build"
 
