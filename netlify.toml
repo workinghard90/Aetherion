@@ -1,7 +1,7 @@
 [build]
   base    = "frontend"
   command = "npm install && npm run build"
-  publish = "frontend/web-build"
+  publish = "frontend/dish"
 
 [[redirects]]
   from   = "/api/*"
