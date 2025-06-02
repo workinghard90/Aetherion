@@ -1,5 +1,5 @@
-# Aetherion/backend/wsgi.py
-
-from aetherion import create_app
+# backend/wsgi.py
+# This is the entrypoint for Gunicorn on Render
+from app import create_app
 
 app = create_app()
