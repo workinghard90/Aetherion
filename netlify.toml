@@ -1,13 +1,15 @@
+# ┌────────────────────────────────────────────────────────┐
+# │  netlify.toml (located at the repo root)              │
+# └────────────────────────────────────────────────────────┘
+
 [build]
-  base    = "frontend"         # wherever your Expo project lives
-  command = "npm run build"    # runs expo export:web
-  publish = "frontend/web-build"        # relative to `base` folder
+  # “base” = where Netlify will cd into before running npm
+  base    = "frontend"
+  # run install + build
+  command = "npm install && npm run build"
+  # where to look for the compiled web output
+  publish = "frontend/web-build"
 
-[build.environment]
-  NODE_VERSION         = "18"
-  EXPO_PUBLIC_API_URL  = "https://aetherion-mobile.onrender.com/api"
-
-# Redirect API calls to your Render backend:
 [[redirects]]
   from   = "/api/*"
   to     = "https://aetherion-mobile.onrender.com/api/:splat"
