@@ -12,15 +12,15 @@ module.exports = async function (env, argv) {
     crypto: require.resolve('crypto-browserify'),
     stream: require.resolve('stream-browserify'),
     buffer: require.resolve('buffer/'),
+    process: require.resolve('process/browser')
   };
 
-  // 3. Provide the global Buffer (so some libraries don’t break):
-  //    This injects `Buffer` into the bundle automatically.
+  // 3. Provide the global Buffer & process so libraries that expect Node APIs work:
   const BufferPolyfill = require.resolve('buffer/').replace(/\/index\.js$/, '');
   config.plugins.push(
     new (require('webpack')).ProvidePlugin({
       Buffer: [BufferPolyfill, 'Buffer'],
-      process: 'process/browser', // if needed by other Node APIs
+      process: 'process/browser'
     })
   );
 
