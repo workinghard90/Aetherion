@@ -9,7 +9,7 @@
 
   # Expo’s “dist/” is where expo export:web writes everything
   # (it will create frontend/dist/index.html, assets, etc.)
-  publish = "frontend/dist"
+  publish = "web-build"
 
 # If you have API redirects, you can still keep this:
 # [[redirects]]
