@@ -1,14 +1,17 @@
-# Aetherion/backend/aetherion/crypto.py
-
-from cryptography.fernet import Fernet
+# backend/aetherion/crypto.py
 import os
+from cryptography.fernet import Fernet
 
-# Generate a key once and store it in an environment variable in production!
-FERNET_KEY = os.getenv("FERNET_KEY", Fernet.generate_key().decode())
-fernet = Fernet(FERNET_KEY.encode())
+# In production, generate your key once and store in ENV (e.g. via `export VAULT_KEY=...`)
+VAULT_KEY = os.environ.get("VAULT_KEY", None)
+if VAULT_KEY is None:
+    # For local testing only—generate a random key at startup.
+    VAULT_KEY = Fernet.generate_key().decode()
 
-def encrypt_file(binary_data: bytes) -> bytes:
-    return fernet.encrypt(binary_data)
+fernet = Fernet(VAULT_KEY.encode())
 
-def decrypt_file(token: bytes) -> bytes:
-    return fernet.decrypt(token)
+def encrypt_file(raw_bytes: bytes) -> bytes:
+    return fernet.encrypt(raw_bytes)
+
+def decrypt_file(cipher_bytes: bytes) -> bytes:
+    return fernet.decrypt(cipher_bytes)
