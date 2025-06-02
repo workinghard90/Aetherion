@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^13.1.11",
-    "gh-pages": "^6.1.1"
+    "gh-pages": "^6.1.1",
+    "@expo/webpack-config": "^18.0.1"
   }
 }
