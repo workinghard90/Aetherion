@@ -1,6 +1,0 @@
-{
-  "DEBUG": true,
-  "SQLALCHEMY_TRACK_MODIFICATIONS": false,
-  "UPLOAD_FOLDER": "./uploads",
-  "CORS_ORIGINS": ["http://localhost:19006", "http://localhost:3000"]
-}

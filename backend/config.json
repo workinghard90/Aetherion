@@ -1,0 +1,7 @@
+{
+  "DEBUG": false,
+  "SQLALCHEMY_DATABASE_URI": "sqlite:///universe.db",
+  "SQLALCHEMY_TRACK_MODIFICATIONS": false,
+  "UPLOAD_FOLDER": "uploads",
+  "JWT_SECRET": "AUTUMN&CAELUM"
+}
