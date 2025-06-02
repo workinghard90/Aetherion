@@ -1,24 +1,20 @@
-# netlify.toml (in your repo root, _not_ inside frontend/)
+# Aetherion/netlify.toml
+
 [build]
-  # Tell Netlify: “First cd into `frontend` before doing anything.”
   base = "frontend"
-  # Then run this script:
   command = "npm run build"
-  # After that completes, publish the “web-build” folder:
   publish = "frontend/web-build"
 
 [context.production.environment]
   NODE_VERSION = "18"
-  EXPO_PUBLIC_API_URL = "https://aetherion-mobile.onrender.com"
+  EXPO_PUBLIC_API_URL = "https://aetherion-mobile.onrender.com/api"
 
 [[redirects]]
-  # Redirect any “/api/*” requests to your Flask backend:
   from = "/api/*"
   to = "https://aetherion-mobile.onrender.com/api/:splat"
   status = 200
 
 [[redirects]]
-  # Single‐Page‐App fallback
   from = "/*"
   to = "/index.html"
   status = 200
