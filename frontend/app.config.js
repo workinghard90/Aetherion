@@ -1,33 +1,31 @@
 import 'dotenv/config';
 
 export default () => ({
-  expo: {
-    name: "Aetherion",
-    slug: "aetherion-mobile",
-    version: "1.0.0",
-    orientation: "portrait",
-    icon: "./assets/icon.png",
-    userInterfaceStyle: "light",
-    splash: {
-      image: "./assets/splash.png",
-      resizeMode: "contain",
-      backgroundColor: "#6200ee",
+  {
+  "expo": {
+    "name": "Aetherion",
+    "slug": "aetherion-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",              // ← must exist
+    "splash": {
+      "image": "./assets/splash.png",         // ← must exist
+      "resizeMode": "contain",
+      "backgroundColor": "#6200ee"
     },
-    assetBundlePatterns: ["**/*"],
-    ios: {
-      supportsTablet: true,
+    "assetBundlePatterns": ["**/*"],
+    "ios": { "supportsTablet": true },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",   // ← same icon
+        "backgroundColor": "#6200ee"
+      }
     },
-    android: {
-      adaptiveIcon: {
-        foregroundImage: "./assets/icon.png",
-        backgroundColor: "#6200ee",
-      },
+    "web": {
+      "favicon": "./assets/favicon.png"       // ← must exist
     },
-    web: {
-      favicon: "./assets/favicon.png",
-    },
-    extra: {
-      apiUrl: process.env.EXPO_PUBLIC_API_URL || "https://aetherion-mobile.onrender.com/api"
-    },
-  },
-});
+    "extra": {
+      "apiUrl": "https://aetherion-mobile.onrender.com/api"
+    }
+  }
+}
