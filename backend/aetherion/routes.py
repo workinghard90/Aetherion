@@ -1,13 +1,14 @@
 # backend/aetherion/routes.py
+
 import io
 import os
-import hashlib
-import jwt
-from datetime import datetime, timedelta
-from flask import Blueprint, request, jsonify, g, send_file, current_app
+from flask import Blueprint, request, jsonify, g, current_app, send_file
 from .extensions import db
 from .models import User, VaultFile
+from .auth import authenticate, create_user
 from .auth_middleware import require_auth, try_auth
+from .crypto import decrypt_file
+from .vault import vault_bp  # we register this blueprint below
 
 api_bp = Blueprint("api", __name__)
 
@@ -27,11 +28,7 @@ def register():
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "Username already taken"}), 400
 
-    # Simple (insecure) hashing—swap for bcrypt in production
-    pw_hash = hashlib.sha256(password.encode()).hexdigest()
-    user = User(username=username, password_hash=pw_hash)
-    db.session.add(user)
-    db.session.commit()
+    user = create_user(username, password)
     return jsonify({"message": "User created", "user_id": user.id}), 201
 
 
@@ -41,84 +38,87 @@ def login():
     username = data.get("username", "").strip()
     password = data.get("password", "").strip()
 
-    if not username or not password:
-        return jsonify({"error": "Username and password required"}), 400
+    token = authenticate(username, password)
+    if token:
+        return jsonify({"token": token}), 200
 
-    pw_hash = hashlib.sha256(password.encode()).hexdigest()
-    user = User.query.filter_by(username=username, password_hash=pw_hash).first()
-    if not user:
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    # Now fetch JWT_SECRET from config under request context:
-    secret_key = current_app.config.get("JWT_SECRET", "CHANGE_ME_TO_A_REAL_SECRET")
-    payload = {
-        "user_id": user.id,
-        "exp": datetime.utcnow() + timedelta(hours=12)
-    }
-    token = jwt.encode(payload, secret_key, algorithm="HS256")
-    return jsonify({"token": token}), 200
+    return jsonify({"error": "Invalid credentials"}), 401
 
 
 #
-# ─── VAULT ENDPOINTS ───────────────────────────────────────────────────────────
+# ─── VAULT ENDPOINTS (Blueprint) ───────────────────────────────────────────────
 #
 
-from .vault import vault_bp
+# Register our vault blueprint under /api/vault
 api_bp.register_blueprint(vault_bp, url_prefix="/vault")
 
 
 #
-# ─── SCROLLS / ARCHIVE ENDPOINTS ────────────────────────────────────────────────
+# ─── ARCHIVE / SCROLLS (Optional Auth) ──────────────────────────────────────────
 #
 
 @api_bp.route("/archive", methods=["GET"])
-@try_auth
 def list_archive():
     """
-    Return metadata for all archived files. If the user is authenticated,
-    return their files; otherwise just metadata without download.
+    Returns list of all archived scrolls/files (metadata).
+    If a valid token is provided, g.user will be set; otherwise g.user is None.
     """
+    # Perform optional auth
+    try_auth()
+
     files = VaultFile.query.all()
     return jsonify([f.to_dict() for f in files]), 200
 
 
 @api_bp.route("/archive/<int:file_id>", methods=["GET"])
-@try_auth
 def get_scroll(file_id):
     """
-    If authenticated user owns this file, decrypt & send. Otherwise just metadata.
+    If the user is authenticated and owns the file, return decrypted contents.
+    Otherwise return only metadata.
     """
+    # Perform optional auth
+    try_auth()
+
     vf = VaultFile.query.get_or_404(file_id)
     user = getattr(g, "user", None)
+
+    # If user is logged in and owns this vault entry, send decrypted bytes
     if user and user["user_id"] == vf.user_id:
-        upload_dir = current_app.config["UPLOAD_FOLDER"]
-        full_path = os.path.join(upload_dir, vf.filename)
-        if not os.path.exists(full_path):
+        path = os.path.join(current_app.config["UPLOAD_FOLDER"], vf.filename)
+        if not os.path.exists(path):
             return jsonify({"error": "File missing on server"}), 404
-        from .crypto import decrypt_file
-        with open(full_path, "rb") as f:
-            decrypted = decrypt_file(f.read())
+
+        with open(path, "rb") as f:
+            decrypted_bytes = decrypt_file(f.read())
+
         return send_file(
-            io.BytesIO(decrypted),
+            io.BytesIO(decrypted_bytes),
+            as_attachment=True,
             download_name=vf.original_name,
             mimetype=vf.mime_type
         )
-    else:
-        return jsonify(vf.to_dict()), 200
+
+    # Otherwise, return metadata only
+    return jsonify(vf.to_dict()), 200
 
 
 #
-# ─── ORACLE CHATBOT ENDPOINT ───────────────────────────────────────────────────
+# ─── ORACLE ENDPOINT (Chatbot) ──────────────────────────────────────────────────
 #
 
 @api_bp.route("/oracle", methods=["POST"])
-@try_auth
 def oracle_chat():
+    """
+    Simple chatbot endpoint. Works whether or not user is logged in.
+    """
+    # Optional auth so that g.user is set if valid token exists
+    try_auth()
+
     data = request.json or {}
     question = data.get("question", "").strip()
     if not question:
         return jsonify({"error": "Question is required"}), 400
 
-    # Placeholder / stub answer:
+    # Placeholder response
     answer = f"Grove says: I hear you asking '{question}'. I am still learning to answer."
     return jsonify({"answer": answer}), 200
