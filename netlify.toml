@@ -1,14 +1,25 @@
 [build]
-  base    = "frontend"
-  command = "npm install && npm run build"
-  publish = "web-build"
+base = "frontend"
+publish = "frontend/dist"
+command = "npm install --legacy-peer-deps && npm run build"
 
-[[redirects]]
-  from   = "/api/*"
-  to     = "https://aetherion-mobile.onrender.com/api/:splat"
-  status = 200
+[build.environment]
+NODE_VERSION = "18.20.8"
+NPM_FLAGS = "--legacy-peer-deps"
+EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
+[context.production.environment]
+EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+
+[context.deploy-preview.environment]
+EXPO_PUBLIC_API_URL = "https://preview.aetherionai-mobile.onrender.com"
+
+[context.branch-deploy.environment]
+EXPO_PUBLIC_API_URL = "https://branch.aetherionai-mobile.onrender.com"
+
+[dev]
+command = "expo start --web"
+port = 8888
+targetPort = 19006
+framework = "#custom"
+autoLaunch = false
