@@ -1,20 +1,19 @@
-# Aetherion/netlify.toml
-
 [build]
-  base = "frontend"
-  command = "npm run build"
-  publish = "frontend/web-build"
+  base    = "frontend"         # wherever your Expo project lives
+  command = "npm run build"    # runs expo export:web
+  publish = "web-build"        # relative to `base` folder
 
-[context.production.environment]
-  NODE_VERSION = "18"
-  EXPO_PUBLIC_API_URL = "https://aetherion-mobile.onrender.com/api"
+[build.environment]
+  NODE_VERSION         = "18"
+  EXPO_PUBLIC_API_URL  = "https://aetherion-mobile.onrender.com/api"
 
+# Redirect API calls to your Render backend:
 [[redirects]]
-  from = "/api/*"
-  to = "https://aetherion-mobile.onrender.com/api/:splat"
+  from   = "/api/*"
+  to     = "https://aetherion-mobile.onrender.com/api/:splat"
   status = 200
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from   = "/*"
+  to     = "/index.html"
   status = 200
