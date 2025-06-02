@@ -1,32 +1,23 @@
-# ──────────────────────────────────────────────────────────────────────────────
-# netlify.toml
-# ──────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# ./netlify.toml  (place this file at the project root, *not* inside /frontend)
+# ─────────────────────────────────────────────────────────────────────────────
 
 [build]
-  # The “base” directory for all Netlify operations:
+  # We want Netlify to run these commands inside /frontend/
   base    = "frontend"
-  # After running `npm run build`, Netlify will serve the contents of “dist”:
-  publish = "dist"
-  # Install with legacy‐peer‐deps (to avoid Expo‐peer‐dependency conflicts), then build:
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "npm install && npm run build"
 
-[build.environment]
-  NODE_VERSION       = "18.20.8"
-  NPM_FLAGS          = "--legacy-peer-deps"
-  EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+  # Expo’s “dist/” is where expo export:web writes everything
+  # (it will create frontend/dist/index.html, assets, etc.)
+  publish = "frontend/dist"
 
-[context.production.environment]
-  EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+# If you have API redirects, you can still keep this:
+# [[redirects]]
+#   from = "/api/*"
+#   to   = "https://aetherion-mobile.onrender.com/api/:splat"
+#   status = 200
 
-[context.deploy-preview.environment]
-  EXPO_PUBLIC_API_URL = "https://preview.aetherionai-mobile.onrender.com"
-
-[context.branch-deploy.environment]
-  EXPO_PUBLIC_API_URL = "https://branch.aetherionai-mobile.onrender.com"
-
-[dev]
-  command    = "expo start --web"
-  port       = 8888
-  targetPort = 19006
-  framework  = "#custom"
-  autoLaunch = false
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
