@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 
 api_bp = Blueprint("api", __name__)
 
-SECRET_KEY = current_app.config.get("JWT_SECRET", "CHANGE_ME_TO_A_REAL_SECRET")
+SECRET_KEY = current_app.config.get("JWT_SECRET", "AUTUMN&CEALUM")
 
 #
 # ─── AUTH ENDPOINTS ────────────────────────────────────────────────────────────
