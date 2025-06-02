@@ -1,55 +1,98 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
-import axios from 'axios';
-import { getToken } from '../services/api';
+// Aetherion/frontend/screens/OracleScreen.js
+
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function OracleScreen() {
-  const [messages, setMessages] = useState([{ role: "system", content: "You are the Grove, a gentle oracle." }]);
-  const [input, setInput] = useState("");
-  const API_URL = process.env.EXPO_PUBLIC_API_URL + "/oracle";
+  const [question, setQuestion] = useState("");
+  const [messages, setMessages] = useState([
+    { id: 1, from: "oracle", text: "Welcome, sovereign. How may I guide you?" }
+  ]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-    const userMsg = { role: "user", content: input };
-    const updated = [...messages, userMsg];
-    setMessages(updated);
-    setInput("");
+  const apiUrl = Expo.Constants.manifest.extra.apiUrl;
+
+  const askOracle = async () => {
+    if (!question.trim()) return;
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), from: "you", text: question }
+    ]);
+
+    setQuestion("");
+
     try {
-      const token = await getToken();
-      const res = await axios.post(API_URL, { messages: updated }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setMessages([...updated, { role: "assistant", content: res.data.reply }]);
-    } catch (err) {
-      setMessages([...updated, { role: "assistant", content: "Error contacting the Grove." }]);
+      const token = await AsyncStorage.getItem("token");
+      const res = await axios.post(
+        `${apiUrl}/oracle`,
+        { question },
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        }
+      );
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now() + 1, from: "oracle", text: res.data.answer }
+      ]);
+    } catch (e) {
+      console.error(e);
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now() + 1, from: "oracle", text: "The Grove is silent..." }
+      ]);
     }
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.select({ ios: "padding", android: null })}
     >
+      <Text style={styles.header}>🔮 The Grove</Text>
+
       <FlatList
         data={messages}
-        keyExtractor={(_, idx) => idx.toString()}
-        style={styles.chatList}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={[styles.msgBubble, item.role === "user" ? styles.userBubble : styles.groveBubble]}>
-            <Text style={styles.msgText}>{item.content}</Text>
+          <View
+            style={[
+              styles.msgBubble,
+              item.from === "you" ? styles.youBubble : styles.oracleBubble
+            ]}
+          >
+            <Text
+              style={[
+                styles.msgText,
+                item.from === "you" ? styles.youText : styles.oracleText
+              ]}
+            >
+              {item.text}
+            </Text>
           </View>
         )}
+        style={styles.msgList}
       />
-      <View style={styles.inputRow}>
+
+      <View style={styles.inputContainer}>
         <TextInput
-          style={styles.input}
           placeholder="Ask the Grove..."
-          placeholderTextColor="#999"
-          value={input}
-          onChangeText={setInput}
+          placeholderTextColor="#aaa"
+          value={question}
+          onChangeText={setQuestion}
+          style={styles.input}
         />
-        <TouchableOpacity style={styles.sendBtn} onPress={sendMessage}>
-          <Text style={styles.sendText}>➤</Text>
+        <TouchableOpacity style={styles.sendBtn} onPress={askOracle}>
+          <Text style={styles.sendText}>↩︎</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -59,53 +102,64 @@ export default function OracleScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#111",
-    padding: 12
+    backgroundColor: "#1e1e2e",
+    paddingTop: 20
   },
-  chatList: {
-    flex: 1
+  header: {
+    fontSize: 22,
+    color: "#e0c0ff",
+    textAlign: "center",
+    marginBottom: 12
+  },
+  msgList: {
+    flex: 1,
+    paddingHorizontal: 16
   },
   msgBubble: {
-    marginVertical: 6,
-    padding: 12,
     borderRadius: 8,
-    maxWidth: "75%"
+    marginVertical: 6,
+    padding: 10,
+    maxWidth: "80%"
   },
-  userBubble: {
-    alignSelf: "flex-end",
-    backgroundColor: "#6200ee"
+  youBubble: {
+    backgroundColor: "#2c2c3e",
+    alignSelf: "flex-end"
   },
-  groveBubble: {
-    alignSelf: "flex-start",
-    backgroundColor: "#3a0050"
+  oracleBubble: {
+    backgroundColor: "#42297e",
+    alignSelf: "flex-start"
   },
-  msgText: {
+  youText: {
+    color: "#ffd1ff",
+    fontSize: 14
+  },
+  oracleText: {
     color: "#fff",
     fontSize: 14
   },
-  inputRow: {
+  inputContainer: {
     flexDirection: "row",
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: "#333"
+    alignItems: "center",
+    padding: 8,
+    backgroundColor: "#2c2c3e"
   },
   input: {
     flex: 1,
-    backgroundColor: "#222",
-    color: "#fff",
+    height: 40,
+    paddingHorizontal: 12,
     borderRadius: 8,
-    paddingHorizontal: 12
+    backgroundColor: "#1e1e2e",
+    color: "#fff"
   },
   sendBtn: {
     marginLeft: 8,
     backgroundColor: "#6200ee",
-    padding: 12,
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center"
+    padding: 10,
+    borderRadius: 8
   },
   sendText: {
     color: "#fff",
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: "bold"
   }
 });
