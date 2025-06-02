@@ -5,6 +5,7 @@
   "engines": {
     "node": "18.x",
     "npm": "10.x"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
