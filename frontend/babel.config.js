@@ -1,16 +1,10 @@
 module.exports = function(api) {
-  api.cache(true); // Expo handles caching
-
+  api.cache(true);
   return {
     presets: ["babel-preset-expo"],
     plugins: [
-      // Required by react-native-reanimated v3
-      [
-        "react-native-reanimated/plugin",
-        {
-          // no need to configure cache here; the plugin sets it internally
-        }
-      ]
+      // If you’re using React Native Reanimated v3 on web, leave this:
+      "react-native-reanimated/plugin"
     ]
   };
 };
