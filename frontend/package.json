@@ -34,7 +34,7 @@
     "crypto-browserify": "^3.12.1",
     "buffer": "^6.0.3",
     "process": "^0.11.10",
-    "vm-browserify" "^1.1.2"
+    "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
     "babel-preset-expo": "^13.1.11",
