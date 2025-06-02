@@ -1,25 +1,32 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# netlify.toml
+# ──────────────────────────────────────────────────────────────────────────────
+
 [build]
-base = "frontend"
-publish = "dist"
-command = "npm install --legacy-peer-deps && npm run build"
+  # The “base” directory for all Netlify operations:
+  base    = "frontend"
+  # After running `npm run build`, Netlify will serve the contents of “dist”:
+  publish = "dist"
+  # Install with legacy‐peer‐deps (to avoid Expo‐peer‐dependency conflicts), then build:
+  command = "npm install --legacy-peer-deps && npm run build"
 
 [build.environment]
-NODE_VERSION = "18.20.8"
-NPM_FLAGS = "--legacy-peer-deps"
-EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+  NODE_VERSION       = "18.20.8"
+  NPM_FLAGS          = "--legacy-peer-deps"
+  EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
 [context.production.environment]
-EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
+  EXPO_PUBLIC_API_URL = "https://aetherionai-mobile.onrender.com"
 
 [context.deploy-preview.environment]
-EXPO_PUBLIC_API_URL = "https://preview.aetherionai-mobile.onrender.com"
+  EXPO_PUBLIC_API_URL = "https://preview.aetherionai-mobile.onrender.com"
 
 [context.branch-deploy.environment]
-EXPO_PUBLIC_API_URL = "https://branch.aetherionai-mobile.onrender.com"
+  EXPO_PUBLIC_API_URL = "https://branch.aetherionai-mobile.onrender.com"
 
 [dev]
-command = "expo start --web"
-port = 8888
-targetPort = 19006
-framework = "#custom"
-autoLaunch = false
+  command    = "expo start --web"
+  port       = 8888
+  targetPort = 19006
+  framework  = "#custom"
+  autoLaunch = false
