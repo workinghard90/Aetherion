@@ -1,7 +1,7 @@
 [build]
   base    = "frontend"         # wherever your Expo project lives
   command = "npm run build"    # runs expo export:web
-  publish = "web-build"        # relative to `base` folder
+  publish = "frontend/web-build"        # relative to `base` folder
 
 [build.environment]
   NODE_VERSION         = "18"
