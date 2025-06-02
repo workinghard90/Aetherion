@@ -13,7 +13,9 @@ module.exports = () => ({
       resizeMode: 'contain',
       backgroundColor: '#6200ee',
     },
-    assetBundlePatterns: ['**/*'],
+    assetBundlePatterns: [
+      '**/*'
+    ],
     ios: {
       supportsTablet: true,
     },
@@ -32,4 +34,4 @@ module.exports = () => ({
         'https://aetherion-mobile.onrender.com/api',
     },
   },
-});
+}
