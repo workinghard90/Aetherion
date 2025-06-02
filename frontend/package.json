@@ -33,7 +33,7 @@
     "expo-document-picker": "^13.1.5",
     "crypto-browserify": "^3.12.1",
     "buffer": "^6.0.3",
-    "process": "^14.3.1"
+    "process": "^0.11.10"
   },
   "devDependencies": {
     "babel-preset-expo": "^13.1.11",
