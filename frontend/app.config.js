@@ -1,6 +1,4 @@
-// Aetherion/frontend/app.config.js
-
-import 'dotenv/config'; // so we can reference process.env.* for local dev
+import 'dotenv/config';
 
 export default () => ({
   expo: {
@@ -13,25 +11,23 @@ export default () => ({
     splash: {
       image: "./assets/splash.png",
       resizeMode: "contain",
-      backgroundColor: "#6200ee"
+      backgroundColor: "#6200ee",
     },
     assetBundlePatterns: ["**/*"],
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
     },
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/icon.png",
-        backgroundColor: "#6200ee"
-      }
+        backgroundColor: "#6200ee",
+      },
     },
     web: {
-      favicon: "./assets/favicon.png"
+      favicon: "./assets/favicon.png",
     },
     extra: {
-      // On Netlify, you must set this env var in the site settings:
       apiUrl: process.env.EXPO_PUBLIC_API_URL || "https://aetherion-mobile.onrender.com/api"
     },
-    plugins: ["react-native-reanimated/plugin"]
-  }
+  },
 });
