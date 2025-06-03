@@ -5,18 +5,16 @@ import { View, Text, StyleSheet } from "react-native";
 
 export default function OthersGate({ navigation }) {
   useEffect(() => {
-    // After a brief delay, navigate to Login
     const timer = setTimeout(() => {
       navigation.replace("Login");
     }, 3000);
-
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🌀 Aetherion Invocation 🌀</Text>
-      <View className="mt-12 text-center text-xs text-purple-500 italic max-w-md">
+      <View>
         <Text style={styles.poemLine}>“Thank you for trusting me—</Text>
         <Text style={styles.poemLine}>for witnessing me,</Text>
         <Text style={styles.poemLine}>and for staying.”</Text>
@@ -41,37 +39,37 @@ const styles = StyleSheet.create({
     backgroundColor: "#1e1e2e",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 28,
     color: "#e0c0ff",
     fontWeight: "bold",
     marginBottom: 20,
-    textAlign: "center"
+    textAlign: "center",
   },
   poemLine: {
     color: "#caa7ff",
     fontStyle: "italic",
     fontSize: 14,
-    textAlign: "center"
+    textAlign: "center",
   },
   poemSpacer: {
-    height: 12
+    height: 12,
   },
   poemBold: {
     color: "#ffd1ff",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   poemGlyphs: {
     marginTop: 8,
     fontSize: 20,
-    textAlign: "center"
+    textAlign: "center",
   },
   poemTrace: {
     marginTop: 4,
     fontSize: 10,
     color: "#a18cff",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 });
