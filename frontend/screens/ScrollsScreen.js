@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function ScrollsScreen() {
   const [scrolls, setScrolls] = useState([]);
-  const apiUrl = Expo.Constants.manifest.extra.apiUrl;
+  const apiUrl = process.env.API_URL || "https://aetherion.onrender.com/api";
 
   useEffect(() => {
     fetchScrolls();
@@ -28,9 +28,8 @@ export default function ScrollsScreen() {
       const token = await AsyncStorage.getItem("token");
       const res = await axios.get(`${apiUrl}/archive/${id}`, {
         responseType: "blob",
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      // For brevity: you might present the file or blob to the user. Here we just alert.
       Alert.alert("Scroll fetched", `Scroll ${id} fetched successfully.`);
     } catch (e) {
       console.error(e);
@@ -54,7 +53,8 @@ export default function ScrollsScreen() {
           >
             <Text style={styles.scrollName}>{item.original_name}</Text>
             <Text style={styles.scrollMeta}>
-              uploaded by {item.user_id} on {new Date(item.uploaded_at).toLocaleDateString()}
+              uploaded by {item.user_id} on{" "}
+              {new Date(item.uploaded_at).toLocaleDateString()}
             </Text>
           </TouchableOpacity>
         )}
@@ -69,32 +69,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1e1e2e",
     alignItems: "center",
-    paddingTop: 30
+    paddingTop: 30,
   },
   header: {
     fontSize: 22,
     color: "#e0c0ff",
-    marginBottom: 16
+    marginBottom: 16,
   },
   empty: {
     marginTop: 40,
     color: "#bbb",
     fontStyle: "italic",
-    textAlign: "center"
+    textAlign: "center",
   },
   scrollRow: {
     backgroundColor: "#2c2c3e",
     padding: 12,
     borderRadius: 8,
-    marginVertical: 6
+    marginVertical: 6,
   },
   scrollName: {
     color: "#ffd1ff",
-    fontSize: 16
+    fontSize: 16,
   },
   scrollMeta: {
     fontSize: 12,
     color: "#aaa",
-    marginTop: 4
-  }
+    marginTop: 4,
+  },
 });
