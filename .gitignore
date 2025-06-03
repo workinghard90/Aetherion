@@ -1,69 +1,98 @@
-# ───────────── Root / IDE / OS ─────────────
+# ───────────── LaunchPad: General ─────────────
 
-# If you ever install any packages at the repo root (e.g. a top-level node_modules), ignore them:
-node_modules/
+# Ignore any “launchpad”-specific IDE or local environment files:
+backend/launchpad/.replit
+backend/launchpad/*.env
+frontend/launchpad/.env
+frontend/launchpad/*.local
 
-# Log files
-*.log
-yarn-error.log*
-npm-debug.log*
+# ───────────── Python: LaunchPad Backend ─────────────
+
+# Byte-compiled / optimized / DLL files
+backend/launchpad/__pycache__/
+backend/launchpad/*.py[cod]
+backend/launchpad/*$py.class
+
+# If you ever use a virtualenv inside launchpad/
+backend/launchpad/venv/
+backend/launchpad/env/
+backend/launchpad/ENV/
+backend/launchpad/*.venv/
+
+# Flask instance folder (if created)
+backend/launchpad/instance/
+
+# Migrations (only if generated locally and you don’t want to commit)
+backend/launchpad/migrations/
+
+# Logs and databases
+backend/launchpad/*.log
+backend/launchpad/*.sqlite3
+backend/launchpad/*.db
+
+# ───────────── Node/React/Expo: LaunchPad Frontend ─────────────
+
+# Node modules (never commit these)
+frontend/launchpad/node_modules/
+
+# Expo caches and build outputs
+frontend/launchpad/.expo/
+frontend/launchpad/.expo-shared/
+frontend/launchpad/web-build/
+frontend/launchpad/dist/
+frontend/launchpad/build/
+
+# Metro bundler cache
+frontend/launchpad/.expo/metro-cache/
+
+# Yarn / npm log files
+frontend/launchpad/yarn-error.log*
+frontend/launchpad/yarn-debug.log*
+frontend/launchpad/npm-debug.log*
+frontend/launchpad/package-lock.json  # if you prefer Yarn
+frontend/launchpad/yarn.lock          # if you prefer npm
+
+# React Native packager
+frontend/launchpad/ios/Pods/
+frontend/launchpad/android/app/build/
+frontend/launchpad/android/build/
+
+# Xcode / Android Studio
+frontend/launchpad/ios/DerivedData/
+frontend/launchpad/android/.gradle/
+frontend/launchpad/android/local.properties
+
+# Expo’s temporary directories
+frontend/launchpad/.expo/cache/
+frontend/launchpad/.expo/browser/
+frontend/launchpad/.expo/splash/
+frontend/launchpad/.expo/photon/
+
+# Miscellaneous
+frontend/launchpad/*.log
+frontend/launchpad/*.keystore
+frontend/launchpad/*.jks
+frontend/launchpad/.env.local
+
+# ───────────── Miscellaneous / OS Files ─────────────
 
 # macOS
-.DS_Store
+*.DS_Store
 
-# Environment variables (if you keep a .env at the root)
-.env
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# Editor/IDE folders
-.vscode/
+# All editors
 .idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
-# ───────────── Backend ─────────────
-
-# Virtual environment for Flask (if you ever create one under backend/venv/)
-backend/venv/
-
-# Python bytecode caches
-backend/__pycache__/
-
-# SQLite files (ignore any .db so you don’t accidentally commit the local DB)
-backend/*.db
-
-# If you keep a per-service .env inside backend/, ignore it too:
-backend/.env
-
-# ───────────── (YOU *MIGHT* WANT TO TRACK MIGRATIONS!) ─────────────
-# 
-# If you use Flask-Migrate/Alembic, you’ll usually want to commit your
-# migrations folder so that everyone’s schema stays in sync. In that case,
-# remove (or comment out) the next line:
-#
-# backend/migrations/
-#
-# Otherwise, if you truly want to re-generate migrations on every machine,
-# keep this ignore. But typically, it’s best to track migrations in Git.
-# 
-# ─────────────────────────────────────────────────────
-
-# ───────────── Frontend ─────────────
-
-# React/Expo dependencies
-frontend/node_modules/
-
-# Expo caching and build output
-frontend/.expo/
-frontend/.expo-shared/
-
-# Expo’s “export:web” output (we let Netlify rebuild on each deploy)
-frontend/web-build/
-
-# If you ever use a per-frontend .env file (e.g. REACT_APP_… vars), ignore it:
-frontend/.env
-
-# Other common logs in the frontend folder
-frontend/npm-debug.log*
-frontend/yarn-error.log*
-
-# ───────────── Other ─────────────
-
-# (Add any other generated or local‐only folders/files here as needed)
+# Temporary files
+*~
+*.swp
+.ipynb_checkpoints/
