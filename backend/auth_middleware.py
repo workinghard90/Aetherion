@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import jsonify
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 
 def jwt_required(f):
