@@ -1,8 +1,9 @@
-# Aetherion/backend/aetherion/database.py
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-# This file can contain any database utility functions. For now, it's a placeholder.
+def get_engine(db_url):
+    return create_engine(db_url)
 
-from .extensions import db
-
-def init_db():
-    db.create_all()
+def get_session(engine):
+    Session = sessionmaker(bind=engine)
+    return Session()
