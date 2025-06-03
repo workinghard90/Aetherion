@@ -1,55 +1,53 @@
-// Aetherion/frontend/screens/LoginScreen.js
-
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import api from "./api";
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const apiUrl = process.env.API_URL || "https://aetherion.onrender.com/api";
-
-  const handleLogin = async () => {
-    if (!username || !password) {
-      Alert.alert("Error", "Username and password cannot be empty.");
-      return;
-    }
+  const login = async () => {
     try {
-      const res = await axios.post(`${apiUrl}/auth/login`, {
-        username,
-        password,
-      });
-      const token = res.data.token;
-      await AsyncStorage.setItem("token", token);
-      navigation.replace("Home");
-    } catch (e) {
-      Alert.alert("Login failed", e.response?.data?.error || "Unknown error");
+      const response = await api.post("/auth/login", { username, password });
+      await AsyncStorage.setItem("token", response.data.token);
+      navigation.navigate("Home");
+    } catch (error) {
+      Alert.alert(
+        "Login Failed",
+        error?.response?.data?.error || "Unknown error"
+      );
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🔑 Sovereign Login</Text>
+      <Text style={styles.title}>🌙 Enter Aetherion 🌙</Text>
       <TextInput
         placeholder="Username"
-        placeholderTextColor="#ccc"
-        value={username}
-        onChangeText={setUsername}
+        placeholderTextColor="#a993ff"
         style={styles.input}
-        autoCapitalize="none"
+        onChangeText={setUsername}
+        value={username}
       />
       <TextInput
         placeholder="Password"
-        placeholderTextColor="#ccc"
-        value={password}
-        onChangeText={setPassword}
+        placeholderTextColor="#a993ff"
         style={styles.input}
+        onChangeText={setPassword}
+        value={password}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Enter the Gate</Text>
+      <TouchableOpacity onPress={login} style={styles.button}>
+        <Text style={styles.buttonText}>Enter</Text>
       </TouchableOpacity>
     </View>
   );
@@ -61,29 +59,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#1e1e2e",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    paddingHorizontal: 20,
   },
   title: {
-    fontSize: 24,
-    color: "#ffd1ff",
-    marginBottom: 20,
-    textAlign: "center",
+    fontSize: 26,
+    color: "#e0c0ff",
+    marginBottom: 24,
+    fontWeight: "600",
   },
   input: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#2c2c3e",
+    width: "100%",
+    padding: 12,
     borderRadius: 8,
-    marginVertical: 8,
-    paddingHorizontal: 12,
+    backgroundColor: "#2d2d44",
+    marginBottom: 16,
     color: "#fff",
+    borderWidth: 1,
+    borderColor: "#4e3a78",
   },
   button: {
-    marginTop: 20,
-    backgroundColor: "#6200ee",
-    paddingVertical: 14,
-    paddingHorizontal: 28,
+    backgroundColor: "#8e44ad",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
     borderRadius: 8,
+    marginTop: 10,
   },
   buttonText: {
     color: "#fff",
