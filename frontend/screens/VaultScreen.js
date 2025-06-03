@@ -8,7 +8,7 @@ import {
   StyleSheet,
   FlatList,
   Alert,
-  Platform
+  Platform,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,7 +17,7 @@ import axios from "axios";
 export default function VaultScreen() {
   const [files, setFiles] = useState([]);
 
-  const apiUrl = Expo.Constants.manifest.extra.apiUrl;
+  const apiUrl = process.env.API_URL || "https://aetherion.onrender.com/api";
 
   useEffect(() => {
     fetchFiles();
@@ -27,7 +27,7 @@ export default function VaultScreen() {
     try {
       const token = await AsyncStorage.getItem("token");
       const res = await axios.get(`${apiUrl}/vault/list`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       setFiles(res.data);
     } catch (e) {
@@ -47,7 +47,7 @@ export default function VaultScreen() {
       formData.append("file", {
         uri: fileUri,
         name: fileName,
-        type: fileType
+        type: fileType,
       });
 
       try {
@@ -55,8 +55,8 @@ export default function VaultScreen() {
         await axios.post(`${apiUrl}/vault/upload`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         fetchFiles();
       } catch (e) {
@@ -71,10 +71,9 @@ export default function VaultScreen() {
       const token = await AsyncStorage.getItem("token");
       const res = await axios.get(`${apiUrl}/vault/download/${id}`, {
         responseType: "blob",
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      // On mobile, you’d need FileSystem, but for brevity we'll just alert:
       Alert.alert("Download", `File "${originalName}" downloaded.`);
     } catch (e) {
       console.error(e);
@@ -115,28 +114,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1e1e2e",
     alignItems: "center",
-    paddingTop: 30
+    paddingTop: 30,
   },
   header: {
     fontSize: 22,
     color: "#e0c0ff",
-    marginBottom: 16
+    marginBottom: 16,
   },
   uploadButton: {
     backgroundColor: "#6200ee",
     padding: 14,
     borderRadius: 8,
-    marginBottom: 20
+    marginBottom: 20,
   },
   uploadText: {
     color: "#fff",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   empty: {
     marginTop: 40,
     color: "#bbb",
     fontStyle: "italic",
-    textAlign: "center"
+    textAlign: "center",
   },
   fileRow: {
     flexDirection: "row",
@@ -144,21 +143,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#2c2c3e",
     padding: 12,
     borderRadius: 8,
-    marginVertical: 6
+    marginVertical: 6,
   },
   fileName: {
     color: "#ffd1ff",
-    fontSize: 16
+    fontSize: 16,
   },
   downloadBtn: {
     backgroundColor: "#a18cff",
     borderRadius: 6,
     paddingHorizontal: 10,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   downloadText: {
     color: "#fff",
     fontSize: 18,
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
