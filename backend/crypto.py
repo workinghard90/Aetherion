@@ -1,11 +1,22 @@
+from Crypto.Cipher import AES
+from Crypto.Protocol.KDF import PBKDF2
+import base64
 import os
-from cryptography.fernet import Fernet
 
-VAULT_KEY = os.environ.get("VAULT_KEY", Fernet.generate_key().decode())
-fernet = Fernet(VAULT_KEY.encode())
+class EncryptionService:
+    def __init__(self, password: str):
+        salt = b"AetherionSalt"
+        self.key = PBKDF2(password, salt, dkLen=32, count=1000000)
 
-def encrypt(data: bytes) -> bytes:
-    return fernet.encrypt(data)
+    def encrypt(self, data: bytes) -> bytes:
+        iv = os.urandom(16)
+        cipher = AES.new(self.key, AES.MODE_GCM, nonce=iv)
+        ciphertext, tag = cipher.encrypt_and_digest(data)
+        return iv + tag + ciphertext
 
-def decrypt(data: bytes) -> bytes:
-    return fernet.decrypt(data)
+    def decrypt(self, token: bytes) -> bytes:
+        iv = token[:16]
+        tag = token[16:32]
+        ciphertext = token[32:]
+        cipher = AES.new(self.key, AES.MODE_GCM, nonce=iv)
+        return cipher.decrypt_and_verify(ciphertext, tag)
