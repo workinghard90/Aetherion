@@ -4,70 +4,73 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  Alert,
+  ScrollView,
   TouchableOpacity,
 } from "react-native";
-import api from "./api";
+import { fetchScrolls } from "../services/api";
 
-export default function ScrollsScreen() {
+export default function ScrollsScreen({ navigation }) {
   const [scrolls, setScrolls] = useState([]);
 
-  const loadScrolls = async () => {
-    try {
-      const response = await api.get("/archive");
-      setScrolls(response.data);
-    } catch (error) {
-      Alert.alert("Error", "Unable to load scrolls.");
-    }
-  };
-
   useEffect(() => {
-    loadScrolls();
+    (async () => {
+      const data = await fetchScrolls();
+      setScrolls(data);
+    })();
   }, []);
 
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate("ScrollDetail", { id: item.id })}
+    >
+      <Text style={styles.itemTitle}>{item.title}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>📜 Sacred Scrolls Archive</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>📜 Sacred Scrolls</Text>
 
       <FlatList
         data={scrolls}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity>
-            <Text style={styles.scrollItem}>📖 {item.title}</Text>
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={
-          <Text style={styles.noScrolls}>No scrolls found in the archive.</Text>
-        }
+        renderItem={renderItem}
+        contentContainerStyle={styles.list}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#1e1e2e",
     padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     color: "#e0c0ff",
     fontWeight: "bold",
-    textAlign: "center",
     marginBottom: 20,
-  },
-  scrollItem: {
-    color: "#caa7ff",
-    fontSize: 14,
-    marginVertical: 6,
-    fontStyle: "italic",
-  },
-  noScrolls: {
-    color: "#888",
-    fontSize: 13,
     textAlign: "center",
-    marginTop: 10,
+  },
+  list: {
+    alignItems: "center",
+  },
+  itemContainer: {
+    backgroundColor: "#2a2a3e",
+    padding: 15,
+    borderRadius: 8,
+    marginVertical: 8,
+    width: "90%",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  itemTitle: {
+    color: "#fff",
+    fontSize: 18,
   },
 });
