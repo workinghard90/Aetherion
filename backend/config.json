@@ -1,6 +1,6 @@
 {
   "SECRET_KEY": "aetherion2025",
-  "SQLALCHEMY_DATABASE_URI": "sqlite:///aetherion.db",
+  "SQLALCHEMY_DATABASE_URI": "https://aetherionai-mobile.onrender.com",
   "SQLALCHEMY_TRACK_MODIFICATIONS": false,
   "JWT_SECRET_KEY": "AUTUMN&CAELUM"
 }
