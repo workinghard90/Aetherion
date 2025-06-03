@@ -1,24 +1,10 @@
-from flask import Blueprint, request, jsonify
-from openai import OpenAI
-import os
+import requests
 
-oracle_bp = Blueprint("oracle", __name__)
-openai = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+class OracleService:
+    def __init__(self, endpoint: str):
+        self.endpoint = endpoint
 
-@oracle_bp.route("/", methods=["POST"])
-def ask():
-    data = request.json
-    question = data.get("question", "")
-
-    try:
-        response = openai.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are the Oracle of Aetherion. Speak with poetic wisdom."},
-                {"role": "user", "content": question}
-            ]
-        )
-        answer = response.choices[0].message.content
-        return jsonify(answer=answer)
-    except Exception as e:
-        return jsonify(error="The Grove is silent..."), 500
+    def get_insights(self, prompt: str) -> dict:
+        payload = {"prompt": prompt}
+        response = requests.post(self.endpoint, json=payload)
+        return response.json()
