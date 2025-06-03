@@ -5,50 +5,48 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import api from "./api";
+import { getOracleInsights } from "../services/api";
 
 export default function OracleScreen() {
-  const [question, setQuestion] = useState("");
-  const [response, setResponse] = useState("");
+  const [prompt, setPrompt] = useState("");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const askOracle = async () => {
-    if (!question.trim()) {
-      Alert.alert("Wait", "Please ask something first.");
-      return;
-    }
+  const handleSubmit = async () => {
+    if (!prompt.trim()) return;
 
-    try {
-      const res = await api.post("/oracle", { question });
-      setResponse(res.data.response);
-    } catch (error) {
-      Alert.alert("Error", "Oracle could not speak at this time.");
-    }
+    setLoading(true);
+    const data = await getOracleInsights(prompt);
+    setResult(JSON.stringify(data, null, 2));
+    setLoading(false);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🔮 Grove Oracle</Text>
+      <Text style={styles.title}>🌿 Grove Oracle</Text>
 
       <TextInput
-        placeholder="Speak your question..."
-        placeholderTextColor="#a993ff"
         style={styles.input}
-        value={question}
-        onChangeText={setQuestion}
-        multiline
+        placeholder="Ask the Oracle..."
+        placeholderTextColor="#bbb"
+        onChangeText={setPrompt}
+        value={prompt}
       />
 
-      <TouchableOpacity style={styles.button} onPress={askOracle}>
-        <Text style={styles.buttonText}>Ask</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Seek Insight</Text>
+        )}
       </TouchableOpacity>
 
-      {response ? (
-        <View style={styles.responseBox}>
-          <Text style={styles.responseLabel}>Response:</Text>
-          <Text style={styles.response}>{response}</Text>
+      {result ? (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>{result}</Text>
         </View>
       ) : null}
     </ScrollView>
@@ -59,59 +57,54 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: "#1e1e2e",
-    padding: 20,
+    justifyContent: "flex-start",
     alignItems: "center",
-    justifyContent: "center",
+    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     color: "#e0c0ff",
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
   },
   input: {
-    width: "100%",
-    backgroundColor: "#2d2d44",
-    color: "#fff",
+    width: "90%",
+    height: 50,
+    backgroundColor: "#2a2a3e",
     borderRadius: 8,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#4e3a78",
-    fontSize: 14,
-    textAlignVertical: "top",
-    marginBottom: 16,
-    minHeight: 100,
+    paddingHorizontal: 15,
+    color: "#fff",
+    marginBottom: 20,
+    fontSize: 16,
   },
   button: {
     backgroundColor: "#8e44ad",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 50,
+    borderRadius: 10,
     marginBottom: 20,
+    width: "80%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
     fontSize: 16,
-  },
-  responseBox: {
-    width: "100%",
-    backgroundColor: "#2d2d44",
-    padding: 12,
-    borderRadius: 8,
-    borderColor: "#6d50a6",
-    borderWidth: 1,
-  },
-  responseLabel: {
-    color: "#ffd1ff",
     fontWeight: "bold",
-    marginBottom: 6,
-    fontSize: 14,
   },
-  response: {
-    color: "#caa7ff",
+  resultContainer: {
+    width: "90%",
+    backgroundColor: "#2a2a3e",
+    borderRadius: 8,
+    padding: 15,
+    marginTop: 10,
+  },
+  resultText: {
+    color: "#fff",
     fontSize: 14,
-    fontStyle: "italic",
   },
 });
