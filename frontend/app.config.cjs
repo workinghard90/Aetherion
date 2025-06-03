@@ -1,37 +1,30 @@
-require('dotenv/config');
-
-module.exports = () => ({
+module.exports = {
   expo: {
-    name: 'Aetherion',
-    slug: 'aetherion-mobile',
-    version: '1.0.0',
-    orientation: 'portrait',
-    icon: './assets/icon.png',
-    userInterfaceStyle: 'light',
+    name: "Aetherion",
+    slug: "aetherion-app",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/icon.png",
     splash: {
-      image: './assets/splash.png',
-      resizeMode: 'contain',
-      backgroundColor: '#6200ee',
+      image: "./assets/splash.png",
+      resizeMode: "contain",
+      backgroundColor: "#000000"
     },
-    assetBundlePatterns: [
-      '**/*'
-    ],
+    updates: {
+      fallbackToCacheTimeout: 0
+    },
+    assetBundlePatterns: ["**/*"],
     ios: {
-      supportsTablet: true,
+      supportsTablet: true
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/icon.png',
-        backgroundColor: '#6200ee',
-      },
+        foregroundImage: "./assets/adaptive-icon.png",
+        backgroundColor: "#ffffff"
+      }
     },
     web: {
-      favicon: './assets/favicon.png',
-    },
-    extra: {
-      apiUrl:
-        process.env.EXPO_PUBLIC_API_URL ||
-        'https://aetherion-mobile.onrender.com/api',
-    },
-  },
-}
+      favicon: "./assets/favicon.png"
+    }
+  }
+};
