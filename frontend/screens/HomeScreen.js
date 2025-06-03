@@ -1,9 +1,9 @@
-// Aetherion/frontend/screens/DashboardScreen.js
+// Aetherion/frontend/screens/HomeScreen.js
 
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
-export default function DashboardScreen({ navigation }) {
+export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>🕊️ Welcome, Sovereign 🕊️</Text>
@@ -40,13 +40,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1e1e2e",
     alignItems: "center",
-    paddingTop: 40
+    paddingTop: 40,
   },
   header: {
     fontSize: 22,
     color: "#e0c0ff",
     marginBottom: 30,
-    textAlign: "center"
+    textAlign: "center",
   },
   button: {
     width: "80%",
@@ -56,15 +56,15 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   buttonText: {
     fontSize: 18,
     color: "#ffd1ff",
-    fontWeight: "600"
+    fontWeight: "600",
   },
   glyph: {
     fontSize: 24,
-    color: "#a18cff"
-  }
+    color: "#a18cff",
+  },
 });
