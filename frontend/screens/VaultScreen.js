@@ -1,70 +1,82 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  FlatList,
-  StyleSheet,
+  TextInput,
   TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
   Alert,
 } from "react-native";
-import * as DocumentPicker from "expo-document-picker";
-import api from "./api";
+import { uploadMemory, downloadMemory } from "../services/api";
 
 export default function VaultScreen() {
-  const [files, setFiles] = useState([]);
+  const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [downloaded, setDownloaded] = useState("");
 
-  const loadFiles = async () => {
+  const handleUpload = async () => {
+    if (!content.trim()) {
+      Alert.alert("Error", "Please write something to upload");
+      return;
+    }
+    setLoading(true);
     try {
-      const res = await api.get("/vault/list");
-      setFiles(res.data);
+      await uploadMemory(content);
+      Alert.alert("Success", "Memory uploaded");
     } catch (err) {
-      Alert.alert("Error loading files", err.message);
+      Alert.alert("Error", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadFiles();
-  }, []);
-
-  const upload = async () => {
-    const doc = await DocumentPicker.getDocumentAsync({ type: "*/*" });
-    if (doc.canceled) return;
-
-    const formData = new FormData();
-    formData.append("file", {
-      uri: doc.assets[0].uri,
-      name: doc.assets[0].name,
-      type: "*/*",
-    });
-
+  const handleDownload = async () => {
+    setLoading(true);
     try {
-      await api.post("/vault/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      loadFiles();
+      const res = await downloadMemory(1); // example: ID 1
+      if (res.content) {
+        setDownloaded(res.content);
+      } else {
+        Alert.alert("Error", res.msg || "Download failed");
+      }
     } catch (err) {
-      Alert.alert("Upload failed", err.message);
+      Alert.alert("Error", err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🔐 Aetherion Vault</Text>
-
-      <TouchableOpacity style={styles.button} onPress={upload}>
-        <Text style={styles.buttonText}>Upload File</Text>
-      </TouchableOpacity>
-
-      <FlatList
-        data={files}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Text style={styles.fileItem}>📄 {item.original_name}</Text>
-        )}
-        ListEmptyComponent={
-          <Text style={styles.noFiles}>No files yet in your Vault.</Text>
-        }
+      <Text style={styles.title}>🔐 Vault</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Write a memory..."
+        placeholderTextColor="#aaa"
+        multiline
+        value={content}
+        onChangeText={setContent}
       />
+      <TouchableOpacity style={styles.button} onPress={handleUpload}>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Upload Memory</Text>
+        )}
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleDownload}>
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Download Memory #1</Text>
+        )}
+      </TouchableOpacity>
+      {downloaded ? (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>{downloaded}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -78,32 +90,36 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     color: "#e0c0ff",
-    fontWeight: "bold",
-    textAlign: "center",
     marginBottom: 20,
+    textAlign: "center",
+  },
+  input: {
+    backgroundColor: "#2e2e3e",
+    color: "#fff",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    height: 100,
+    textAlignVertical: "top",
   },
   button: {
     backgroundColor: "#8e44ad",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 10,
-    alignSelf: "center",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
     marginBottom: 20,
   },
   buttonText: {
     color: "#fff",
-    fontWeight: "bold",
     fontSize: 16,
   },
-  fileItem: {
-    color: "#caa7ff",
-    fontSize: 14,
-    marginVertical: 4,
-    fontStyle: "italic",
+  resultContainer: {
+    backgroundColor: "#2e2e3e",
+    padding: 12,
+    borderRadius: 8,
   },
-  noFiles: {
-    color: "#777",
-    textAlign: "center",
-    marginTop: 10,
+  resultText: {
+    color: "#fff",
+    fontSize: 14,
   },
 });
