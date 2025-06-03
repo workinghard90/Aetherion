@@ -9,8 +9,7 @@ export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Get API URL from expo config
-  const apiUrl = Expo.Constants.manifest.extra.apiUrl || "https://aetherion-mobile.onrender.com/api";
+  const apiUrl = process.env.API_URL || "https://aetherion.onrender.com/api";
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -20,11 +19,11 @@ export default function LoginScreen({ navigation }) {
     try {
       const res = await axios.post(`${apiUrl}/auth/login`, {
         username,
-        password
+        password,
       });
       const token = res.data.token;
       await AsyncStorage.setItem("token", token);
-      navigation.replace("Dashboard");
+      navigation.replace("Home");
     } catch (e) {
       Alert.alert("Login failed", e.response?.data?.error || "Unknown error");
     }
@@ -62,13 +61,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#1e1e2e",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20
+    padding: 20,
   },
   title: {
     fontSize: 24,
     color: "#ffd1ff",
     marginBottom: 20,
-    textAlign: "center"
+    textAlign: "center",
   },
   input: {
     width: "90%",
@@ -77,18 +76,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 8,
     paddingHorizontal: 12,
-    color: "#fff"
+    color: "#fff",
   },
   button: {
     marginTop: 20,
     backgroundColor: "#6200ee",
     paddingVertical: 14,
     paddingHorizontal: 28,
-    borderRadius: 8
+    borderRadius: 8,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
