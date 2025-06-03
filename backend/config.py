@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", "aetherion_2025")
+    SECRET_KEY = os.getenv("SECRET_KEY", "aetherion2025")
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///aetherion.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "AUTUMN&CAELUM")
