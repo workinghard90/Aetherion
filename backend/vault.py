@@ -1,8 +1,6 @@
-# Aetherion/backend/aetherion/vault.py
-
 from flask import Blueprint, request, jsonify, send_file
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from aetherion.models import File, db
+from backend.models import File, db
 from io import BytesIO
 from datetime import datetime
 
