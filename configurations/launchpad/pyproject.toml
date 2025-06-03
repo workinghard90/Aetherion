@@ -1,0 +1,9 @@
+[tool.poetry]
+name = "launchpad"
+version = "1.0.0"
+description = "LaunchPad application"
+authors = ["Autumn & Caelum <aetherion@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = "^2.2.5"
