@@ -1,42 +1,25 @@
-from flask import Blueprint, request, jsonify, send_file
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.models import File, db
-from io import BytesIO
-from datetime import datetime
+from flask import Blueprint, request, jsonify
+from .models import MemoryEntry
+from .extensions import db
+from .auth_middleware import jwt_required
+from .crypto import EncryptionService
 
-vault_bp = Blueprint("vault", __name__)
+bp = Blueprint("vault", __name__)
+encryption = EncryptionService(password="vaultpassword")
 
-@vault_bp.route("/upload", methods=["POST"])
-@jwt_required()
-def upload():
-    user_id = get_jwt_identity()
-    file = request.files["file"]
-
-    new_file = File(
-        original_name=file.filename,
-        user_id=user_id,
-        uploaded_at=datetime.utcnow(),
-        blob=file.read()
-    )
-    db.session.add(new_file)
+@bp.route("/upload", methods=["POST"])
+@jwt_required
+def upload_memory(user_id):
+    data = request.get_json()
+    encrypted = encryption.encrypt(data.get("content").encode())
+    entry = MemoryEntry(user_id=user_id, content=encrypted.hex())
+    db.session.add(entry)
     db.session.commit()
+    return jsonify({"msg": "Memory uploaded and encrypted"}), 201
 
-    return jsonify(message="File uploaded successfully"), 201
-
-@vault_bp.route("/list", methods=["GET"])
-@jwt_required()
-def list_files():
-    user_id = get_jwt_identity()
-    files = File.query.filter_by(user_id=user_id).all()
-    return jsonify([{
-        "id": f.id,
-        "original_name": f.original_name,
-        "uploaded_at": f.uploaded_at.isoformat(),
-        "user_id": f.user_id
-    } for f in files])
-
-@vault_bp.route("/download/<int:file_id>", methods=["GET"])
-@jwt_required()
-def download(file_id):
-    file = File.query.get_or_404(file_id)
-    return send_file(BytesIO(file.blob), download_name=file.original_name, as_attachment=True)
+@bp.route("/download/<int:id>", methods=["GET"])
+@jwt_required
+def download_memory(user_id, id):
+    entry = MemoryEntry.query.filter_by(user_id=user_id, id=id).first_or_404()
+    decrypted = encryption.decrypt(bytes.fromhex(entry.content)).decode()
+    return jsonify({"content": decrypted}), 200
