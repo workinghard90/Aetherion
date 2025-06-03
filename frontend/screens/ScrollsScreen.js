@@ -1,131 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
   StyleSheet,
-  ScrollView,
-  Alert,
+  TouchableOpacity,
 } from "react-native";
-import { uploadMemory, downloadMemory } from "../services/api";
+import { fetchScrolls } from "../services/api";
 
-export default function VaultScreen() {
-  const [content, setContent] = useState("");
-  const [downloaded, setDownloaded] = useState("");
+export default function ScrollsScreen({ navigation }) {
+  const [scrolls, setScrolls] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleUpload = async () => {
-    if (!content.trim()) {
-      Alert.alert("Error", "Please write something before uploading.");
-      return;
-    }
-    await uploadMemory(content);
-    Alert.alert("Success", "Memory uploaded and encrypted.");
-    setContent("");
-  };
+  useEffect(() => {
+    const loadScrolls = async () => {
+      try {
+        const res = await fetchScrolls();
+        setScrolls(res);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadScrolls();
+  }, []);
 
-  const handleDownload = async () => {
-    try {
-      const data = await downloadMemory(1); // Example: using id=1
-      setDownloaded(data.content);
-    } catch (error) {
-      Alert.alert("Error", "Unable to download that memory.");
-    }
-  };
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#8e44ad" />
+      </View>
+    );
+  }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🔒 The Vault</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Write your memory..."
-        placeholderTextColor="#bbb"
-        multiline
-        numberOfLines={4}
-        onChangeText={setContent}
-        value={content}
+    <View style={styles.container}>
+      <Text style={styles.title}>📜 Sacred Scrolls</Text>
+      <FlatList
+        data={scrolls}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => navigation.navigate("ScrollDetail", { id: item.id })}
+          >
+            <Text style={styles.itemText}>{item.title}</Text>
+          </TouchableOpacity>
+        )}
       />
-
-      <TouchableOpacity style={styles.button} onPress={handleUpload}>
-        <Text style={styles.buttonText}>Upload Memory</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.button, styles.downloadButton]} onPress={handleDownload}>
-        <Text style={styles.buttonText}>Download Memory #1</Text>
-      </TouchableOpacity>
-
-      {downloaded ? (
-        <View style={styles.resultContainer}>
-          <Text style={styles.label}>Decrypted Content:</Text>
-          <Text style={styles.resultText}>{downloaded}</Text>
-        </View>
-      ) : null}
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1e1e2e",
+  },
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: "#1e1e2e",
     padding: 20,
-    alignItems: "center",
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     color: "#e0c0ff",
-    fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
   },
-  input: {
-    width: "90%",
-    backgroundColor: "#2a2a3e",
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+  item: {
+    padding: 12,
+    backgroundColor: "#2e2e3e",
+    borderRadius: 6,
+    marginBottom: 10,
+  },
+  itemText: {
     color: "#fff",
     fontSize: 16,
-    marginBottom: 20,
-    textAlignVertical: "top",
-  },
-  button: {
-    backgroundColor: "#8e44ad",
-    paddingVertical: 14,
-    paddingHorizontal: 50,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: "80%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 3 },
-  },
-  downloadButton: {
-    backgroundColor: "#34495e",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  resultContainer: {
-    marginTop: 20,
-    width: "90%",
-    backgroundColor: "#2a2a3e",
-    borderRadius: 8,
-    padding: 15,
-  },
-  label: {
-    color: "#e0c0ff",
-    fontWeight: "bold",
-    marginBottom: 5,
-    fontSize: 16,
-  },
-  resultText: {
-    color: "#fff",
-    fontSize: 14,
   },
 });
