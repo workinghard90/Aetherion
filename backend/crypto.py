@@ -1,6 +1,5 @@
 from Crypto.Cipher import AES
 from Crypto.Protocol.KDF import PBKDF2
-import base64
 import os
 
 class EncryptionService:
