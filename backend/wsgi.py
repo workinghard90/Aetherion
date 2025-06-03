@@ -1,6 +1,4 @@
-# Aetherion/backend/wsgi.py
-
-from app import create_app
+from backend.app import create_app
 
 app = create_app()
 
