@@ -1,11 +1,7 @@
-import os
-from cryptography.fernet import Fernet
+from flask import Blueprint, jsonify
 
-VAULT_KEY = os.environ.get("VAULT_KEY", Fernet.generate_key().decode())
-fernet = Fernet(VAULT_KEY.encode())
+health_bp = Blueprint("health", __name__)
 
-def encrypt(data: bytes) -> bytes:
-    return fernet.encrypt(data)
-
-def decrypt(data: bytes) -> bytes:
-    return fernet.decrypt(data)
+@health_bp.route("/", methods=["GET"])
+def check_health():
+    return jsonify(status="Aetherion backend is online 🌌")
