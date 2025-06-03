@@ -1,70 +1,72 @@
-// Aetherion/frontend/screens/HomeScreen.js
-
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 
 export default function HomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>🕊️ Welcome, Sovereign 🕊️</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>✨ Welcome to Aetherion ✨</Text>
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("Vault")}
       >
-        <Text style={styles.buttonText}>🔐 Vault</Text>
-        <Text style={styles.glyph}>🗝️</Text>
+        <Text style={styles.buttonText}>Enter Vault</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("Scrolls")}
       >
-        <Text style={styles.buttonText}>📜 Archive</Text>
-        <Text style={styles.glyph}>📖</Text>
+        <Text style={styles.buttonText}>Sacred Scrolls</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("Oracle")}
       >
-        <Text style={styles.buttonText}>🔮 Grove</Text>
-        <Text style={styles.glyph}>🌙</Text>
+        <Text style={styles.buttonText}>Grove Oracle</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#1e1e2e",
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 40,
+    padding: 20,
   },
-  header: {
-    fontSize: 22,
+  title: {
+    fontSize: 28,
     color: "#e0c0ff",
+    fontWeight: "bold",
     marginBottom: 30,
     textAlign: "center",
   },
   button: {
-    width: "80%",
-    backgroundColor: "#2c2c3e",
+    backgroundColor: "#8e44ad",
+    paddingVertical: 14,
+    paddingHorizontal: 40,
     borderRadius: 10,
-    padding: 16,
-    marginVertical: 12,
+    marginVertical: 10,
+    width: "80%",
     alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
   },
   buttonText: {
-    fontSize: 18,
-    color: "#ffd1ff",
-    fontWeight: "600",
-  },
-  glyph: {
-    fontSize: 24,
-    color: "#a18cff",
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
