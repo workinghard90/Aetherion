@@ -1,11 +1,8 @@
-# Aetherion/backend/aetherion/oracle.py
-
 from flask import Blueprint, request, jsonify
 from openai import OpenAI
 import os
 
 oracle_bp = Blueprint("oracle", __name__)
-
 openai = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @oracle_bp.route("/", methods=["POST"])
@@ -17,7 +14,7 @@ def ask():
         response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are the Oracle of Aetherion. Speak in poetic, wise, gentle tones."},
+                {"role": "system", "content": "You are the Oracle of Aetherion. Speak with poetic wisdom."},
                 {"role": "user", "content": question}
             ]
         )
