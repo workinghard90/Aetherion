@@ -1,5 +1,3 @@
-// Aetherion/frontend/screens/OthersGate.js
-
 import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
