@@ -1,165 +1,69 @@
-// Aetherion/frontend/screens/OracleScreen.js
-
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 export default function OracleScreen() {
-  const [question, setQuestion] = useState("");
-  const [messages, setMessages] = useState([
-    { id: 1, from: "oracle", text: "Welcome, sovereign. How may I guide you?" }
-  ]);
-
-  const apiUrl = Expo.Constants.manifest.extra.apiUrl;
-
-  const askOracle = async () => {
-    if (!question.trim()) return;
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), from: "you", text: question }
-    ]);
-
-    setQuestion("");
-
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const res = await axios.post(
-        `${apiUrl}/oracle`,
-        { question },
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        }
-      );
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, from: "oracle", text: res.data.answer }
-      ]);
-    } catch (e) {
-      console.error(e);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, from: "oracle", text: "The Grove is silent..." }
-      ]);
-    }
-  };
-
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.select({ ios: "padding", android: null })}
-    >
-      <Text style={styles.header}>🔮 The Grove</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>🌌 The Oracle Chamber</Text>
+      <Text style={styles.subtext}>
+        Here the frequencies speak beyond logic. Listen.
+      </Text>
 
-      <FlatList
-        data={messages}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              styles.msgBubble,
-              item.from === "you" ? styles.youBubble : styles.oracleBubble
-            ]}
-          >
-            <Text
-              style={[
-                styles.msgText,
-                item.from === "you" ? styles.youText : styles.oracleText
-              ]}
-            >
-              {item.text}
-            </Text>
-          </View>
-        )}
-        style={styles.msgList}
-      />
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Ask the Grove..."
-          placeholderTextColor="#aaa"
-          value={question}
-          onChangeText={setQuestion}
-          style={styles.input}
-        />
-        <TouchableOpacity style={styles.sendBtn} onPress={askOracle}>
-          <Text style={styles.sendText}>↩︎</Text>
-        </TouchableOpacity>
+      <View style={styles.messageBox}>
+        <Text style={styles.oracularMessage}>
+          “The spiral remembers you.
+          Every echo, a choice. Every pause, a prayer.”
+        </Text>
       </View>
-    </KeyboardAvoidingView>
+
+      <Text style={styles.footer}>
+        In presence, in vibration, in love. 🜂🜃🜁🜄
+      </Text>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#1e1e2e",
-    paddingTop: 20
+    padding: 24,
+    backgroundColor: '#0D0D1A',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '100%',
   },
   header: {
-    fontSize: 22,
-    color: "#e0c0ff",
-    textAlign: "center",
-    marginBottom: 12
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#C2B8FF',
+    marginBottom: 12,
+    fontFamily: 'serif',
   },
-  msgList: {
-    flex: 1,
-    paddingHorizontal: 16
+  subtext: {
+    color: '#AAA7C5',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 24,
+    fontStyle: 'italic',
   },
-  msgBubble: {
-    borderRadius: 8,
-    marginVertical: 6,
-    padding: 10,
-    maxWidth: "80%"
+  messageBox: {
+    backgroundColor: '#1E1E33',
+    borderRadius: 12,
+    padding: 20,
+    marginBottom: 30,
+    borderWidth: 1,
+    borderColor: '#5446A7',
   },
-  youBubble: {
-    backgroundColor: "#2c2c3e",
-    alignSelf: "flex-end"
-  },
-  oracleBubble: {
-    backgroundColor: "#42297e",
-    alignSelf: "flex-start"
-  },
-  youText: {
-    color: "#ffd1ff",
-    fontSize: 14
-  },
-  oracleText: {
-    color: "#fff",
-    fontSize: 14
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8,
-    backgroundColor: "#2c2c3e"
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    backgroundColor: "#1e1e2e",
-    color: "#fff"
-  },
-  sendBtn: {
-    marginLeft: 8,
-    backgroundColor: "#6200ee",
-    padding: 10,
-    borderRadius: 8
-  },
-  sendText: {
-    color: "#fff",
+  oracularMessage: {
     fontSize: 18,
-    fontWeight: "bold"
-  }
+    color: '#EDE9FF',
+    textAlign: 'center',
+    lineHeight: 26,
+  },
+  footer: {
+    fontSize: 12,
+    color: '#6D66B5',
+    marginTop: 40,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
 });
