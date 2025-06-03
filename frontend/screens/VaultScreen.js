@@ -1,109 +1,69 @@
-// Aetherion/frontend/screens/VaultScreen.js
-
 import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
-  StyleSheet,
   FlatList,
+  StyleSheet,
+  TouchableOpacity,
   Alert,
-  Platform,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import api from "./api";
 
 export default function VaultScreen() {
   const [files, setFiles] = useState([]);
 
-  const apiUrl = process.env.API_URL || "https://aetherion.onrender.com/api";
+  const loadFiles = async () => {
+    try {
+      const res = await api.get("/vault/list");
+      setFiles(res.data);
+    } catch (err) {
+      Alert.alert("Error loading files", err.message);
+    }
+  };
 
   useEffect(() => {
-    fetchFiles();
+    loadFiles();
   }, []);
 
-  const fetchFiles = async () => {
+  const upload = async () => {
+    const doc = await DocumentPicker.getDocumentAsync({ type: "*/*" });
+    if (doc.canceled) return;
+
+    const formData = new FormData();
+    formData.append("file", {
+      uri: doc.assets[0].uri,
+      name: doc.assets[0].name,
+      type: "*/*",
+    });
+
     try {
-      const token = await AsyncStorage.getItem("token");
-      const res = await axios.get(`${apiUrl}/vault/list`, {
-        headers: { Authorization: `Bearer ${token}` },
+      await api.post("/vault/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      setFiles(res.data);
-    } catch (e) {
-      console.error(e);
-      Alert.alert("Error", "Failed to fetch your files.");
-    }
-  };
-
-  const pickAndUpload = async () => {
-    let result = await DocumentPicker.getDocumentAsync({});
-    if (result.type === "success") {
-      const fileUri = result.uri;
-      const fileName = result.name;
-      const fileType = result.mimeType || "application/octet-stream";
-
-      let formData = new FormData();
-      formData.append("file", {
-        uri: fileUri,
-        name: fileName,
-        type: fileType,
-      });
-
-      try {
-        const token = await AsyncStorage.getItem("token");
-        await axios.post(`${apiUrl}/vault/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        fetchFiles();
-      } catch (e) {
-        console.error(e);
-        Alert.alert("Error", "Upload failed.");
-      }
-    }
-  };
-
-  const downloadFile = async (id, originalName) => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-      const res = await axios.get(`${apiUrl}/vault/download/${id}`, {
-        responseType: "blob",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      Alert.alert("Download", `File "${originalName}" downloaded.`);
-    } catch (e) {
-      console.error(e);
-      Alert.alert("Error", "Download failed.");
+      loadFiles();
+    } catch (err) {
+      Alert.alert("Upload failed", err.message);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>🔐 The Vault</Text>
-      <TouchableOpacity style={styles.uploadButton} onPress={pickAndUpload}>
-        <Text style={styles.uploadText}>Upload a Scroll</Text>
+      <Text style={styles.title}>🔐 Aetherion Vault</Text>
+
+      <TouchableOpacity style={styles.button} onPress={upload}>
+        <Text style={styles.buttonText}>Upload File</Text>
       </TouchableOpacity>
 
       <FlatList
         data={files}
         keyExtractor={(item) => item.id.toString()}
-        ListEmptyComponent={<Text style={styles.empty}>No files yet.</Text>}
         renderItem={({ item }) => (
-          <View style={styles.fileRow}>
-            <Text style={styles.fileName}>{item.original_name}</Text>
-            <TouchableOpacity
-              style={styles.downloadBtn}
-              onPress={() => downloadFile(item.id, item.original_name)}
-            >
-              <Text style={styles.downloadText}>↧</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.fileItem}>📄 {item.original_name}</Text>
         )}
-        style={{ width: "90%" }}
+        ListEmptyComponent={
+          <Text style={styles.noFiles}>No files yet in your Vault.</Text>
+        }
       />
     </View>
   );
@@ -113,51 +73,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#1e1e2e",
-    alignItems: "center",
-    paddingTop: 30,
+    padding: 20,
   },
-  header: {
-    fontSize: 22,
+  title: {
+    fontSize: 24,
     color: "#e0c0ff",
-    marginBottom: 16,
-  },
-  uploadButton: {
-    backgroundColor: "#6200ee",
-    padding: 14,
-    borderRadius: 8,
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
   },
-  uploadText: {
+  button: {
+    backgroundColor: "#8e44ad",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 10,
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  buttonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  empty: {
-    marginTop: 40,
-    color: "#bbb",
-    fontStyle: "italic",
-    textAlign: "center",
-  },
-  fileRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "#2c2c3e",
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 6,
-  },
-  fileName: {
-    color: "#ffd1ff",
     fontSize: 16,
   },
-  downloadBtn: {
-    backgroundColor: "#a18cff",
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    justifyContent: "center",
+  fileItem: {
+    color: "#caa7ff",
+    fontSize: 14,
+    marginVertical: 4,
+    fontStyle: "italic",
   },
-  downloadText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+  noFiles: {
+    color: "#777",
+    textAlign: "center",
+    marginTop: 10,
   },
 });
