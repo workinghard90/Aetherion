@@ -1,92 +1,117 @@
 import React, { useState } from "react";
 import {
   View,
-  TextInput,
-  Button,
   Text,
-  Alert,
-  StyleSheet,
+  TextInput,
   TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Alert,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import api from "./api";
+import { loginUser } from "../services/api";
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = async () => {
-    try {
-      const response = await api.post("/auth/login", { username, password });
-      await AsyncStorage.setItem("token", response.data.token);
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Error", "Please fill in both fields.");
+      return;
+    }
+
+    const token = await loginUser(username, password);
+    if (token) {
       navigation.navigate("Home");
-    } catch (error) {
-      Alert.alert(
-        "Login Failed",
-        error?.response?.data?.error || "Unknown error"
-      );
+    } else {
+      Alert.alert("Login Failed", "Invalid credentials. Please try again.");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>🌙 Enter Aetherion 🌙</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>🔐 Log In</Text>
+
       <TextInput
-        placeholder="Username"
-        placeholderTextColor="#a993ff"
         style={styles.input}
+        placeholder="Username"
+        placeholderTextColor="#bbb"
         onChangeText={setUsername}
         value={username}
       />
+
       <TextInput
-        placeholder="Password"
-        placeholderTextColor="#a993ff"
         style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#bbb"
+        secureTextEntry
         onChangeText={setPassword}
         value={password}
-        secureTextEntry
       />
-      <TouchableOpacity onPress={login} style={styles.button}>
-        <Text style={styles.buttonText}>Enter</Text>
+
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
-    </View>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Home")}
+        style={styles.linkContainer}
+      >
+        <Text style={styles.linkText}>Back to Home</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#1e1e2e",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 20,
+    padding: 20,
   },
   title: {
     fontSize: 26,
     color: "#e0c0ff",
-    marginBottom: 24,
-    fontWeight: "600",
+    fontWeight: "bold",
+    marginBottom: 30,
+    textAlign: "center",
   },
   input: {
-    width: "100%",
-    padding: 12,
+    width: "85%",
+    height: 50,
+    backgroundColor: "#2a2a3e",
     borderRadius: 8,
-    backgroundColor: "#2d2d44",
-    marginBottom: 16,
+    paddingHorizontal: 15,
     color: "#fff",
-    borderWidth: 1,
-    borderColor: "#4e3a78",
+    marginBottom: 20,
+    fontSize: 16,
   },
   button: {
     backgroundColor: "#8e44ad",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 60,
+    borderRadius: 10,
     marginTop: 10,
+    width: "80%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 3 },
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  linkContainer: {
+    marginTop: 15,
+  },
+  linkText: {
+    color: "#e0c0ff",
+    textDecorationLine: "underline",
+    fontSize: 14,
   },
 });
